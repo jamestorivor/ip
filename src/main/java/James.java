@@ -1,10 +1,11 @@
-public class Duke {
+public class James {
     public static void main(String[] args) {
-        String banner = " ____        _        \n"
-                + "|  _ \\ _   _| | _____ \n"
-                + "| | | | | | | |/ / _ \\\n"
-                + "| |_| | |_| |   <  __/\n"
-                + "|____/ \\__,_|_|\\_\\___|\n";
+        String banner = "     _                              \n"
+                + "    | |                             \n"
+                + "    | | __ _ _ __ ___   ___  ___   \n"
+                + " _  | |/ _` | '_ ` _ \\ / _ \\/ __|  \n"
+                + "| |_| | (_| | | | | | |  __/\\__ \\  \n"
+                + " \\___/ \\__,_|_| |_| |_|\\___||___/  \n";
         System.out.println(banner);
     }
 }
