@@ -116,3 +116,128 @@ ____________________________________________________________
 Bye. Rest your eyes!
 ____________________________________________________________
 ```
+
+## TC-03: Reject malformed commands without changing the task list
+
+**Aim:** Verify that invalid deadline, event, and task-number inputs show the current error message, while valid operations before and after them leave the single task in the expected state.
+
+**Inputs:**
+
+```text
+todo keep this task
+deadline submit report
+list
+event team meeting /from Monday 2pm
+list
+mark two
+mark 1
+unmark 1
+bye
+```
+
+**Expected output:**
+
+```text
+____________________________________________________________
+JAMES THE CHATTY CHATBOT
+Hello! I'm James.
+I can do anything for you!
+____________________________________________________________
+
+____________________________________________________________
+Got it. I've added this task:
+[T][ ] keep this task
+Now you have 1 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+OH NO James Doesnt Know What To Do!!!
+A deadline needs a by date.
+Try: deadline <description> /by <date>
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list:
+1.[T][ ] keep this task
+____________________________________________________________
+____________________________________________________________
+OH NO James Doesnt Know What To Do!!!
+An event needs both a start and end time.
+Try: event <description> /from <start> /to <end>
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list:
+1.[T][ ] keep this task
+____________________________________________________________
+____________________________________________________________
+OH NO James Doesnt Know What To Do!!!
+James says that the task number must be a whole number.
+Try: mark <task number>
+____________________________________________________________
+____________________________________________________________
+Nice! I've marked this task as done:
+[T][X] keep this task
+____________________________________________________________
+____________________________________________________________
+OK, I've marked this task as not done yet:
+[T][ ] keep this task
+____________________________________________________________
+____________________________________________________________
+Bye. Rest your eyes!
+____________________________________________________________
+```
+
+## TC-04: Handle blank, unknown, and incomplete commands without changing the task list
+
+**Aim:** Verify that a blank command, an unknown command, and a todo without a description report errors; valid commands interleaved between them must preserve the one valid task.
+
+**Inputs:**
+
+```text
+
+todo retained task
+unknown
+list
+todo
+list
+bye
+```
+
+**Expected output:**
+
+```text
+____________________________________________________________
+JAMES THE CHATTY CHATBOT
+Hello! I'm James.
+I can do anything for you!
+____________________________________________________________
+
+____________________________________________________________
+OH NO James Doesnt Know What To Do!!!
+No command specified
+Try: <command> <arguments:optional>
+____________________________________________________________
+____________________________________________________________
+Got it. I've added this task:
+[T][ ] retained task
+Now you have 1 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+OH NO James Doesnt Know What To Do!!!
+James hasn't head of this command :(
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list:
+1.[T][ ] retained task
+____________________________________________________________
+____________________________________________________________
+OH NO James Doesnt Know What To Do!!!
+The description of a todo cannot be empty.
+Try: todo <description>
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list:
+1.[T][ ] retained task
+____________________________________________________________
+____________________________________________________________
+Bye. Rest your eyes!
+____________________________________________________________
+```
