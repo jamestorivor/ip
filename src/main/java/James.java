@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class James {
@@ -15,6 +16,29 @@ public class James {
         return "____________________________________________________________\n" +
                 "Got it. I've added this task:\n" + task + "\n" +
                 "Now you have %d tasks in the list.\n".formatted(taskCount) +
+                "____________________________________________________________";
+    }
+
+    public static String markMessage(Task task) {
+        return "____________________________________________________________\n" +
+                "Nice! I've marked this task as done:\n" +
+                task+
+                "\n" +
+                "____________________________________________________________";
+    }
+
+    public static String unmarkMessage(Task task) {
+        return "____________________________________________________________\n" +
+                "OK, I've marked this task as not done yet:\n" +
+                task+
+                "\n" +
+                "____________________________________________________________";
+    }
+
+    public static String deleteMessage(Task task) {
+        return "____________________________________________________________\n" +
+                "Noted. I've removed this task:\n" + task + "\n" +
+                "Now you have %d tasks in the list.\n".formatted(tasks.size()) +
                 "____________________________________________________________";
     }
 
@@ -61,7 +85,7 @@ public class James {
                     + "Try: deadline <description> /by <end-date>");
         }
         String[] deadlineParts = arguments.split(" /by ", 2);
-        if (deadlineParts.length < 2 || deadlineParts[1].trim().isEmpty()){
+        if (deadlineParts.length < 2 || deadlineParts[0].trim().isEmpty() || deadlineParts[1].trim().isEmpty()){
             throw new UserInputException("A deadline needs a by date.\n" + "Try: deadline <description> /by <date>");
         }
         return new Deadline(deadlineParts[0], deadlineParts[1]);
@@ -89,16 +113,25 @@ public class James {
                     + "Try: " + command + " <task number>");
         }
 
-        if (taskNumber < 1 || taskNumber > taskCount) {
+        if (taskNumber < 1 || taskNumber > tasks.size()) {
             throw new UserInputException("James says there is no task number " + taskNumber + ".\n"
-                    + "Your list currently has " + taskCount + " tasks.");
+                    + "Your list currently has " + tasks.size() + " tasks.");
         }
         return taskNumber - 1;
     }
 
-    public static final int MAX_ENTRIES = 100;
-    public static Task[] tasks = new Task[MAX_ENTRIES];
-    public static int taskCount = 0;
+    public static Task deleteTask(int index) throws UserInputException{
+        Task delTask;
+        try {
+            delTask = tasks.remove(index);
+        } catch (IndexOutOfBoundsException e) {
+            throw new UserInputException("James says there is no task number " + index + ".\n"
+                    + "Your list currently has " + tasks.size() + " tasks.");
+        }
+        return delTask;
+    }
+
+    public static ArrayList<Task> tasks = new ArrayList<>();
 
 
     public static void main(String[] args) {
@@ -117,6 +150,11 @@ public class James {
             String arguments = parts.length > 1 ? parts[1] : null;
 
             switch (command) {
+            case "delete":
+                int delIdx = parseTaskNumber(arguments, "delete");
+                Task delTask = deleteTask(delIdx);
+                System.out.println(deleteMessage(delTask));
+                break;
             case "todo":
                 newTask = parseTodo(arguments);
                 break;
@@ -128,27 +166,15 @@ public class James {
                 break;
             case "mark":
                 int markIdx = parseTaskNumber(arguments, "mark");
-                Task taskToMark = tasks[markIdx];
+                Task taskToMark = tasks.get(markIdx);
                 taskToMark.markDone();
-                System.out.println(
-                        "____________________________________________________________\n" +
-                                "Nice! I've marked this task as done:\n" +
-                                 taskToMark+
-                                "\n" +
-                        "____________________________________________________________"
-                );
+                System.out.println(markMessage(taskToMark));
                 break;
             case "unmark":
                 int unmarkIdx = parseTaskNumber(arguments, "unmark");
-                Task taskToUnmark = tasks[unmarkIdx];
+                Task taskToUnmark = tasks.get(unmarkIdx);
                 taskToUnmark.markNotDone();
-                System.out.println(
-                        "____________________________________________________________\n" +
-                                "OK, I've marked this task as not done yet:\n" +
-                                taskToUnmark+
-                                "\n" +
-                        "____________________________________________________________"
-                );
+                System.out.println(unmarkMessage(taskToUnmark));
                 break;
             case "bye":
                 running = false;
@@ -156,8 +182,8 @@ public class James {
             case "list":
                 System.out.println("____________________________________________________________");
                 String output = "Here are the tasks in your list:";
-                for (int i = 0; i < taskCount; i++){
-                    output = output + "\n%d.%s".formatted(i + 1,tasks[i]);
+                for (int i = 0; i < tasks.size(); i++){
+                    output = output + "\n%d.%s".formatted(i + 1,tasks.get(i));
                 }
                 System.out.println(output);
                 System.out.println("____________________________________________________________");
@@ -166,14 +192,13 @@ public class James {
                 throw new UserInputException("James hasn't head of this command :(");
             }
             } catch (UserInputException e){
-                System.out.println("____________________________________________________________");
-                System.out.println("OH NO James Doesnt Know What To Do!!!\n" + e.getMessage());
-                System.out.println("____________________________________________________________");
+                System.out.println("____________________________________________________________\n" +
+                "OH NO James Doesnt Know What To Do!!!\n" + e.getMessage() +
+                "\n____________________________________________________________");
             }
             if (newTask != null) {
-                tasks[taskCount] = newTask;
-                taskCount++;
-                System.out.println(createAddTaskMessage(newTask,taskCount));
+                tasks.add(newTask);
+                System.out.println(createAddTaskMessage(newTask,tasks.size()));
             }
         }
         System.out.println(exitMessage);
