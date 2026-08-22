@@ -13,13 +13,15 @@ public class James {
 
     public static String createAddTaskMessage(String task) {
         return "____________________________________________________________\n" +
-                "added:%s \n".formatted(task) +
+                "added:" + task + "\n" +
                 "____________________________________________________________";
     }
 
-    public static final int MAX_LIST_ENTRIES = 100;
-    public static String[] tasks = new String[MAX_LIST_ENTRIES];
+    public static final int MAX_ENTRIES = 100;
+    public static Task[] tasks = new Task[MAX_ENTRIES];
     public static int taskCount = 0;
+
+
     public static void main(String[] args) {
 
         Scanner scanner = new Scanner(System.in);
@@ -29,20 +31,50 @@ public class James {
         while (running && scanner.hasNextLine()) {
             String input = scanner.nextLine();
 
-            switch (input) {
+            String[] parts = input.split(" ",2);
+            String command = parts[0];
+
+            switch (command) {
+            case "mark":
+                int markIdx = Integer.parseInt(parts[1]);
+                Task taskToMark = tasks[markIdx - 1];
+                taskToMark.markDone();
+                System.out.println(
+                        "____________________________________________________________\n" +
+                                "Nice! I've marked this task as done:\n" +
+                                 taskToMark+
+                                "\n" +
+                        "____________________________________________________________"
+                );
+                break;
+            case "unmark":
+                int unmarkIdx = Integer.parseInt(parts[1]);
+                Task taskToUnmark = tasks[unmarkIdx - 1];
+                taskToUnmark.markNotDone();
+                System.out.println(
+                        "____________________________________________________________\n" +
+                                "OK, I've marked this task as not done yet:\n" +
+                                taskToUnmark+
+                                "\n" +
+                        "____________________________________________________________"
+                );
+                break;
             case "bye":
                 running = false;
                 break;
-            case "tasks":
+            case "list":
                 System.out.println("____________________________________________________________");
+                String output = "Here are the tasks in your list:";
                 for (int i = 0; i < taskCount; i++){
-                    System.out.println("%d. %s".formatted(i + 1, tasks[i]));
+                    output = output + "\n%d.%s".formatted(i + 1,tasks[i]);
                 }
+                System.out.println(output);
                 System.out.println("____________________________________________________________");
                 break;
             default:
                 String message = createAddTaskMessage(input);
-                tasks[taskCount] = input;
+                Task newTask = new Task(input);
+                tasks[taskCount] = newTask;
                 taskCount++;
                 System.out.println(message);
                 break;
