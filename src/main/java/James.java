@@ -11,9 +11,10 @@ public class James {
             "Bye. Rest your eyes!\n" +
             "____________________________________________________________";
 
-    public static String createAddTaskMessage(String task) {
+    public static String createAddTaskMessage(Task task, int taskCount) {
         return "____________________________________________________________\n" +
-                "added:" + task + "\n" +
+                "Got it. I've added this task:\n" + task + "\n" +
+                "Now you have %d tasks in the list\n".formatted(taskCount) +
                 "____________________________________________________________";
     }
 
@@ -33,8 +34,18 @@ public class James {
 
             String[] parts = input.split(" ",2);
             String command = parts[0];
+            Task newTask = null;
 
             switch (command) {
+            case "todo":
+                newTask = new ToDo(parts[1]);
+                break;
+            case "event":
+                newTask = new Event(parts[1]);
+                break;
+            case "deadline":
+                newTask = new Deadline(parts[1]);
+                break;
             case "mark":
                 int markIdx = Integer.parseInt(parts[1]);
                 Task taskToMark = tasks[markIdx - 1];
@@ -71,13 +82,11 @@ public class James {
                 System.out.println(output);
                 System.out.println("____________________________________________________________");
                 break;
-            default:
-                String message = createAddTaskMessage(input);
-                Task newTask = new Task(input);
+            }
+            if (newTask != null) {
                 tasks[taskCount] = newTask;
                 taskCount++;
-                System.out.println(message);
-                break;
+                System.out.println(createAddTaskMessage(newTask,taskCount));
             }
         }
         System.out.println(exitMessage);
