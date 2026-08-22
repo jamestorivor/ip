@@ -14,7 +14,7 @@ public class James {
     public static String createAddTaskMessage(Task task, int taskCount) {
         return "____________________________________________________________\n" +
                 "Got it. I've added this task:\n" + task + "\n" +
-                "Now you have %d tasks in the list\n".formatted(taskCount) +
+                "Now you have %d tasks in the list.\n".formatted(taskCount) +
                 "____________________________________________________________";
     }
 
@@ -41,10 +41,13 @@ public class James {
                 newTask = new ToDo(parts[1]);
                 break;
             case "event":
-                newTask = new Event(parts[1]);
+                String[] event = parts[1].split(" /from ", 2);
+                String[] time = event[1].split(" /to ", 2);
+                newTask = new Event(event[0], time[0], time[1]);
                 break;
             case "deadline":
-                newTask = new Deadline(parts[1]);
+                String[] deadline = parts[1].split(" /by ", 2);
+                newTask = new Deadline(deadline[0], deadline[1]);
                 break;
             case "mark":
                 int markIdx = Integer.parseInt(parts[1]);
