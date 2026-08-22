@@ -131,7 +131,19 @@ public class James {
         return delTask;
     }
 
+    public static Command parseCommandType(String commandString) throws UserInputException{
+        try {
+            return Command.valueOf(commandString.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new UserInputException("James hasn't heard of this command :(");
+        }
+    }
+
     public static ArrayList<Task> tasks = new ArrayList<>();
+
+    public enum Command {
+        DELETE, TODO, EVENT, DEADLINE, MARK, UNMARK, LIST, BYE
+    }
 
 
     public static void main(String[] args) {
@@ -146,40 +158,41 @@ public class James {
 
             try {
             String[] parts = parseCommand(input);
-            String command = parts[0];
+            String commandStr = parts[0];
             String arguments = parts.length > 1 ? parts[1] : null;
 
+            Command command = parseCommandType(commandStr);
             switch (command) {
-            case "delete":
+            case DELETE:
                 int delIdx = parseTaskNumber(arguments, "delete");
                 Task delTask = deleteTask(delIdx);
                 System.out.println(deleteMessage(delTask));
                 break;
-            case "todo":
+            case TODO:
                 newTask = parseTodo(arguments);
                 break;
-            case "event":
+            case EVENT:
                 newTask = parseEvent(arguments);
                 break;
-            case "deadline":
+            case DEADLINE:
                 newTask = parseDeadline(arguments);
                 break;
-            case "mark":
+            case MARK:
                 int markIdx = parseTaskNumber(arguments, "mark");
                 Task taskToMark = tasks.get(markIdx);
                 taskToMark.markDone();
                 System.out.println(markMessage(taskToMark));
                 break;
-            case "unmark":
+            case UNMARK:
                 int unmarkIdx = parseTaskNumber(arguments, "unmark");
                 Task taskToUnmark = tasks.get(unmarkIdx);
                 taskToUnmark.markNotDone();
                 System.out.println(unmarkMessage(taskToUnmark));
                 break;
-            case "bye":
+            case BYE:
                 running = false;
                 break;
-            case "list":
+            case LIST:
                 System.out.println("____________________________________________________________");
                 String output = "Here are the tasks in your list:";
                 for (int i = 0; i < tasks.size(); i++){
