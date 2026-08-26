@@ -1,7 +1,12 @@
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 public class James {
+    private static final String FILE_PATH = "./data/james.txt";
     public static String greeting = "____________________________________________________________\n" +
             "JAMES THE CHATTY CHATBOT\n" +
             "Hello! I'm James.\n" +
@@ -141,13 +146,65 @@ public class James {
 
     public static ArrayList<Task> tasks = new ArrayList<>();
 
+    /**
+     * Loads tasks from the persistent storage file on disk into memory.
+     * If the file does not exist, an empty list is returned.
+     *
+     * @return an ArrayList containing the loaded tasks
+     */
+    public static ArrayList<Task> loadTasks() {
+        ArrayList<Task> loadedTasks = new ArrayList<>();
+        File file = new File(FILE_PATH);
+        if (!file.exists()) {
+            return loadedTasks;
+        }
+
+        try (Scanner fileScanner = new Scanner(file)) {
+            while (fileScanner.hasNextLine()) {
+                String line = fileScanner.nextLine();
+                if (!line.trim().isEmpty()) {
+                    try {
+                        Task task = Task.fromFileString(line);
+                        loadedTasks.add(task);
+                    } catch (UserInputException e) {
+                        System.out.println("Warning: Skipping invalid saved task entry: " + line);
+                    }
+                }
+            }
+        } catch (FileNotFoundException e) {
+            // Storage file not found; return empty list
+        }
+        return loadedTasks;
+    }
+
+    /**
+     * Saves all current tasks to the persistent storage file.
+     * Automatically creates any necessary parent directories.
+     */
+    public static void saveTasks() {
+        try {
+            File file = new File(FILE_PATH);
+            File parentDir = file.getParentFile();
+            if (parentDir != null && !parentDir.exists()) {
+                parentDir.mkdirs();
+            }
+            try (FileWriter writer = new FileWriter(file)) {
+                for (Task task : tasks) {
+                    writer.write(task.toFileString() + System.lineSeparator());
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Error saving tasks: " + e.getMessage());
+        }
+    }
+
     public enum Command {
         DELETE, TODO, EVENT, DEADLINE, MARK, UNMARK, LIST, BYE
     }
 
 
     public static void main(String[] args) {
-
+        tasks = loadTasks();
         Scanner scanner = new Scanner(System.in);
         boolean running = true;
 
@@ -166,6 +223,7 @@ public class James {
             case DELETE:
                 int delIdx = parseTaskNumber(arguments, "delete");
                 Task delTask = deleteTask(delIdx);
+                saveTasks();
                 System.out.println(deleteMessage(delTask));
                 break;
             case TODO:
@@ -181,12 +239,14 @@ public class James {
                 int markIdx = parseTaskNumber(arguments, "mark");
                 Task taskToMark = tasks.get(markIdx);
                 taskToMark.markDone();
+                saveTasks();
                 System.out.println(markMessage(taskToMark));
                 break;
             case UNMARK:
                 int unmarkIdx = parseTaskNumber(arguments, "unmark");
                 Task taskToUnmark = tasks.get(unmarkIdx);
                 taskToUnmark.markNotDone();
+                saveTasks();
                 System.out.println(unmarkMessage(taskToUnmark));
                 break;
             case BYE:
@@ -202,7 +262,7 @@ public class James {
                 System.out.println("____________________________________________________________");
                 break;
             default:
-                throw new UserInputException("James hasn't head of this command :(");
+                throw new UserInputException("James hasn't heard of this command :(");
             }
             } catch (UserInputException e){
                 System.out.println("____________________________________________________________\n" +
@@ -211,6 +271,7 @@ public class James {
             }
             if (newTask != null) {
                 tasks.add(newTask);
+                saveTasks();
                 System.out.println(createAddTaskMessage(newTask,tasks.size()));
             }
         }

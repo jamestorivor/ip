@@ -537,7 +537,7 @@ Now you have 1 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
 OH NO James Doesnt Know What To Do!!!
-James hasn't head of this command :(
+James hasn't heard of this command :(
 ____________________________________________________________
 ____________________________________________________________
 Here are the tasks in your list:
