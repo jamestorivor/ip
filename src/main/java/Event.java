@@ -14,8 +14,16 @@ public class Event extends Task{
      */
     public Event(String description, String from, String to){
         super(description);
-        this.from = from;
-        this.to = to;
+        this.from = from != null ? from.trim() : "";
+        this.to = to != null ? to.trim() : "";
+    }
+
+    public String getFrom() {
+        return this.from;
+    }
+
+    public String getTo() {
+        return this.to;
     }
 
     @Override

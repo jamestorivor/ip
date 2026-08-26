@@ -11,7 +11,7 @@ public class Task {
      * @param description description of the task
      */
     public Task(String description){
-        this.description = description;
+        this.description = description != null ? description.trim() : "";
         this.done = false;
     }
 
@@ -27,6 +27,14 @@ public class Task {
         return this.done ? "[X]":"[ ]";
     }
 
+    public String getDescription() {
+        return this.description;
+    }
+
+    public boolean isDone() {
+        return this.done;
+    }
+
     /**
      * Returns the string representation of the task formatted for file storage.
      *
@@ -38,36 +46,69 @@ public class Task {
 
     /**
      * Parses a line from the storage file into a corresponding Task instance.
+     * Handles type identification, status validation, and field extraction.
      *
      * @param line string read from the storage file
      * @return corresponding Task subclass instance
-     * @throws UserInputException if the line format is invalid or unknown
+     * @throws UserInputException if the line format is invalid, corrupted, or unknown
      */
     public static Task fromFileString(String line) throws UserInputException {
-        String[] parts = line.split(" \\| ");
-        if (parts.length < 3) {
+        if (line == null || line.trim().isEmpty()) {
+            throw new UserInputException("Storage line cannot be empty.");
+        }
+
+        String[] initialParts = line.split(" \\| ", 3);
+        if (initialParts.length < 3) {
             throw new UserInputException("Corrupted task line in storage: " + line);
         }
-        String type = parts[0].trim();
-        boolean isDone = parts[1].trim().equals("1");
-        String description = parts[2].trim();
+
+        String type = initialParts[0].trim();
+        String doneStr = initialParts[1].trim();
+        if (!doneStr.equals("0") && !doneStr.equals("1")) {
+            throw new UserInputException("Invalid completion status in storage: " + doneStr);
+        }
+        boolean isDone = doneStr.equals("1");
 
         Task task;
         switch (type) {
         case "T":
-            task = new ToDo(description);
+            String[] todoParts = line.split(" \\| ", 3);
+            String todoDesc = todoParts[2].trim();
+            if (todoDesc.isEmpty()) {
+                throw new UserInputException("Todo description cannot be empty in storage.");
+            }
+            task = new ToDo(todoDesc);
             break;
         case "D":
-            if (parts.length < 4) {
+            String[] deadlineParts = line.split(" \\| ", 4);
+            if (deadlineParts.length < 4) {
                 throw new UserInputException("Corrupted deadline line in storage: " + line);
             }
-            task = new Deadline(description, parts[3].trim());
+            String deadlineDesc = deadlineParts[2].trim();
+            String by = deadlineParts[3].trim();
+            if (deadlineDesc.isEmpty()) {
+                throw new UserInputException("Deadline description cannot be empty in storage.");
+            }
+            if (by.isEmpty()) {
+                throw new UserInputException("Deadline date cannot be empty in storage.");
+            }
+            task = new Deadline(deadlineDesc, by);
             break;
         case "E":
-            if (parts.length < 5) {
+            String[] eventParts = line.split(" \\| ", 5);
+            if (eventParts.length < 5) {
                 throw new UserInputException("Corrupted event line in storage: " + line);
             }
-            task = new Event(description, parts[3].trim(), parts[4].trim());
+            String eventDesc = eventParts[2].trim();
+            String from = eventParts[3].trim();
+            String to = eventParts[4].trim();
+            if (eventDesc.isEmpty()) {
+                throw new UserInputException("Event description cannot be empty in storage.");
+            }
+            if (from.isEmpty() || to.isEmpty()) {
+                throw new UserInputException("Event times cannot be empty in storage.");
+            }
+            task = new Event(eventDesc, from, to);
             break;
         default:
             throw new UserInputException("Unknown task type in storage: " + type);

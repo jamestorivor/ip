@@ -52,7 +52,7 @@ public class James {
             throw new UserInputException("No command specified\n" + "Try: <command> <arguments:optional>");
         }
 
-        return string.split(" ",2);
+        return string.trim().split(" ", 2);
     }
 
     public static Task parseTodo(String arguments) throws UserInputException{
@@ -93,7 +93,7 @@ public class James {
         if (deadlineParts.length < 2 || deadlineParts[0].trim().isEmpty() || deadlineParts[1].trim().isEmpty()){
             throw new UserInputException("A deadline needs a by date.\n" + "Try: deadline <description> /by <date>");
         }
-        return new Deadline(deadlineParts[0], deadlineParts[1]);
+        return new Deadline(deadlineParts[0].trim(), deadlineParts[1].trim());
     }
 
     /**
@@ -126,14 +126,12 @@ public class James {
     }
 
     public static Task deleteTask(int index) throws UserInputException{
-        Task delTask;
         try {
-            delTask = tasks.remove(index);
+            return tasks.remove(index);
         } catch (IndexOutOfBoundsException e) {
-            throw new UserInputException("James says there is no task number " + index + ".\n"
+            throw new UserInputException("James says there is no task number " + (index + 1) + ".\n"
                     + "Your list currently has " + tasks.size() + " tasks.");
         }
-        return delTask;
     }
 
     public static Command parseCommandType(String commandString) throws UserInputException{
@@ -149,6 +147,7 @@ public class James {
     /**
      * Loads tasks from the persistent storage file on disk into memory.
      * If the file does not exist, an empty list is returned.
+     * Corrupted lines are skipped gracefully with a warning.
      *
      * @return an ArrayList containing the loaded tasks
      */
@@ -173,6 +172,8 @@ public class James {
             }
         } catch (FileNotFoundException e) {
             // Storage file not found; return empty list
+        } catch (Exception e) {
+            System.out.println("Warning: Error reading saved tasks file: " + e.getMessage());
         }
         return loadedTasks;
     }
@@ -186,14 +187,17 @@ public class James {
             File file = new File(FILE_PATH);
             File parentDir = file.getParentFile();
             if (parentDir != null && !parentDir.exists()) {
-                parentDir.mkdirs();
+                if (!parentDir.mkdirs() && !parentDir.exists()) {
+                    System.out.println("Warning: Unable to create storage directory: " + parentDir.getPath());
+                    return;
+                }
             }
             try (FileWriter writer = new FileWriter(file)) {
                 for (Task task : tasks) {
                     writer.write(task.toFileString() + System.lineSeparator());
                 }
             }
-        } catch (IOException e) {
+        } catch (IOException | SecurityException e) {
             System.out.println("Error saving tasks: " + e.getMessage());
         }
     }

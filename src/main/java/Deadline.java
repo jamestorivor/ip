@@ -12,7 +12,11 @@ public class Deadline extends Task{
      */
     public Deadline(String description, String by){
         super(description);
-        this.by = by;
+        this.by = by != null ? by.trim() : "";
+    }
+
+    public String getBy() {
+        return this.by;
     }
 
     @Override
