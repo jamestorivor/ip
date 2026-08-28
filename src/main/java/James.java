@@ -2,11 +2,14 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 public class James {
-    private static final String FILE_PATH = "./data/james.txt";
+
+    private static final Path FILE_PATH = Path.of("data", "james.txt");
     public static String greeting = "____________________________________________________________\n" +
             "JAMES THE CHATTY CHATBOT\n" +
             "Hello! I'm James.\n" +
@@ -153,7 +156,7 @@ public class James {
      */
     public static ArrayList<Task> loadTasks() {
         ArrayList<Task> loadedTasks = new ArrayList<>();
-        File file = new File(FILE_PATH);
+        File file = FILE_PATH.toFile();
         if (!file.exists()) {
             return loadedTasks;
         }
@@ -184,7 +187,7 @@ public class James {
      */
     public static void saveTasks() {
         try {
-            File file = new File(FILE_PATH);
+            File file = FILE_PATH.toFile();
             File parentDir = file.getParentFile();
             if (parentDir != null && !parentDir.exists()) {
                 if (!parentDir.mkdirs() && !parentDir.exists()) {
