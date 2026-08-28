@@ -4,8 +4,12 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 
 public class James {
 
@@ -83,8 +87,13 @@ public class James {
                     "An event needs both a start and end time.\n"
                             + "Try: event <description> /from <start> /to <end>");
         }
-        return new Event(eventParts[0].trim(), timeParts[0].trim(), timeParts[1].trim());
-
+        try {
+            LocalDate from = LocalDate.parse(timeParts[0].trim());
+            LocalDate to = LocalDate.parse(timeParts[1].trim());
+            return new Event(eventParts[0].trim(), from, to);
+        } catch (DateTimeParseException e) {
+            throw new UserInputException("Formatting of the date is incorrect, try: yyyy-mm-dd");
+        }
     }
 
     public static Task parseDeadline(String arguments) throws UserInputException {
@@ -96,7 +105,12 @@ public class James {
         if (deadlineParts.length < 2 || deadlineParts[0].trim().isEmpty() || deadlineParts[1].trim().isEmpty()){
             throw new UserInputException("A deadline needs a by date.\n" + "Try: deadline <description> /by <date>");
         }
-        return new Deadline(deadlineParts[0].trim(), deadlineParts[1].trim());
+        try {
+            LocalDate by = LocalDate.parse(deadlineParts[1].trim());
+            return new Deadline(deadlineParts[0].trim(), by);
+        } catch (DateTimeParseException e) {
+            throw new UserInputException("Formatting of the date is incorrect, try: yyyy-mm-dd");
+        }
     }
 
     /**
@@ -203,6 +217,16 @@ public class James {
         } catch (IOException | SecurityException e) {
             System.out.println("Error saving tasks: " + e.getMessage());
         }
+    }
+
+    /**
+     * Parses and validates the dates and times
+     *
+     * @return a LocalDate object
+     */
+    public static LocalDate parseDateTime(String dateTimeString) {
+        LocalDate d1 = LocalDate.parse(dateTimeString);
+        return d1;
     }
 
     public enum Command {

@@ -1,28 +1,30 @@
+import java.time.LocalDate;
+
 /**
  * Represents an event task occurring during a specific time period.
  */
 public class Event extends Task{
-    String from;
-    String to;
+    LocalDate from;
+    LocalDate to;
 
     /**
      * Initializes an uncompleted event task with the given description, start time, and end time.
      *
      * @param description description of the event
-     * @param from start time/date string
-     * @param to end time/date string
+     * @param from start time/date LocalDate
+     * @param to end time/date LocalDate
      */
-    public Event(String description, String from, String to){
+    public Event(String description, LocalDate from, LocalDate to){
         super(description);
-        this.from = from != null ? from.trim() : "";
-        this.to = to != null ? to.trim() : "";
+        this.from = from;
+        this.to = to;
     }
 
-    public String getFrom() {
+    public LocalDate getFrom() {
         return this.from;
     }
 
-    public String getTo() {
+    public LocalDate getTo() {
         return this.to;
     }
 
@@ -33,6 +35,8 @@ public class Event extends Task{
 
     @Override
     public String toString(){
-        return "[E]" + super.toString() + " (from: %s to: %s)".formatted(this.from, this.to);
+        return "[E]" + super.toString() + " (from: %s to: %s)".formatted(
+                this.from.format(DISPLAY_FORMAT),
+                this.to.format(DISPLAY_FORMAT));
     }
 }
