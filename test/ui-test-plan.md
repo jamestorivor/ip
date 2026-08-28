@@ -268,8 +268,8 @@ ____________________________________________________________
 
 ```text
 todo read book
-deadline return book /by June 6th
-event project meeting /from Aug 6th 2pm /to 4pm
+deadline return book /by 2019-06-06
+event project meeting /from 2019-08-06 /to 2019-08-06
 todo join sports club
 mark 1
 mark 4
@@ -296,12 +296,12 @@ Now you have 1 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
 Got it. I've added this task:
-[D][ ] return book (by: June 6th)
+[D][ ] return book (by: Jun 06 2019)
 Now you have 2 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
 Got it. I've added this task:
-[E][ ] project meeting (from: Aug 6th 2pm to: 4pm)
+[E][ ] project meeting (from: Aug 06 2019 to: Aug 06 2019)
 Now you have 3 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
@@ -325,20 +325,20 @@ ____________________________________________________________
 ____________________________________________________________
 Here are the tasks in your list:
 1.[T][X] read book
-2.[D][ ] return book (by: June 6th)
-3.[E][ ] project meeting (from: Aug 6th 2pm to: 4pm)
+2.[D][ ] return book (by: Jun 06 2019)
+3.[E][ ] project meeting (from: Aug 06 2019 to: Aug 06 2019)
 4.[T][X] join sports club
 5.[T][ ] borrow book
 ____________________________________________________________
 ____________________________________________________________
 Noted. I've removed this task:
-[E][ ] project meeting (from: Aug 6th 2pm to: 4pm)
+[E][ ] project meeting (from: Aug 06 2019 to: Aug 06 2019)
 Now you have 4 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
 Here are the tasks in your list:
 1.[T][X] read book
-2.[D][ ] return book (by: June 6th)
+2.[D][ ] return book (by: Jun 06 2019)
 3.[T][X] join sports club
 4.[T][ ] borrow book
 ____________________________________________________________
@@ -355,15 +355,15 @@ ____________________________________________________________
 
 ```text
 todo read book
-deadline return book /by June 6th
-event project meeting /from Aug 6th 2pm /to 4pm
+deadline return book /by 2019-06-06
+event project meeting /from 2019-08-06 /to 2019-08-06
 todo join sports club
 mark 1
 mark 4
 todo borrow book
 list
-deadline return book /by Sunday
-event project meeting /from Mon 2pm /to 4pm
+deadline return book /by 2019-12-01
+event project meeting /from 2019-08-12 /to 2019-08-12
 bye
 ```
 
@@ -383,12 +383,12 @@ Now you have 1 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
 Got it. I've added this task:
-[D][ ] return book (by: June 6th)
+[D][ ] return book (by: Jun 06 2019)
 Now you have 2 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
 Got it. I've added this task:
-[E][ ] project meeting (from: Aug 6th 2pm to: 4pm)
+[E][ ] project meeting (from: Aug 06 2019 to: Aug 06 2019)
 Now you have 3 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
@@ -412,19 +412,19 @@ ____________________________________________________________
 ____________________________________________________________
 Here are the tasks in your list:
 1.[T][X] read book
-2.[D][ ] return book (by: June 6th)
-3.[E][ ] project meeting (from: Aug 6th 2pm to: 4pm)
+2.[D][ ] return book (by: Jun 06 2019)
+3.[E][ ] project meeting (from: Aug 06 2019 to: Aug 06 2019)
 4.[T][X] join sports club
 5.[T][ ] borrow book
 ____________________________________________________________
 ____________________________________________________________
 Got it. I've added this task:
-[D][ ] return book (by: Sunday)
+[D][ ] return book (by: Dec 01 2019)
 Now you have 6 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
 Got it. I've added this task:
-[E][ ] project meeting (from: Mon 2pm to: 4pm)
+[E][ ] project meeting (from: Aug 12 2019 to: Aug 12 2019)
 Now you have 7 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
@@ -551,6 +551,44 @@ ____________________________________________________________
 ____________________________________________________________
 Here are the tasks in your list:
 1.[T][ ] retained task
+____________________________________________________________
+____________________________________________________________
+Bye. Rest your eyes!
+____________________________________________________________
+```
+
+## TC-10: Reject invalid date format without creating tasks
+
+**Aim:** Verify that deadlines and events with invalid or malformed dates are rejected with formatting guidance; no tasks must be added.
+
+**Inputs:**
+
+```text
+deadline return book /by invalid-date
+event team meeting /from 2019-02-30 /to 2019-03-01
+list
+bye
+```
+
+**Expected output:**
+
+```text
+____________________________________________________________
+JAMES THE CHATTY CHATBOT
+Hello! I'm James.
+I can do anything for you!
+____________________________________________________________
+
+____________________________________________________________
+OH NO James Doesnt Know What To Do!!!
+Formatting of the date is incorrect, try: yyyy-mm-dd
+____________________________________________________________
+____________________________________________________________
+OH NO James Doesnt Know What To Do!!!
+Formatting of the date is incorrect, try: yyyy-mm-dd
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list:
 ____________________________________________________________
 ____________________________________________________________
 Bye. Rest your eyes!
