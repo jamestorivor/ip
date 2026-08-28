@@ -1,7 +1,15 @@
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 public class James {
+
+    private static final Path FILE_PATH = Path.of("data", "james.txt");
     public static String greeting = "____________________________________________________________\n" +
             "JAMES THE CHATTY CHATBOT\n" +
             "Hello! I'm James.\n" +
@@ -47,7 +55,7 @@ public class James {
             throw new UserInputException("No command specified\n" + "Try: <command> <arguments:optional>");
         }
 
-        return string.split(" ",2);
+        return string.trim().split(" ", 2);
     }
 
     public static Task parseTodo(String arguments) throws UserInputException{
@@ -88,7 +96,7 @@ public class James {
         if (deadlineParts.length < 2 || deadlineParts[0].trim().isEmpty() || deadlineParts[1].trim().isEmpty()){
             throw new UserInputException("A deadline needs a by date.\n" + "Try: deadline <description> /by <date>");
         }
-        return new Deadline(deadlineParts[0], deadlineParts[1]);
+        return new Deadline(deadlineParts[0].trim(), deadlineParts[1].trim());
     }
 
     /**
@@ -121,14 +129,12 @@ public class James {
     }
 
     public static Task deleteTask(int index) throws UserInputException{
-        Task delTask;
         try {
-            delTask = tasks.remove(index);
+            return tasks.remove(index);
         } catch (IndexOutOfBoundsException e) {
-            throw new UserInputException("James says there is no task number " + index + ".\n"
+            throw new UserInputException("James says there is no task number " + (index + 1) + ".\n"
                     + "Your list currently has " + tasks.size() + " tasks.");
         }
-        return delTask;
     }
 
     public static Command parseCommandType(String commandString) throws UserInputException{
@@ -141,13 +147,71 @@ public class James {
 
     public static ArrayList<Task> tasks = new ArrayList<>();
 
+    /**
+     * Loads tasks from the persistent storage file on disk into memory.
+     * If the file does not exist, an empty list is returned.
+     * Corrupted lines are skipped gracefully with a warning.
+     *
+     * @return an ArrayList containing the loaded tasks
+     */
+    public static ArrayList<Task> loadTasks() {
+        ArrayList<Task> loadedTasks = new ArrayList<>();
+        File file = FILE_PATH.toFile();
+        if (!file.exists()) {
+            return loadedTasks;
+        }
+
+        try (Scanner fileScanner = new Scanner(file)) {
+            while (fileScanner.hasNextLine()) {
+                String line = fileScanner.nextLine();
+                if (!line.trim().isEmpty()) {
+                    try {
+                        Task task = Task.fromFileString(line);
+                        loadedTasks.add(task);
+                    } catch (UserInputException e) {
+                        System.out.println("Warning: Skipping invalid saved task entry: " + line);
+                    }
+                }
+            }
+        } catch (FileNotFoundException e) {
+            // Storage file not found; return empty list
+        } catch (Exception e) {
+            System.out.println("Warning: Error reading saved tasks file: " + e.getMessage());
+        }
+        return loadedTasks;
+    }
+
+    /**
+     * Saves all current tasks to the persistent storage file.
+     * Automatically creates any necessary parent directories.
+     */
+    public static void saveTasks() {
+        try {
+            File file = FILE_PATH.toFile();
+            File parentDir = file.getParentFile();
+            if (parentDir != null && !parentDir.exists()) {
+                if (!parentDir.mkdirs() && !parentDir.exists()) {
+                    System.out.println("Warning: Unable to create storage directory: " + parentDir.getPath());
+                    return;
+                }
+            }
+            try (FileWriter writer = new FileWriter(file)) {
+                for (Task task : tasks) {
+                    writer.write(task.toFileString() + System.lineSeparator());
+                }
+            }
+        } catch (IOException | SecurityException e) {
+            System.out.println("Error saving tasks: " + e.getMessage());
+        }
+    }
+
     public enum Command {
         DELETE, TODO, EVENT, DEADLINE, MARK, UNMARK, LIST, BYE
     }
 
 
     public static void main(String[] args) {
-
+        tasks = loadTasks();
         Scanner scanner = new Scanner(System.in);
         boolean running = true;
 
@@ -166,6 +230,7 @@ public class James {
             case DELETE:
                 int delIdx = parseTaskNumber(arguments, "delete");
                 Task delTask = deleteTask(delIdx);
+                saveTasks();
                 System.out.println(deleteMessage(delTask));
                 break;
             case TODO:
@@ -181,12 +246,14 @@ public class James {
                 int markIdx = parseTaskNumber(arguments, "mark");
                 Task taskToMark = tasks.get(markIdx);
                 taskToMark.markDone();
+                saveTasks();
                 System.out.println(markMessage(taskToMark));
                 break;
             case UNMARK:
                 int unmarkIdx = parseTaskNumber(arguments, "unmark");
                 Task taskToUnmark = tasks.get(unmarkIdx);
                 taskToUnmark.markNotDone();
+                saveTasks();
                 System.out.println(unmarkMessage(taskToUnmark));
                 break;
             case BYE:
@@ -202,7 +269,7 @@ public class James {
                 System.out.println("____________________________________________________________");
                 break;
             default:
-                throw new UserInputException("James hasn't head of this command :(");
+                throw new UserInputException("James hasn't heard of this command :(");
             }
             } catch (UserInputException e){
                 System.out.println("____________________________________________________________\n" +
@@ -211,6 +278,7 @@ public class James {
             }
             if (newTask != null) {
                 tasks.add(newTask);
+                saveTasks();
                 System.out.println(createAddTaskMessage(newTask,tasks.size()));
             }
         }
