@@ -594,3 +594,105 @@ ____________________________________________________________
 Bye. Rest your eyes!
 ____________________________________________________________
 ```
+
+## TC-11: List tasks occurring on a specific date
+
+**Aim:** Verify that list_by_date retrieves deadlines due on that date and events whose period covers that date (including intermediate dates), and shows an empty list if no tasks match.
+
+**Inputs:**
+
+```text
+todo read book
+deadline return book /by 2019-10-15
+deadline submit report /by 2019-10-20
+event career fair /from 2019-10-14 /to 2019-10-16
+list_by_date 2019-10-15
+list_by_date 2019-10-20
+list_by_date 2019-10-18
+bye
+```
+
+**Expected output:**
+
+```text
+____________________________________________________________
+JAMES THE CHATTY CHATBOT
+Hello! I'm James.
+I can do anything for you!
+____________________________________________________________
+
+____________________________________________________________
+Got it. I've added this task:
+[T][ ] read book
+Now you have 1 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Got it. I've added this task:
+[D][ ] return book (by: Oct 15 2019)
+Now you have 2 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Got it. I've added this task:
+[D][ ] submit report (by: Oct 20 2019)
+Now you have 3 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Got it. I've added this task:
+[E][ ] career fair (from: Oct 14 2019 to: Oct 16 2019)
+Now you have 4 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list that matches the date 2019-10-15:
+1.[D][ ] return book (by: Oct 15 2019)
+2.[E][ ] career fair (from: Oct 14 2019 to: Oct 16 2019)
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list that matches the date 2019-10-20:
+1.[D][ ] submit report (by: Oct 20 2019)
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list that matches the date 2019-10-18:
+____________________________________________________________
+____________________________________________________________
+Bye. Rest your eyes!
+____________________________________________________________
+```
+
+## TC-12: Reject invalid arguments for list_by_date
+
+**Aim:** Verify that list_by_date rejects missing date arguments and invalid date formats with descriptive error messages.
+
+**Inputs:**
+
+```text
+list_by_date
+list_by_date 2019-13-01
+list_by_date invalid-date
+bye
+```
+
+**Expected output:**
+
+```text
+____________________________________________________________
+JAMES THE CHATTY CHATBOT
+Hello! I'm James.
+I can do anything for you!
+____________________________________________________________
+
+____________________________________________________________
+OH NO James Doesnt Know What To Do!!!
+Please provide a date in the format: yyyy-mm-dd
+____________________________________________________________
+____________________________________________________________
+OH NO James Doesnt Know What To Do!!!
+The date format provided is incorrect! Please use the format: yyyy-mm-dd
+____________________________________________________________
+____________________________________________________________
+OH NO James Doesnt Know What To Do!!!
+The date format provided is incorrect! Please use the format: yyyy-mm-dd
+____________________________________________________________
+____________________________________________________________
+Bye. Rest your eyes!
+____________________________________________________________
+```
