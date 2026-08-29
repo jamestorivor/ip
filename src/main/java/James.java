@@ -220,17 +220,64 @@ public class James {
     }
 
     /**
-     * Parses and validates the dates and times
+     * Checks if a task occurs on a specific date.
+     * Deadlines match if their deadline date is the specified date.
+     * Events match if the specified date falls within their start and end dates (inclusive).
      *
-     * @return a LocalDate object
+     * @param task the task to check
+     * @param date the date to check against
+     * @return true if the task occurs on the specified date
      */
-    public static LocalDate parseDateTime(String dateTimeString) {
-        LocalDate d1 = LocalDate.parse(dateTimeString);
-        return d1;
+    public static boolean taskDateMatch(Task task, LocalDate date) {
+        if (task instanceof Event) {
+            Event eventTask = (Event) task;
+            LocalDate from = eventTask.getFrom();
+            LocalDate to = eventTask.getTo();
+            return !date.isBefore(from) && !date.isAfter(to);
+        } else if (task instanceof Deadline) {
+            Deadline deadlineTask = (Deadline) task;
+            LocalDate by = deadlineTask.getBy();
+            return date.isEqual(by);
+        }
+        return false;
+    }
+
+    /**
+     * Returns a list of tasks that occur on the specified date.
+     *
+     * @param date the date to filter tasks by
+     * @return an ArrayList containing matching tasks
+     */
+    public static ArrayList<Task> getTasksOnDate(LocalDate date) {
+        ArrayList<Task> tasksWithDate = new ArrayList<>();
+        for (Task task : tasks) {
+            if (taskDateMatch(task, date)) {
+                tasksWithDate.add(task);
+            }
+        }
+        return tasksWithDate;
+    }
+
+    /**
+     * Parses and validates a date string argument into a LocalDate object.
+     *
+     * @param arguments user-supplied date string
+     * @return parsed LocalDate object
+     * @throws UserInputException if the date argument is empty or formatted incorrectly
+     */
+    public static LocalDate parseDate(String arguments) throws UserInputException {
+        if (arguments == null || arguments.trim().isEmpty()){
+            throw new UserInputException("Please provide a date in the format: yyyy-mm-dd");
+        }
+        try {
+            return LocalDate.parse(arguments.trim());
+        } catch (DateTimeParseException e) {
+            throw new UserInputException("The date format provided is incorrect! Please use the format: yyyy-mm-dd");
+        }
     }
 
     public enum Command {
-        DELETE, TODO, EVENT, DEADLINE, MARK, UNMARK, LIST, BYE
+        DELETE, TODO, EVENT, DEADLINE, MARK, UNMARK, LIST, BYE, LIST_BY_DATE
     }
 
 
@@ -251,49 +298,60 @@ public class James {
 
             Command command = parseCommandType(commandStr);
             switch (command) {
-            case DELETE:
-                int delIdx = parseTaskNumber(arguments, "delete");
-                Task delTask = deleteTask(delIdx);
-                saveTasks();
-                System.out.println(deleteMessage(delTask));
-                break;
-            case TODO:
-                newTask = parseTodo(arguments);
-                break;
-            case EVENT:
-                newTask = parseEvent(arguments);
-                break;
-            case DEADLINE:
-                newTask = parseDeadline(arguments);
-                break;
-            case MARK:
-                int markIdx = parseTaskNumber(arguments, "mark");
-                Task taskToMark = tasks.get(markIdx);
-                taskToMark.markDone();
-                saveTasks();
-                System.out.println(markMessage(taskToMark));
-                break;
-            case UNMARK:
-                int unmarkIdx = parseTaskNumber(arguments, "unmark");
-                Task taskToUnmark = tasks.get(unmarkIdx);
-                taskToUnmark.markNotDone();
-                saveTasks();
-                System.out.println(unmarkMessage(taskToUnmark));
-                break;
-            case BYE:
-                running = false;
-                break;
-            case LIST:
-                System.out.println("____________________________________________________________");
-                String output = "Here are the tasks in your list:";
-                for (int i = 0; i < tasks.size(); i++){
-                    output = output + "\n%d.%s".formatted(i + 1,tasks.get(i));
-                }
-                System.out.println(output);
-                System.out.println("____________________________________________________________");
-                break;
-            default:
-                throw new UserInputException("James hasn't heard of this command :(");
+                case LIST_BY_DATE:
+                    LocalDate date = parseDate(arguments);
+                    ArrayList<Task> taskList = getTasksOnDate(date);
+                    System.out.println("____________________________________________________________");
+                    String message = "Here are the tasks in your list that matches the date %s:".formatted(date);
+                    for (int i = 0; i < taskList.size(); i++){
+                        message = message + "\n%d.%s".formatted(i + 1, taskList.get(i));
+                    }
+                    System.out.println(message);
+                    System.out.println("____________________________________________________________");
+                    break;
+                case DELETE:
+                    int delIdx = parseTaskNumber(arguments, "delete");
+                    Task delTask = deleteTask(delIdx);
+                    saveTasks();
+                    System.out.println(deleteMessage(delTask));
+                    break;
+                case TODO:
+                    newTask = parseTodo(arguments);
+                    break;
+                case EVENT:
+                    newTask = parseEvent(arguments);
+                    break;
+                case DEADLINE:
+                    newTask = parseDeadline(arguments);
+                    break;
+                case MARK:
+                    int markIdx = parseTaskNumber(arguments, "mark");
+                    Task taskToMark = tasks.get(markIdx);
+                    taskToMark.markDone();
+                    saveTasks();
+                    System.out.println(markMessage(taskToMark));
+                    break;
+                case UNMARK:
+                    int unmarkIdx = parseTaskNumber(arguments, "unmark");
+                    Task taskToUnmark = tasks.get(unmarkIdx);
+                    taskToUnmark.markNotDone();
+                    saveTasks();
+                    System.out.println(unmarkMessage(taskToUnmark));
+                    break;
+                case BYE:
+                    running = false;
+                    break;
+                case LIST:
+                    System.out.println("____________________________________________________________");
+                    String output = "Here are the tasks in your list:";
+                    for (int i = 0; i < tasks.size(); i++){
+                        output = output + "\n%d.%s".formatted(i + 1,tasks.get(i));
+                    }
+                    System.out.println(output);
+                    System.out.println("____________________________________________________________");
+                    break;
+                default:
+                    throw new UserInputException("James hasn't heard of this command :(");
             }
             } catch (UserInputException e){
                 System.out.println("____________________________________________________________\n" +
