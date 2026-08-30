@@ -1,0 +1,3 @@
+public enum Command {
+    DELETE, TODO, EVENT, DEADLINE, MARK, UNMARK, LIST, BYE, LIST_BY_DATE
+}
