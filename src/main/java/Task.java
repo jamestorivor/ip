@@ -78,58 +78,58 @@ public class Task {
 
         Task task;
         switch (type) {
-        case "T":
-            String[] todoParts = line.split(" \\| ", 3);
-            String todoDesc = todoParts[2].trim();
-            if (todoDesc.isEmpty()) {
-                throw new UserInputException("Todo description cannot be empty in storage.");
-            }
-            task = new ToDo(todoDesc);
-            break;
-        case "D":
-            String[] deadlineParts = line.split(" \\| ", 4);
-            if (deadlineParts.length < 4) {
-                throw new UserInputException("Corrupted deadline line in storage: " + line);
-            }
-            String deadlineDesc = deadlineParts[2].trim();
-            String byStr = deadlineParts[3].trim();
-            if (deadlineDesc.isEmpty()) {
-                throw new UserInputException("Deadline description cannot be empty in storage.");
-            }
-            if (byStr.isEmpty()) {
-                throw new UserInputException("Deadline date cannot be empty in storage.");
-            }
-            try {
-                LocalDate by = LocalDate.parse(byStr);
-                task = new Deadline(deadlineDesc, by);
-            } catch (DateTimeParseException e) {
-                throw new UserInputException("Corrupted deadline date in storage: " + byStr);
-            }
-            break;
-        case "E":
-            String[] eventParts = line.split(" \\| ", 5);
-            if (eventParts.length < 5) {
-                throw new UserInputException("Corrupted event line in storage: " + line);
-            }
-            String eventDesc = eventParts[2].trim();
-            String fromStr = eventParts[3].trim();
-            String toStr = eventParts[4].trim();
-            if (eventDesc.isEmpty()) {
-                throw new UserInputException("Event description cannot be empty in storage.");
-            }
-            if (fromStr.isEmpty() || toStr.isEmpty()) {
-                throw new UserInputException("Event times cannot be empty in storage.");
-            }
-            try {
-                LocalDate from = LocalDate.parse(fromStr);
-                LocalDate to = LocalDate.parse(toStr);
-                task = new Event(eventDesc, from, to);
-            } catch (DateTimeParseException e) {
-                throw new UserInputException("Corrupt event date in storage from:" + fromStr + " to: " + toStr);
-            }
-            break;
-        default:
-            throw new UserInputException("Unknown task type in storage: " + type);
+            case "T":
+                String[] todoParts = line.split(" \\| ", 3);
+                String todoDesc = todoParts[2].trim();
+                if (todoDesc.isEmpty()) {
+                    throw new UserInputException("Todo description cannot be empty in storage.");
+                }
+                task = new ToDo(todoDesc);
+                break;
+            case "D":
+                String[] deadlineParts = line.split(" \\| ", 4);
+                if (deadlineParts.length < 4) {
+                    throw new UserInputException("Corrupted deadline line in storage: " + line);
+                }
+                String deadlineDesc = deadlineParts[2].trim();
+                String byStr = deadlineParts[3].trim();
+                if (deadlineDesc.isEmpty()) {
+                    throw new UserInputException("Deadline description cannot be empty in storage.");
+                }
+                if (byStr.isEmpty()) {
+                    throw new UserInputException("Deadline date cannot be empty in storage.");
+                }
+                try {
+                    LocalDate by = LocalDate.parse(byStr);
+                    task = new Deadline(deadlineDesc, by);
+                } catch (DateTimeParseException e) {
+                    throw new UserInputException("Corrupted deadline date in storage: " + byStr);
+                }
+                break;
+            case "E":
+                String[] eventParts = line.split(" \\| ", 5);
+                if (eventParts.length < 5) {
+                    throw new UserInputException("Corrupted event line in storage: " + line);
+                }
+                String eventDesc = eventParts[2].trim();
+                String fromStr = eventParts[3].trim();
+                String toStr = eventParts[4].trim();
+                if (eventDesc.isEmpty()) {
+                    throw new UserInputException("Event description cannot be empty in storage.");
+                }
+                if (fromStr.isEmpty() || toStr.isEmpty()) {
+                    throw new UserInputException("Event times cannot be empty in storage.");
+                }
+                try {
+                    LocalDate from = LocalDate.parse(fromStr);
+                    LocalDate to = LocalDate.parse(toStr);
+                    task = new Event(eventDesc, from, to);
+                } catch (DateTimeParseException e) {
+                    throw new UserInputException("Corrupt event date in storage from:" + fromStr + " to: " + toStr);
+                }
+                break;
+            default:
+                throw new UserInputException("Unknown task type in storage: " + type);
         }
 
         if (isDone) {
