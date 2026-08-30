@@ -1,12 +1,21 @@
+package james;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
+import james.command.Command;
+import james.exception.UserInputException;
+import james.parser.Parser;
+import james.storage.Storage;
+import james.task.Task;
+import james.task.TaskList;
+import james.ui.Ui;
 
 /**
  * Main application class that orchestrates interactions between
  * Ui, Storage, Parser, and TaskList components.
  */
 public class James {
-    
+
     private final Storage storage;
     private final TaskList taskList;
     private final Ui ui;

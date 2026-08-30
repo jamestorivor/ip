@@ -3,8 +3,8 @@
 ## Test environment
 
 - Java version: 25
-- Build command: `javac -d out/production/ip src/main/java/*.java`
-- Launch command: `java -cp out/production/ip James`
+- Build command: `javac -d out/production/ip $(find src/main/java -name "*.java")`
+- Launch command: `java -cp out/production/ip james.James`
 - Comparison: expected output is compared exactly, including line breaks and spaces.
 - Isolation: each test case starts a new application session.
 

@@ -1,5 +1,13 @@
+package james.parser;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
+import james.command.Command;
+import james.exception.UserInputException;
+import james.task.Deadline;
+import james.task.Event;
+import james.task.Task;
+import james.task.ToDo;
 
 /**
  * Parses raw user input strings into commands, arguments, task objects, and dates.
@@ -14,7 +22,7 @@ public class Parser {
      * @throws UserInputException if the date argument is empty or formatted incorrectly
      */
     public static LocalDate parseDate(String arguments) throws UserInputException {
-        if (arguments == null || arguments.trim().isEmpty()){
+        if (arguments == null || arguments.trim().isEmpty()) {
             throw new UserInputException("Please provide a date in the format: yyyy-mm-dd");
         }
         try {
@@ -77,12 +85,12 @@ public class Parser {
      * @throws UserInputException if description or date are missing or malformed
      */
     public static Task parseDeadline(String arguments) throws UserInputException {
-        if (arguments == null || arguments.trim().isEmpty()){
+        if (arguments == null || arguments.trim().isEmpty()) {
             throw new UserInputException("The description of a deadline cannot be empty.\n"
                     + "Try: deadline <description> /by <end-date>");
         }
         String[] deadlineParts = arguments.split(" /by ", 2);
-        if (deadlineParts.length < 2 || deadlineParts[0].trim().isEmpty() || deadlineParts[1].trim().isEmpty()){
+        if (deadlineParts.length < 2 || deadlineParts[0].trim().isEmpty() || deadlineParts[1].trim().isEmpty()) {
             throw new UserInputException("A deadline needs a by date.\n" + "Try: deadline <description> /by <date>");
         }
         try {
@@ -101,7 +109,7 @@ public class Parser {
      * @throws UserInputException if description is empty
      */
     public static Task parseTodo(String arguments) throws UserInputException {
-        if (arguments == null || arguments.trim().isEmpty()){
+        if (arguments == null || arguments.trim().isEmpty()) {
             throw new UserInputException("The description of a todo cannot be empty.\n"
                     + "Try: todo <description>");
         }
@@ -116,18 +124,18 @@ public class Parser {
      * @throws UserInputException if description or dates are missing or malformed
      */
     public static Task parseEvent(String arguments) throws UserInputException {
-        if (arguments == null || arguments.trim().isEmpty()){
+        if (arguments == null || arguments.trim().isEmpty()) {
             throw new UserInputException("The description of a event cannot be empty.\n"
                     + "Try: event <description> /from <start> /to <end>");
         }
         String[] eventParts = arguments.split(" /from ", 2);
-        if (eventParts.length < 2 || eventParts[0].trim().isEmpty()){
+        if (eventParts.length < 2 || eventParts[0].trim().isEmpty()) {
             throw new UserInputException(
                     "An event needs a description followed by /from.\n"
                             + "Try: event <description> /from <start> /to <end>");
         }
         String[] timeParts = eventParts[1].split(" /to ", 2);
-        if (timeParts.length < 2 || timeParts[0].trim().isEmpty() || timeParts[1].trim().isEmpty()){
+        if (timeParts.length < 2 || timeParts[0].trim().isEmpty() || timeParts[1].trim().isEmpty()) {
             throw new UserInputException(
                     "An event needs both a start and end time.\n"
                             + "Try: event <description> /from <start> /to <end>");
