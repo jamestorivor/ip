@@ -34,6 +34,12 @@ After every code update, review `test/ui-test-plan.md` and update it when the ch
 
 Then invoke the project-specific `test-ui` skill to run the UI test plan. Follow its fail-fast behavior: stop at the first failed case, report its actual and expected outputs, and include the console input/output record in the result. Do not update expected output merely to make a test pass; change it only when the user confirms that the behavior is intended.
 
+## Unit testing and test coverage target
+
+Maintain a test coverage target of ~50% focusing on the highest-value methods (prioritizing complex, core, or critical business logic).
+
+After every code change, review and update the JUnit tests to comply with this 50% test coverage target. Ensure new or modified candidate methods have corresponding unit tests following Gradle and JUnit conventions (e.g., test methods named `featureUnderTest_testScenario_expectedBehavior()`), and run `./gradlew test` to verify that all unit tests pass.
+
 ## Git
 
 Use lightweight tags unless the user requests an annotated tag.
