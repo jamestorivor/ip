@@ -40,11 +40,21 @@ public class Event extends Task {
         return this.to;
     }
 
+    /**
+     * Returns the string representation of the event task formatted for file storage.
+     *
+     * @return formatted event string for storage
+     */
     @Override
     public String toFileString() {
         return "E | " + super.toFileString() + " | " + this.from + " | " + this.to;
     }
 
+    /**
+     * Returns the string representation of the event task for display.
+     *
+     * @return formatted display string of the event task
+     */
     @Override
     public String toString() {
         return "[E]" + super.toString() + " (from: %s to: %s)".formatted(

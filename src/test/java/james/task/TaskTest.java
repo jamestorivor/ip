@@ -21,6 +21,9 @@ public class TaskTest {
     // Constructor & Field Tests
     // ==========================================
 
+    /**
+     * Tests that a null description passed to the constructor defaults to an empty string.
+     */
     @Test
     public void constructor_nullDescription_setsEmptyDescription() {
         Task task = new Task(null);
@@ -28,6 +31,9 @@ public class TaskTest {
         assertFalse(task.isDone());
     }
 
+    /**
+     * Tests that leading and trailing whitespace in the description is trimmed.
+     */
     @Test
     public void constructor_withWhitespace_trimsDescription() {
         Task task = new Task("  wash dishes  ");
@@ -39,6 +45,9 @@ public class TaskTest {
     // Mark & Unmark Tests
     // ==========================================
 
+    /**
+     * Tests that markDone marks the task as completed and sets mark status icon to [X].
+     */
     @Test
     public void markDone_unmarkedTask_marksTaskAsDone() {
         Task task = new Task("wash dishes");
@@ -47,6 +56,9 @@ public class TaskTest {
         assertEquals("[X]", task.getMark());
     }
 
+    /**
+     * Tests that markNotDone unmarks a completed task and sets mark status icon to [ ].
+     */
     @Test
     public void markNotDone_markedTask_marksTaskAsNotDone() {
         Task task = new Task("wash dishes");
@@ -60,12 +72,18 @@ public class TaskTest {
     // Serialization (toFileString & toString) Tests
     // ==========================================
 
+    /**
+     * Tests that toFileString returns the standard format for an unmarked task.
+     */
     @Test
     public void toFileString_unmarkedTask_returnsUnmarkedFormat() {
         Task task = new Task("wash dishes");
         assertEquals("0 | wash dishes", task.toFileString());
     }
 
+    /**
+     * Tests that toFileString returns the standard format with status 1 for a marked task.
+     */
     @Test
     public void toFileString_markedTask_returnsMarkedFormat() {
         Task task = new Task("wash dishes");
@@ -73,12 +91,18 @@ public class TaskTest {
         assertEquals("1 | wash dishes", task.toFileString());
     }
 
+    /**
+     * Tests that toString returns the display string with [ ] for an unmarked task.
+     */
     @Test
     public void toString_unmarkedTask_returnsFormattedString() {
         Task task = new Task("wash dishes");
         assertEquals("[ ] wash dishes", task.toString());
     }
 
+    /**
+     * Tests that toString returns the display string with [X] for a marked task.
+     */
     @Test
     public void toString_markedTask_returnsFormattedString() {
         Task task = new Task("wash dishes");
@@ -90,6 +114,9 @@ public class TaskTest {
     // Deserialization (fromFileString) Tests
     // ==========================================
 
+    /**
+     * Tests that fromFileString parses a valid unmarked ToDo serialized line.
+     */
     @Test
     public void fromFileString_validTodoUnmarked_returnsUnmarkedToDo() throws UserInputException {
         Task task = Task.fromFileString("T | 0 | read book");
@@ -98,6 +125,9 @@ public class TaskTest {
         assertFalse(task.isDone());
     }
 
+    /**
+     * Tests that fromFileString parses a valid marked ToDo serialized line.
+     */
     @Test
     public void fromFileString_validTodoMarked_returnsMarkedToDo() throws UserInputException {
         Task task = Task.fromFileString("T | 1 | read book");
@@ -106,6 +136,9 @@ public class TaskTest {
         assertTrue(task.isDone());
     }
 
+    /**
+     * Tests that fromFileString parses a valid unmarked Deadline serialized line.
+     */
     @Test
     public void fromFileString_validDeadlineUnmarked_returnsUnmarkedDeadline() throws UserInputException {
         Task task = Task.fromFileString("D | 0 | return book | 2026-06-06");
@@ -116,6 +149,9 @@ public class TaskTest {
         assertFalse(deadline.isDone());
     }
 
+    /**
+     * Tests that fromFileString parses a valid marked Deadline serialized line.
+     */
     @Test
     public void fromFileString_validDeadlineMarked_returnsMarkedDeadline() throws UserInputException {
         Task task = Task.fromFileString("D | 1 | return book | 2026-06-06");
@@ -126,6 +162,9 @@ public class TaskTest {
         assertTrue(deadline.isDone());
     }
 
+    /**
+     * Tests that fromFileString parses a valid unmarked Event serialized line.
+     */
     @Test
     public void fromFileString_validEventUnmarked_returnsUnmarkedEvent() throws UserInputException {
         Task task = Task.fromFileString("E | 0 | project meeting | 2026-08-06 | 2026-08-08");
@@ -137,6 +176,9 @@ public class TaskTest {
         assertFalse(event.isDone());
     }
 
+    /**
+     * Tests that fromFileString parses a valid marked Event serialized line.
+     */
     @Test
     public void fromFileString_validEventMarked_returnsMarkedEvent() throws UserInputException {
         Task task = Task.fromFileString("E | 1 | project meeting | 2026-08-06 | 2026-08-08");
@@ -148,51 +190,81 @@ public class TaskTest {
         assertTrue(event.isDone());
     }
 
+    /**
+     * Tests that passing a null serialized string to fromFileString throws UserInputException.
+     */
     @Test
     public void fromFileString_nullString_throwsUserInputException() {
         assertThrows(UserInputException.class, () -> Task.fromFileString(null));
     }
 
+    /**
+     * Tests that passing an empty serialized string to fromFileString throws UserInputException.
+     */
     @Test
     public void fromFileString_emptyString_throwsUserInputException() {
         assertThrows(UserInputException.class, () -> Task.fromFileString("   "));
     }
 
+    /**
+     * Tests that serialized strings with fewer than the minimum number of delimiter sections throw UserInputException.
+     */
     @Test
     public void fromFileString_insufficientParts_throwsUserInputException() {
         assertThrows(UserInputException.class, () -> Task.fromFileString("T | 0"));
     }
 
+    /**
+     * Tests that an invalid done status (other than 0 or 1) throws UserInputException.
+     */
     @Test
     public void fromFileString_invalidDoneStatus_throwsUserInputException() {
         assertThrows(UserInputException.class, () -> Task.fromFileString("T | 2 | read book"));
     }
 
+    /**
+     * Tests that an empty description field in a serialized todo throws UserInputException.
+     */
     @Test
     public void fromFileString_emptyTodoDescription_throwsUserInputException() {
         assertThrows(UserInputException.class, () -> Task.fromFileString("T | 0 |   "));
     }
 
+    /**
+     * Tests that a serialized deadline missing its due date field throws UserInputException.
+     */
     @Test
     public void fromFileString_corruptedDeadlineMissingFields_throwsUserInputException() {
         assertThrows(UserInputException.class, () -> Task.fromFileString("D | 0 | return book"));
     }
 
+    /**
+     * Tests that a serialized deadline with an invalid date string throws UserInputException.
+     */
     @Test
     public void fromFileString_corruptedDeadlineInvalidDate_throwsUserInputException() {
         assertThrows(UserInputException.class, () -> Task.fromFileString("D | 0 | return book | invalid-date"));
     }
 
+    /**
+     * Tests that a serialized event missing date fields throws UserInputException.
+     */
     @Test
     public void fromFileString_corruptedEventMissingFields_throwsUserInputException() {
         assertThrows(UserInputException.class, () -> Task.fromFileString("E | 0 | meeting | 2026-08-06"));
     }
 
+    /**
+     * Tests that a serialized event with invalid date format throws UserInputException.
+     */
     @Test
     public void fromFileString_corruptedEventInvalidDate_throwsUserInputException() {
         assertThrows(UserInputException.class, () -> Task.fromFileString("E | 0 | meeting | 2026-08-06 | invalid-date"));
     }
 
+    /**
+     * Tests that an unrecognized task type indicator throws UserInputException.
+     */
     @Test
     public void fromFileString_unknownTaskType_throwsUserInputException() {
         assertThrows(UserInputException.class, () -> Task.fromFileString("X | 0 | unknown"));

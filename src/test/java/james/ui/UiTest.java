@@ -29,12 +29,18 @@ public class UiTest {
     private final InputStream standardIn = System.in;
     private ByteArrayOutputStream outputStreamCaptor;
 
+    /**
+     * Sets up output stream redirection to capture console output before each test.
+     */
     @BeforeEach
     public void setUp() {
         outputStreamCaptor = new ByteArrayOutputStream();
         System.setOut(new PrintStream(outputStreamCaptor));
     }
 
+    /**
+     * Restores the standard System.out and System.in streams after each test.
+     */
     @AfterEach
     public void tearDown() {
         System.setOut(standardOut);
@@ -45,6 +51,9 @@ public class UiTest {
     // Formatting & Helper Tests
     // ==========================================
 
+    /**
+     * Tests that encaseMessage encloses the given message string between horizontal dividing lines.
+     */
     @Test
     public void encaseMessage_validString_returnsMessageEnclosedInDividers() {
         Ui ui = new Ui();
@@ -59,6 +68,9 @@ public class UiTest {
     // Console Output Tests
     // ==========================================
 
+    /**
+     * Tests that greet prints the welcome banner and introductory message.
+     */
     @Test
     public void greet_invoked_printsGreetingBanner() {
         Ui ui = new Ui();
@@ -68,6 +80,9 @@ public class UiTest {
         assertTrue(output.contains("Hello! I'm James."));
     }
 
+    /**
+     * Tests that sayBye prints the exit message.
+     */
     @Test
     public void sayBye_invoked_printsByeMessage() {
         Ui ui = new Ui();
@@ -76,6 +91,9 @@ public class UiTest {
         assertTrue(output.contains("Bye. Rest your eyes!"));
     }
 
+    /**
+     * Tests that createAddTaskMessage prints the confirmation of task addition and total count.
+     */
     @Test
     public void createAddTaskMessage_validTask_printsAddedTaskAndCount() {
         Ui ui = new Ui();
@@ -88,6 +106,9 @@ public class UiTest {
         assertTrue(output.contains("Now you have 1 tasks in the list."));
     }
 
+    /**
+     * Tests that showError prints the formatted error banner with the given error message.
+     */
     @Test
     public void showError_validErrorMessage_printsErrorBanner() {
         Ui ui = new Ui();
@@ -98,6 +119,9 @@ public class UiTest {
         assertTrue(output.contains("Invalid input"));
     }
 
+    /**
+     * Tests that markMessage prints the marked-as-done confirmation message.
+     */
     @Test
     public void markMessage_validTask_printsMarkConfirmation() {
         Ui ui = new Ui();
@@ -110,6 +134,9 @@ public class UiTest {
         assertTrue(output.contains("[T][X] buy bread"));
     }
 
+    /**
+     * Tests that unmarkMessage prints the marked-as-not-done confirmation message.
+     */
     @Test
     public void unmarkMessage_validTask_printsUnmarkConfirmation() {
         Ui ui = new Ui();
@@ -121,6 +148,9 @@ public class UiTest {
         assertTrue(output.contains("[T][ ] buy bread"));
     }
 
+    /**
+     * Tests that deleteMessage prints the task deletion confirmation and updated count.
+     */
     @Test
     public void deleteMessage_validTask_printsRemovalConfirmation() {
         Ui ui = new Ui();
@@ -133,6 +163,9 @@ public class UiTest {
         assertTrue(output.contains("Now you have 0 tasks in the list."));
     }
 
+    /**
+     * Tests that showTaskList prints all tasks currently in the task list.
+     */
     @Test
     public void showTaskList_validTaskList_printsTasks() {
         Ui ui = new Ui();
@@ -145,6 +178,9 @@ public class UiTest {
         assertTrue(output.contains("1.[T][ ] task 1"));
     }
 
+    /**
+     * Tests that showTasksOnDate prints tasks matching the specified date.
+     */
     @Test
     public void showTasksOnDate_matchingTasks_printsTasksMatchingDate() {
         Ui ui = new Ui();
@@ -163,6 +199,9 @@ public class UiTest {
     // Input Reading Tests
     // ==========================================
 
+    /**
+     * Tests that readCommand correctly reads input from the configured input stream.
+     */
     @Test
     public void readCommand_withInput_returnsEnteredString() {
         String inputData = "todo buy apples\n";
@@ -174,6 +213,9 @@ public class UiTest {
         ui.close();
     }
 
+    /**
+     * Tests that hasNextCommand returns false when the input stream is empty.
+     */
     @Test
     public void hasNextCommand_emptyInput_returnsFalse() {
         System.setIn(new ByteArrayInputStream(new byte[0]));

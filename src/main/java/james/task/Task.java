@@ -161,6 +161,11 @@ public class Task {
         return task;
     }
 
+    /**
+     * Returns the string representation of the task including its status icon and description.
+     *
+     * @return formatted display string of the task
+     */
     @Override
     public String toString() {
         return this.getMark() + " " + this.description;

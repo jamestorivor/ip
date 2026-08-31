@@ -28,6 +28,9 @@ public class StorageTest {
     @TempDir
     Path tempDir;
 
+    /**
+     * Tests that load returns an empty ArrayList when the storage file does not exist.
+     */
     @Test
     public void load_nonExistentFile_returnsEmptyList() {
         Path nonExistentPath = tempDir.resolve("non_existent_data.txt");
@@ -37,6 +40,9 @@ public class StorageTest {
         assertTrue(tasks.isEmpty());
     }
 
+    /**
+     * Tests that load correctly parses tasks of each type from an existing valid storage file.
+     */
     @Test
     public void load_validFileWithTasks_returnsParsedTaskList() throws IOException {
         Path filePath = tempDir.resolve("tasks.txt");
@@ -67,6 +73,9 @@ public class StorageTest {
         assertEquals(LocalDate.parse("2026-08-08"), event.getTo());
     }
 
+    /**
+     * Tests that corrupted or malformed lines are skipped gracefully while valid lines are loaded.
+     */
     @Test
     public void load_fileWithCorruptedLines_skipsCorruptedLines() throws IOException {
         Path filePath = tempDir.resolve("corrupted_tasks.txt");
@@ -86,6 +95,9 @@ public class StorageTest {
         assertEquals("another valid todo", tasks.get(1).getDescription());
     }
 
+    /**
+     * Tests that save serializes all tasks in the task list into the storage file in the expected format.
+     */
     @Test
     public void save_taskListWithTasks_writesAllTasksToFile() throws IOException {
         Path filePath = tempDir.resolve("saved_tasks.txt");
@@ -107,6 +119,9 @@ public class StorageTest {
         assertEquals("D | 1 | submit essay | 2026-12-15", savedLines.get(1));
     }
 
+    /**
+     * Tests that save creates missing parent directories when saving to a nested path.
+     */
     @Test
     public void save_nestedNonExistentDirectory_createsDirectoriesAndSaves() throws IOException {
         Path nestedPath = tempDir.resolve("nested").resolve("subfolder").resolve("tasks.txt");

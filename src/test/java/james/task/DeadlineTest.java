@@ -13,6 +13,9 @@ import org.junit.jupiter.api.Test;
  */
 public class DeadlineTest {
 
+    /**
+     * Tests that the constructor correctly initializes the description, due date, and completion status.
+     */
     @Test
     public void constructor_validParameters_setsDescriptionAndByDate() {
         LocalDate date = LocalDate.of(2026, 6, 6);
@@ -23,6 +26,9 @@ public class DeadlineTest {
         assertFalse(deadline.isDone());
     }
 
+    /**
+     * Tests that toFileString returns the correct serialization string for an unmarked deadline.
+     */
     @Test
     public void toFileString_unmarkedDeadline_returnsFormattedString() {
         LocalDate date = LocalDate.of(2026, 6, 6);
@@ -31,6 +37,9 @@ public class DeadlineTest {
         assertEquals("D | 0 | submit report | 2026-06-06", deadline.toFileString());
     }
 
+    /**
+     * Tests that toFileString returns the correct serialization string for a marked deadline.
+     */
     @Test
     public void toFileString_markedDeadline_returnsFormattedString() {
         LocalDate date = LocalDate.of(2026, 6, 6);
@@ -41,6 +50,9 @@ public class DeadlineTest {
         assertEquals("D | 1 | submit report | 2026-06-06", deadline.toFileString());
     }
 
+    /**
+     * Tests that toString returns the formatted display string for an unmarked deadline.
+     */
     @Test
     public void toString_unmarkedDeadline_returnsDisplayString() {
         LocalDate date = LocalDate.of(2026, 6, 6);
@@ -49,6 +61,9 @@ public class DeadlineTest {
         assertEquals("[D][ ] submit report (by: Jun 06 2026)", deadline.toString());
     }
 
+    /**
+     * Tests that toString returns the formatted display string for a marked deadline.
+     */
     @Test
     public void toString_markedDeadline_returnsDisplayString() {
         LocalDate date = LocalDate.of(2026, 6, 6);
