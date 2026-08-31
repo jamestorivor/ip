@@ -120,6 +120,11 @@ public class TaskList {
         return tasksWithDate;
     }
 
+    /**
+     * Returns a numbered string representation of all tasks in the list.
+     *
+     * @return formatted multiline string listing all tasks
+     */
     @Override
     public String toString() {
         StringBuilder message = new StringBuilder();

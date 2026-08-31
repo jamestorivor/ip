@@ -11,6 +11,9 @@ import org.junit.jupiter.api.Test;
  */
 public class CommandTest {
 
+    /**
+     * Tests that valueOf maps valid uppercase command names to their corresponding Command enum constants.
+     */
     @Test
     public void valueOf_validCommandNames_returnsCorrectEnumConstant() {
         assertEquals(Command.DELETE, Command.valueOf("DELETE"));
@@ -24,11 +27,17 @@ public class CommandTest {
         assertEquals(Command.LIST_BY_DATE, Command.valueOf("LIST_BY_DATE"));
     }
 
+    /**
+     * Tests that valueOf throws IllegalArgumentException when an invalid command name is given.
+     */
     @Test
     public void valueOf_invalidCommandName_throwsIllegalArgumentException() {
         assertThrows(IllegalArgumentException.class, () -> Command.valueOf("INVALID_COMMAND"));
     }
 
+    /**
+     * Tests that values returns an array containing all defined Command enum constants.
+     */
     @Test
     public void values_allDefinedCommands_containsNineCommands() {
         Command[] commands = Command.values();

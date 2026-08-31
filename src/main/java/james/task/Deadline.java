@@ -28,11 +28,21 @@ public class Deadline extends Task {
         return this.by;
     }
 
+    /**
+     * Returns the string representation of the deadline task formatted for file storage.
+     *
+     * @return formatted deadline string for storage
+     */
     @Override
     public String toFileString() {
         return "D | " + super.toFileString() + " | " + this.by;
     }
 
+    /**
+     * Returns the string representation of the deadline task for display.
+     *
+     * @return formatted display string of the deadline task
+     */
     @Override
     public String toString() {
         return "[D]" + super.toString() + " (by: %s)".formatted(this.by.format(DISPLAY_FORMAT));

@@ -9,6 +9,9 @@ import org.junit.jupiter.api.Test;
  */
 public class UserInputExceptionTest {
 
+    /**
+     * Tests that the constructor correctly stores and preserves the error message.
+     */
     @Test
     public void constructor_validMessage_preservesMessage() {
         String errorMessage = "Custom error message";

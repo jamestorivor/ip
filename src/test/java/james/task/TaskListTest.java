@@ -18,6 +18,9 @@ public class TaskListTest {
 
     private TaskList taskList;
 
+    /**
+     * Sets up a fresh TaskList instance before each test.
+     */
     @BeforeEach
     public void setUp() {
         taskList = new TaskList();
@@ -27,6 +30,9 @@ public class TaskListTest {
     // Constructor & Initialization Tests
     // ==========================================
 
+    /**
+     * Tests that the default constructor creates an empty task list with size 0.
+     */
     @Test
     public void constructor_default_createsEmptyList() {
         TaskList emptyList = new TaskList();
@@ -34,6 +40,9 @@ public class TaskListTest {
         assertEquals(new ArrayList<>(), emptyList.getTasks());
     }
 
+    /**
+     * Tests that passing null to the constructor initializes an empty task list.
+     */
     @Test
     public void constructor_nullList_createsEmptyList() {
         TaskList nullList = new TaskList(null);
@@ -41,6 +50,9 @@ public class TaskListTest {
         assertEquals(new ArrayList<>(), nullList.getTasks());
     }
 
+    /**
+     * Tests that passing an existing list of tasks to the constructor initializes the TaskList with those tasks.
+     */
     @Test
     public void constructor_existingList_initializesWithTasks() {
         ArrayList<Task> initialList = new ArrayList<>();
@@ -59,11 +71,17 @@ public class TaskListTest {
     // Add & Get & Size Tests
     // ==========================================
 
+    /**
+     * Tests that size returns 0 for an empty task list.
+     */
     @Test
     public void size_emptyList_returnsZero() {
         assertEquals(0, taskList.size());
     }
 
+    /**
+     * Tests that addTask correctly adds a task and increments the list size.
+     */
     @Test
     public void addTask_validTask_taskAddedAndSizeIncremented() {
         ToDo task = new ToDo("Buy groceries");
@@ -73,6 +91,9 @@ public class TaskListTest {
         assertEquals(task, taskList.getTask(0));
     }
 
+    /**
+     * Tests that getTask returns the task at the specified index.
+     */
     @Test
     public void getTask_validIndex_returnsCorrectTask() {
         ToDo task1 = new ToDo("Task 1");
@@ -84,17 +105,26 @@ public class TaskListTest {
         assertEquals(task2, taskList.getTask(1));
     }
 
+    /**
+     * Tests that getTask with a negative index throws IndexOutOfBoundsException.
+     */
     @Test
     public void getTask_negativeIndex_throwsIndexOutOfBoundsException() {
         assertThrows(IndexOutOfBoundsException.class, () -> taskList.getTask(-1));
     }
 
+    /**
+     * Tests that getTask with an out-of-bounds index throws IndexOutOfBoundsException.
+     */
     @Test
     public void getTask_outOfBoundsIndex_throwsIndexOutOfBoundsException() {
         taskList.addTask(new ToDo("Task 1"));
         assertThrows(IndexOutOfBoundsException.class, () -> taskList.getTask(1));
     }
 
+    /**
+     * Tests that getTasks returns the underlying list of tasks.
+     */
     @Test
     public void getTasks_returnsUnderlyingList() {
         ToDo task = new ToDo("Test task");
@@ -109,6 +139,9 @@ public class TaskListTest {
     // Delete Task Tests
     // ==========================================
 
+    /**
+     * Tests that deleteTask by index removes and returns the task at that index.
+     */
     @Test
     public void deleteTask_validIndex_removesAndReturnsTask() {
         ToDo task1 = new ToDo("Task 1");
@@ -122,16 +155,25 @@ public class TaskListTest {
         assertEquals(task2, taskList.getTask(0));
     }
 
+    /**
+     * Tests that deleteTask by index throws IndexOutOfBoundsException when index is out of bounds.
+     */
     @Test
     public void deleteTask_outOfBoundsIndex_throwsIndexOutOfBoundsException() {
         assertThrows(IndexOutOfBoundsException.class, () -> taskList.deleteTask(1));
     }
 
+    /**
+     * Tests that deleteTask by index throws IndexOutOfBoundsException when index is negative.
+     */
     @Test
     public void deleteTask_negativeIndex_throwsIndexOutOfBoundsException() {
         assertThrows(IndexOutOfBoundsException.class, () -> taskList.deleteTask(-1));
     }
 
+    /**
+     * Tests that deleteTask by Task object removes the task from the list.
+     */
     @Test
     public void deleteTask_byTaskObject_removesTaskFromList() {
         ToDo task1 = new ToDo("Task 1");
@@ -144,6 +186,9 @@ public class TaskListTest {
         assertEquals(task2, taskList.getTask(0));
     }
 
+    /**
+     * Tests that deleteTask with a task not present in the list leaves the list unchanged.
+     */
     @Test
     public void deleteTask_nonExistentTaskObject_listRemainsUnchanged() {
         ToDo task1 = new ToDo("Task 1");
@@ -159,6 +204,9 @@ public class TaskListTest {
     // taskDateMatch (Static) Tests
     // ==========================================
 
+    /**
+     * Tests that taskDateMatch returns true when a Deadline occurs on the specified date.
+     */
     @Test
     public void taskDateMatch_deadlineMatchingDate_returnsTrue() {
         LocalDate deadlineDate = LocalDate.parse("2026-05-15");
@@ -166,6 +214,9 @@ public class TaskListTest {
         assertTrue(TaskList.taskDateMatch(deadline, deadlineDate));
     }
 
+    /**
+     * Tests that taskDateMatch returns false when a Deadline falls on a different date.
+     */
     @Test
     public void taskDateMatch_deadlineDifferentDate_returnsFalse() {
         LocalDate deadlineDate = LocalDate.parse("2026-05-15");
@@ -174,6 +225,9 @@ public class TaskListTest {
         assertFalse(TaskList.taskDateMatch(deadline, differentDate));
     }
 
+    /**
+     * Tests that taskDateMatch returns true when queried on the start date of an Event.
+     */
     @Test
     public void taskDateMatch_eventOnStartDate_returnsTrue() {
         LocalDate startDate = LocalDate.parse("2026-06-01");
@@ -182,6 +236,9 @@ public class TaskListTest {
         assertTrue(TaskList.taskDateMatch(event, startDate));
     }
 
+    /**
+     * Tests that taskDateMatch returns true when queried on the end date of an Event.
+     */
     @Test
     public void taskDateMatch_eventOnEndDate_returnsTrue() {
         LocalDate startDate = LocalDate.parse("2026-06-01");
@@ -190,6 +247,9 @@ public class TaskListTest {
         assertTrue(TaskList.taskDateMatch(event, endDate));
     }
 
+    /**
+     * Tests that taskDateMatch returns true when queried on a date between the start and end dates of an Event.
+     */
     @Test
     public void taskDateMatch_eventWithinDateRange_returnsTrue() {
         LocalDate startDate = LocalDate.parse("2026-06-01");
@@ -199,6 +259,9 @@ public class TaskListTest {
         assertTrue(TaskList.taskDateMatch(event, intermediateDate));
     }
 
+    /**
+     * Tests that taskDateMatch returns false when queried on a date before the Event starts.
+     */
     @Test
     public void taskDateMatch_eventBeforeStartDate_returnsFalse() {
         LocalDate startDate = LocalDate.parse("2026-06-01");
@@ -208,6 +271,9 @@ public class TaskListTest {
         assertFalse(TaskList.taskDateMatch(event, dateBefore));
     }
 
+    /**
+     * Tests that taskDateMatch returns false when queried on a date after the Event ends.
+     */
     @Test
     public void taskDateMatch_eventAfterEndDate_returnsFalse() {
         LocalDate startDate = LocalDate.parse("2026-06-01");
@@ -217,6 +283,9 @@ public class TaskListTest {
         assertFalse(TaskList.taskDateMatch(event, dateAfter));
     }
 
+    /**
+     * Tests that taskDateMatch returns false for ToDo tasks since they do not have dates.
+     */
     @Test
     public void taskDateMatch_toDoTask_returnsFalse() {
         ToDo todo = new ToDo("Read book");
@@ -224,6 +293,9 @@ public class TaskListTest {
         assertFalse(TaskList.taskDateMatch(todo, date));
     }
 
+    /**
+     * Tests that taskDateMatch returns false for generic Task instances without dates.
+     */
     @Test
     public void taskDateMatch_genericTask_returnsFalse() {
         Task genericTask = new Task("Generic task");
@@ -235,6 +307,9 @@ public class TaskListTest {
     // getTasksOnDate Tests
     // ==========================================
 
+    /**
+     * Tests that getTasksOnDate returns an empty list when the task list contains only ToDo tasks.
+     */
     @Test
     public void getTasksOnDate_toDoTask_returnsEmptyList() {
         taskList.addTask(new ToDo("Read book"));
@@ -244,6 +319,9 @@ public class TaskListTest {
         assertEquals(new ArrayList<>(), results);
     }
 
+    /**
+     * Tests that getTasksOnDate returns the Event when queried date falls within its date range.
+     */
     @Test
     public void getTasksOnDate_dateWithinEventRange_returnsEvent() {
         LocalDate targetDate = LocalDate.parse("2026-11-12");
@@ -256,6 +334,9 @@ public class TaskListTest {
         assertEquals(matchingEvent, results.get(0));
     }
 
+    /**
+     * Tests that getTasksOnDate returns an empty list when the queried date is outside an Event's range.
+     */
     @Test
     public void getTasksOnDate_dateOutsideEventRange_returnsEmptyList() {
         LocalDate targetDate = LocalDate.parse("2026-11-12");
@@ -267,6 +348,9 @@ public class TaskListTest {
         assertEquals(0, results.size());
     }
 
+    /**
+     * Tests that getTasksOnDate filters mixed task types and returns matching deadlines and events in insertion order.
+     */
     @Test
     public void getTasksOnDate_mixedTasksWithMatches_returnsMatchingTasksInOrder() {
         LocalDate targetDate = LocalDate.parse("2026-10-15");
@@ -297,11 +381,17 @@ public class TaskListTest {
     // toString Tests
     // ==========================================
 
+    /**
+     * Tests that toString returns an empty string for an empty TaskList.
+     */
     @Test
     public void toString_emptyList_returnsEmptyString() {
         assertEquals("", taskList.toString());
     }
 
+    /**
+     * Tests that toString returns a 1-indexed formatted numbered list of tasks.
+     */
     @Test
     public void toString_multipleTasks_returnsNumberedString() {
         taskList.addTask(new ToDo("read book"));
