@@ -377,6 +377,33 @@ public class TaskListTest {
         assertEquals(matchingEvent, results.get(1));
     }
 
+    /**
+     * Tests that findTasks returns case-insensitive partial matches in insertion order.
+     */
+    @Test
+    public void findTasks_caseInsensitivePartialMatch_returnsMatchingTasksInOrder() {
+        ToDo readBook = new ToDo("read book");
+        Deadline returnBook = new Deadline("return book", LocalDate.parse("2026-06-06"));
+        ToDo unrelatedTask = new ToDo("buy groceries");
+        taskList.addTask(readBook);
+        taskList.addTask(returnBook);
+        taskList.addTask(unrelatedTask);
+
+        ArrayList<Task> results = taskList.findTasks("BOOK");
+
+        assertEquals(new ArrayList<>(java.util.List.of(readBook, returnBook)), results);
+    }
+
+    /**
+     * Tests that findTasks returns an empty list when no description matches.
+     */
+    @Test
+    public void findTasks_noMatch_returnsEmptyList() {
+        taskList.addTask(new ToDo("buy groceries"));
+
+        assertTrue(taskList.findTasks("book").isEmpty());
+    }
+
     // ==========================================
     // toString Tests
     // ==========================================

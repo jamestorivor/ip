@@ -32,6 +32,53 @@ Bye. Rest your eyes!
 ____________________________________________________________
 ```
 
+## TC-13: Find tasks by keyword
+
+**Aim:** Verify that `find` returns case-insensitive partial matches across task types,
+preserves insertion order, and reports no-match searches without changing the task list.
+
+**Inputs:**
+
+```text
+todo read book
+deadline return book /by 2019-06-06
+find BOOK
+find magazine
+bye
+```
+
+**Expected output:**
+
+```text
+____________________________________________________________
+JAMES THE CHATTY CHATBOT
+Hello! I'm James.
+I can do anything for you!
+____________________________________________________________
+
+____________________________________________________________
+Got it. I've added this task:
+[T][ ] read book
+Now you have 1 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Got it. I've added this task:
+[D][ ] return book (by: Jun 06 2019)
+Now you have 2 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Here are the matching tasks in your list:
+1.[T][ ] read book
+2.[D][ ] return book (by: Jun 06 2019)
+____________________________________________________________
+____________________________________________________________
+Here are the matching tasks in your list:
+____________________________________________________________
+____________________________________________________________
+Bye. Rest your eyes!
+____________________________________________________________
+```
+
 ## TC-02: List an empty task list
 
 **Aim:** Verify that listing tasks before any task is added displays the empty-list heading without creating a task.

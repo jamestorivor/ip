@@ -151,4 +151,18 @@ public class Ui {
         message.append("\n");
         System.out.println(encaseMessage(message.toString()));
     }
+
+    /**
+     * Displays tasks matching a search keyword.
+     *
+     * @param matchingTasks Tasks that matched the search keyword.
+     */
+    public void showMatchingTasks(ArrayList<Task> matchingTasks) {
+        StringBuilder message = new StringBuilder("Here are the matching tasks in your list:");
+        for (int i = 0; i < matchingTasks.size(); i++) {
+            message.append("\n%d.%s".formatted(i + 1, matchingTasks.get(i)));
+        }
+        message.append("\n");
+        System.out.println(encaseMessage(message.toString()));
+    }
 }

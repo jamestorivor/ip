@@ -12,5 +12,6 @@ public enum Command {
     UNMARK,
     LIST,
     BYE,
-    LIST_BY_DATE
+    LIST_BY_DATE,
+    FIND
 }

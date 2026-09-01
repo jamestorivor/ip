@@ -94,6 +94,23 @@ public class ParserTest {
         assertEquals(Command.LIST, Parser.parseCommandType("list"));
         assertEquals(Command.BYE, Parser.parseCommandType("bye"));
         assertEquals(Command.LIST_BY_DATE, Parser.parseCommandType("list_by_date"));
+        assertEquals(Command.FIND, Parser.parseCommandType("find"));
+    }
+
+    /**
+     * Tests that a valid find keyword is trimmed before use.
+     */
+    @Test
+    public void parseFindKeyword_validKeyword_returnsTrimmedKeyword() throws UserInputException {
+        assertEquals("book", Parser.parseFindKeyword("  book  "));
+    }
+
+    /**
+     * Tests that a missing find keyword is rejected.
+     */
+    @Test
+    public void parseFindKeyword_missingKeyword_throwsUserInputException() {
+        assertThrows(UserInputException.class, () -> Parser.parseFindKeyword(" "));
     }
 
     /**

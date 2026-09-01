@@ -54,6 +54,11 @@ public class James {
                     ArrayList<Task> taskListByDate = taskList.getTasksOnDate(date);
                     ui.showTasksOnDate(date, taskListByDate);
                     break;
+                case FIND:
+                    String keyword = Parser.parseFindKeyword(arguments);
+                    ArrayList<Task> matchingTasks = taskList.findTasks(keyword);
+                    ui.showMatchingTasks(matchingTasks);
+                    break;
                 case DELETE:
                     int delIdx = Parser.parseTaskNumber(arguments, "delete", taskList.size());
                     Task delTask = taskList.deleteTask(delIdx);
