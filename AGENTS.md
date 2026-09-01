@@ -46,6 +46,9 @@ After every code change, review and update the JUnit tests to comply with this 5
 
 ## Git
 
+Follow the project-specific `seedu-git-standard` skill for all Git commits, branch naming, and repository workflows in this repository.
+All future commit messages must strictly adhere to the SE-EDU Git conventions:
+- Subject line: imperative mood, capitalized, no trailing period, $\le 50$ chars (hard limit: 72 chars).
+- Body: separated by a blank line, wrapped at 72 chars, explaining WHAT and WHY (not HOW) using the structured flow ({current situation}, {why it needs to change}, {what is being done}, {why done that way}).
 Use lightweight tags unless the user requests an annotated tag.
-When proposing or creating a commit message, include enough detail to explain the rationale for the change.
 Do not commit or push unless explicitly asked.
