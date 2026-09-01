@@ -33,6 +33,21 @@ public class Parser {
     }
 
     /**
+     * Parses and validates a keyword for the find command.
+     *
+     * @param arguments User-supplied search keyword.
+     * @return Trimmed search keyword.
+     * @throws UserInputException If the search keyword is empty.
+     */
+    public static String parseFindKeyword(String arguments) throws UserInputException {
+        if (arguments == null || arguments.trim().isEmpty()) {
+            throw new UserInputException("Please provide a keyword to search for.\n"
+                    + "Try: find <keyword>");
+        }
+        return arguments.trim();
+    }
+
+    /**
      * Parses a command keyword string into its corresponding Command enum.
      *
      * @param commandString Command word entered by user.

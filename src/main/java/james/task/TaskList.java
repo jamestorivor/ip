@@ -121,6 +121,24 @@ public class TaskList {
     }
 
     /**
+     * Returns tasks whose descriptions contain the specified keyword.
+     * Matching ignores letter case and preserves insertion order.
+     *
+     * @param keyword Search keyword.
+     * @return An ArrayList containing matching tasks.
+     */
+    public ArrayList<Task> findTasks(String keyword) {
+        ArrayList<Task> matchingTasks = new ArrayList<>();
+        String normalizedKeyword = keyword.toLowerCase();
+        for (Task task : tasks) {
+            if (task.getDescription().toLowerCase().contains(normalizedKeyword)) {
+                matchingTasks.add(task);
+            }
+        }
+        return matchingTasks;
+    }
+
+    /**
      * Returns a numbered string representation of all tasks in the list.
      *
      * @return Formatted multiline string listing all tasks.

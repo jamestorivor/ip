@@ -224,4 +224,22 @@ public class UiTest {
         assertFalse(ui.hasNextCommand());
         ui.close();
     }
+
+    /**
+     * Tests that showMatchingTasks prints the required heading and numbered results.
+     */
+    @Test
+    public void showMatchingTasks_matchingTasks_printsNumberedResults() {
+        Ui ui = new Ui();
+        ArrayList<Task> tasks = new ArrayList<>();
+        tasks.add(new ToDo("read book"));
+        tasks.add(new Deadline("return book", LocalDate.parse("2026-06-06")));
+
+        ui.showMatchingTasks(tasks);
+
+        String output = outputStreamCaptor.toString();
+        assertTrue(output.contains("Here are the matching tasks in your list:"));
+        assertTrue(output.contains("1.[T][ ] read book"));
+        assertTrue(output.contains("2.[D][ ] return book"));
+    }
 }

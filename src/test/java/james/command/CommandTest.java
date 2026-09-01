@@ -25,6 +25,7 @@ public class CommandTest {
         assertEquals(Command.LIST, Command.valueOf("LIST"));
         assertEquals(Command.BYE, Command.valueOf("BYE"));
         assertEquals(Command.LIST_BY_DATE, Command.valueOf("LIST_BY_DATE"));
+        assertEquals(Command.FIND, Command.valueOf("FIND"));
     }
 
     /**
@@ -39,9 +40,9 @@ public class CommandTest {
      * Tests that values returns an array containing all defined Command enum constants.
      */
     @Test
-    public void values_allDefinedCommands_containsNineCommands() {
+    public void values_allDefinedCommands_containsTenCommands() {
         Command[] commands = Command.values();
         assertNotNull(commands);
-        assertEquals(9, commands.length);
+        assertEquals(10, commands.length);
     }
 }
