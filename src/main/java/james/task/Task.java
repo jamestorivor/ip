@@ -9,78 +9,79 @@ import james.exception.UserInputException;
  * Represents a generic task with a description and completion status.
  */
 public class Task {
-    public String description;
-    public boolean done;
     protected static final DateTimeFormatter DISPLAY_FORMAT =
             DateTimeFormatter.ofPattern("MMM dd yyyy");
+
+    protected String description;
+    protected boolean isDone;
 
     /**
      * Initializes an uncompleted task with the given description.
      *
-     * @param description description of the task
+     * @param description Description of the task.
      */
     public Task(String description) {
         this.description = description != null ? description.trim() : "";
-        this.done = false;
+        this.isDone = false;
     }
 
     /**
      * Marks the task as completed.
      */
     public void markDone() {
-        this.done = true;
+        isDone = true;
     }
 
     /**
      * Marks the task as not completed.
      */
     public void markNotDone() {
-        this.done = false;
+        isDone = false;
     }
 
     /**
      * Returns the status icon indicating whether the task is done.
      *
-     * @return "[X]" if completed, "[ ]" otherwise
+     * @return "[X]" if completed, "[ ]" otherwise.
      */
     public String getMark() {
-        return this.done ? "[X]" : "[ ]";
+        return isDone ? "[X]" : "[ ]";
     }
 
     /**
      * Returns the description of the task.
      *
-     * @return task description
+     * @return Task description.
      */
     public String getDescription() {
-        return this.description;
+        return description;
     }
 
     /**
      * Returns whether the task is marked as done.
      *
-     * @return true if completed, false otherwise
+     * @return True if completed, false otherwise.
      */
     public boolean isDone() {
-        return this.done;
+        return isDone;
     }
 
     /**
      * Returns the string representation of the task formatted for file storage.
      *
-     * @return formatted task string for storage
+     * @return Formatted task string for storage.
      */
     public String toFileString() {
-        return "%d | %s".formatted(this.done ? 1 : 0, this.description);
+        return "%d | %s".formatted(isDone ? 1 : 0, description);
     }
 
     /**
      * Parses a line from the storage file into a corresponding Task instance.
      * Handles type identification, status validation, and field extraction.
      *
-     * @param line string read from the storage file
-     * @return corresponding Task subclass instance
-     * @throws UserInputException if the line format is invalid, corrupted, or unknown
+     * @param line String read from the storage file.
+     * @return Corresponding Task subclass instance.
+     * @throws UserInputException If the line format is invalid, corrupted, or unknown.
      */
     public static Task fromFileString(String line) throws UserInputException {
         if (line == null || line.trim().isEmpty()) {
@@ -97,7 +98,7 @@ public class Task {
         if (!doneStr.equals("0") && !doneStr.equals("1")) {
             throw new UserInputException("Invalid completion status in storage: " + doneStr);
         }
-        boolean isDone = doneStr.equals("1");
+        boolean isTaskDone = doneStr.equals("1");
 
         Task task;
         switch (type) {
@@ -155,7 +156,7 @@ public class Task {
             throw new UserInputException("Unknown task type in storage: " + type);
         }
 
-        if (isDone) {
+        if (isTaskDone) {
             task.markDone();
         }
         return task;
@@ -164,10 +165,10 @@ public class Task {
     /**
      * Returns the string representation of the task including its status icon and description.
      *
-     * @return formatted display string of the task
+     * @return Formatted display string of the task.
      */
     @Override
     public String toString() {
-        return this.getMark() + " " + this.description;
+        return getMark() + " " + description;
     }
 }

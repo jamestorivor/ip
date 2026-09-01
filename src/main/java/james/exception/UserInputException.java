@@ -8,7 +8,7 @@ public class UserInputException extends Exception {
     /**
      * Constructs a UserInputException with the specified error message.
      *
-     * @param message description of the user error
+     * @param message Description of the user error.
      */
     public UserInputException(String message) {
         super(message);

@@ -13,7 +13,7 @@ public class TaskList {
     /**
      * Constructs a TaskList initialized with an existing list of tasks.
      *
-     * @param tasks the initial list of tasks, or {@code null} for an empty list
+     * @param tasks The initial list of tasks, or {@code null} for an empty list.
      */
     public TaskList(ArrayList<Task> tasks) {
         this.tasks = tasks == null ? new ArrayList<>() : tasks;
@@ -29,8 +29,8 @@ public class TaskList {
     /**
      * Retrieves the task at the specified zero-based index.
      *
-     * @param index zero-based index of the task
-     * @return the task at the specified index
+     * @param index Zero-based index of the task.
+     * @return The task at the specified index.
      */
     public Task getTask(int index) {
         return tasks.get(index);
@@ -39,7 +39,7 @@ public class TaskList {
     /**
      * Adds a new task to the task list.
      *
-     * @param task the task to add
+     * @param task The task to add.
      */
     public void addTask(Task task) {
         tasks.add(task);
@@ -48,9 +48,9 @@ public class TaskList {
     /**
      * Deletes and returns the task at the specified zero-based index.
      *
-     * @param index zero-based index of the task to delete
-     * @return the removed task
-     * @throws IndexOutOfBoundsException if index is out of bounds
+     * @param index Zero-based index of the task to delete.
+     * @return The removed task.
+     * @throws IndexOutOfBoundsException If index is out of bounds.
      */
     public Task deleteTask(int index) throws IndexOutOfBoundsException {
         return tasks.remove(index);
@@ -59,7 +59,7 @@ public class TaskList {
     /**
      * Deletes a specific task from the list.
      *
-     * @param task the task to remove
+     * @param task The task to remove.
      */
     public void deleteTask(Task task) {
         tasks.remove(task);
@@ -68,19 +68,19 @@ public class TaskList {
     /**
      * Returns the number of tasks in the list.
      *
-     * @return the number of tasks
+     * @return The number of tasks.
      */
     public int size() {
-        return this.tasks.size();
+        return tasks.size();
     }
 
     /**
      * Returns the underlying list of tasks.
      *
-     * @return the list of tasks
+     * @return The list of tasks.
      */
     public ArrayList<Task> getTasks() {
-        return this.tasks;
+        return tasks;
     }
 
     /**
@@ -88,11 +88,11 @@ public class TaskList {
      * Deadlines match if their deadline date is the specified date.
      * Events match if the specified date falls within their start and end dates (inclusive).
      *
-     * @param task the task to check
-     * @param date the date to check against
-     * @return true if the task occurs on the specified date
+     * @param task The task to check.
+     * @param date The date to check against.
+     * @return True if the task occurs on the specified date, false otherwise.
      */
-    public static boolean taskDateMatch(Task task, LocalDate date) {
+    public static boolean isTaskMatchingDate(Task task, LocalDate date) {
         if (task instanceof Event eventTask) {
             LocalDate from = eventTask.getFrom();
             LocalDate to = eventTask.getTo();
@@ -107,13 +107,13 @@ public class TaskList {
     /**
      * Returns a list of tasks that occur on the specified date.
      *
-     * @param date the date to filter tasks by
-     * @return an ArrayList containing matching tasks
+     * @param date The date to filter tasks by.
+     * @return An ArrayList containing matching tasks.
      */
     public ArrayList<Task> getTasksOnDate(LocalDate date) {
         ArrayList<Task> tasksWithDate = new ArrayList<>();
         for (Task task : tasks) {
-            if (taskDateMatch(task, date)) {
+            if (isTaskMatchingDate(task, date)) {
                 tasksWithDate.add(task);
             }
         }
@@ -123,7 +123,7 @@ public class TaskList {
     /**
      * Returns a numbered string representation of all tasks in the list.
      *
-     * @return formatted multiline string listing all tasks
+     * @return Formatted multiline string listing all tasks.
      */
     @Override
     public String toString() {

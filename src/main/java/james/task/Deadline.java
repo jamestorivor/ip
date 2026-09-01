@@ -11,8 +11,8 @@ public class Deadline extends Task {
     /**
      * Initializes an uncompleted deadline task with the given description and due time.
      *
-     * @param description description of the deadline task
-     * @param by the deadline date
+     * @param description Description of the deadline task.
+     * @param by The deadline date.
      */
     public Deadline(String description, LocalDate by) {
         super(description);
@@ -22,29 +22,29 @@ public class Deadline extends Task {
     /**
      * Returns the deadline date.
      *
-     * @return the deadline date
+     * @return The deadline date.
      */
     public LocalDate getBy() {
-        return this.by;
+        return by;
     }
 
     /**
      * Returns the string representation of the deadline task formatted for file storage.
      *
-     * @return formatted deadline string for storage
+     * @return Formatted deadline string for storage.
      */
     @Override
     public String toFileString() {
-        return "D | " + super.toFileString() + " | " + this.by;
+        return "D | " + super.toFileString() + " | " + by;
     }
 
     /**
      * Returns the string representation of the deadline task for display.
      *
-     * @return formatted display string of the deadline task
+     * @return Formatted display string of the deadline task.
      */
     @Override
     public String toString() {
-        return "[D]" + super.toString() + " (by: %s)".formatted(this.by.format(DISPLAY_FORMAT));
+        return "[D]" + super.toString() + " (by: %s)".formatted(by.format(DISPLAY_FORMAT));
     }
 }

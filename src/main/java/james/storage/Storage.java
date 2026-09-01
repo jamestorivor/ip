@@ -20,7 +20,7 @@ public class Storage {
     /**
      * Constructs a Storage instance with the given file path.
      *
-     * @param filePath path to the persistent storage file
+     * @param filePath Path to the persistent storage file.
      */
     public Storage(String filePath) {
         this.filePath = Path.of(filePath);
@@ -31,7 +31,7 @@ public class Storage {
      * If the file does not exist, an empty list is returned.
      * Corrupted lines are skipped gracefully with a warning.
      *
-     * @return an ArrayList containing the loaded tasks
+     * @return An ArrayList containing the loaded tasks.
      */
     public ArrayList<Task> load() {
         ArrayList<Task> loadedTasks = new ArrayList<>();
@@ -64,7 +64,7 @@ public class Storage {
      * Saves all current tasks in the task list to the persistent storage file.
      * Automatically creates any necessary parent directories.
      *
-     * @param taskList the TaskList whose tasks are to be saved
+     * @param taskList The TaskList whose tasks are to be saved.
      */
     public void save(TaskList taskList) {
         try {

@@ -23,7 +23,7 @@ public class James {
     /**
      * Initializes the chatbot application with the given storage file path.
      *
-     * @param filePath path to the persistent storage file
+     * @param filePath Path to the persistent storage file.
      */
     public James(String filePath) {
         this.ui = new Ui();
@@ -35,10 +35,10 @@ public class James {
      * Starts the main command processing loop.
      */
     public void run() {
-        boolean running = true;
+        boolean isRunning = true;
 
         ui.greet();
-        while (running && ui.hasNextCommand()) {
+        while (isRunning && ui.hasNextCommand()) {
             String input = ui.readCommand();
             Task newTask = null;
 
@@ -51,14 +51,14 @@ public class James {
                 switch (command) {
                 case LIST_BY_DATE:
                     LocalDate date = Parser.parseDate(arguments);
-                    ArrayList<Task> taskListByDate = this.taskList.getTasksOnDate(date);
+                    ArrayList<Task> taskListByDate = taskList.getTasksOnDate(date);
                     ui.showTasksOnDate(date, taskListByDate);
                     break;
                 case DELETE:
-                    int delIdx = Parser.parseTaskNumber(arguments, "delete", this.taskList.size());
-                    Task delTask = this.taskList.deleteTask(delIdx);
+                    int delIdx = Parser.parseTaskNumber(arguments, "delete", taskList.size());
+                    Task delTask = taskList.deleteTask(delIdx);
                     storage.save(taskList);
-                    ui.deleteMessage(delTask, this.taskList.size());
+                    ui.deleteMessage(delTask, taskList.size());
                     break;
                 case TODO:
                     newTask = Parser.parseTodo(arguments);
@@ -70,24 +70,24 @@ public class James {
                     newTask = Parser.parseDeadline(arguments);
                     break;
                 case MARK:
-                    int markIdx = Parser.parseTaskNumber(arguments, "mark", this.taskList.size());
-                    Task taskToMark = this.taskList.getTask(markIdx);
+                    int markIdx = Parser.parseTaskNumber(arguments, "mark", taskList.size());
+                    Task taskToMark = taskList.getTask(markIdx);
                     taskToMark.markDone();
                     storage.save(taskList);
                     ui.markMessage(taskToMark);
                     break;
                 case UNMARK:
-                    int unmarkIdx = Parser.parseTaskNumber(arguments, "unmark", this.taskList.size());
-                    Task taskToUnmark = this.taskList.getTask(unmarkIdx);
+                    int unmarkIdx = Parser.parseTaskNumber(arguments, "unmark", taskList.size());
+                    Task taskToUnmark = taskList.getTask(unmarkIdx);
                     taskToUnmark.markNotDone();
                     storage.save(taskList);
                     ui.unmarkMessage(taskToUnmark);
                     break;
                 case BYE:
-                    running = false;
+                    isRunning = false;
                     break;
                 case LIST:
-                    ui.showTaskList(this.taskList);
+                    ui.showTaskList(taskList);
                     break;
                 default:
                     throw new UserInputException("James hasn't heard of this command :(");
@@ -98,7 +98,7 @@ public class James {
             if (newTask != null) {
                 taskList.addTask(newTask);
                 storage.save(taskList);
-                ui.createAddTaskMessage(newTask, this.taskList.size());
+                ui.createAddTaskMessage(newTask, taskList.size());
             }
         }
         ui.sayBye();
@@ -108,7 +108,7 @@ public class James {
     /**
      * Main application entry point.
      *
-     * @param args command line arguments
+     * @param args Command line arguments.
      */
     public static void main(String[] args) {
         new James("data/james.txt").run();
