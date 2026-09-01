@@ -201,106 +201,106 @@ public class TaskListTest {
     }
 
     // ==========================================
-    // taskDateMatch (Static) Tests
+    // isTaskMatchingDate (Static) Tests
     // ==========================================
 
     /**
-     * Tests that taskDateMatch returns true when a Deadline occurs on the specified date.
+     * Tests that isTaskMatchingDate returns true when a Deadline occurs on the specified date.
      */
     @Test
-    public void taskDateMatch_deadlineMatchingDate_returnsTrue() {
+    public void isTaskMatchingDate_deadlineMatchingDate_returnsTrue() {
         LocalDate deadlineDate = LocalDate.parse("2026-05-15");
         Deadline deadline = new Deadline("Submit assignment", deadlineDate);
-        assertTrue(TaskList.taskDateMatch(deadline, deadlineDate));
+        assertTrue(TaskList.isTaskMatchingDate(deadline, deadlineDate));
     }
 
     /**
-     * Tests that taskDateMatch returns false when a Deadline falls on a different date.
+     * Tests that isTaskMatchingDate returns false when a Deadline falls on a different date.
      */
     @Test
-    public void taskDateMatch_deadlineDifferentDate_returnsFalse() {
+    public void isTaskMatchingDate_deadlineDifferentDate_returnsFalse() {
         LocalDate deadlineDate = LocalDate.parse("2026-05-15");
         LocalDate differentDate = LocalDate.parse("2026-05-16");
         Deadline deadline = new Deadline("Submit assignment", deadlineDate);
-        assertFalse(TaskList.taskDateMatch(deadline, differentDate));
+        assertFalse(TaskList.isTaskMatchingDate(deadline, differentDate));
     }
 
     /**
-     * Tests that taskDateMatch returns true when queried on the start date of an Event.
+     * Tests that isTaskMatchingDate returns true when queried on the start date of an Event.
      */
     @Test
-    public void taskDateMatch_eventOnStartDate_returnsTrue() {
+    public void isTaskMatchingDate_eventOnStartDate_returnsTrue() {
         LocalDate startDate = LocalDate.parse("2026-06-01");
         LocalDate endDate = LocalDate.parse("2026-06-05");
         Event event = new Event("Camp", startDate, endDate);
-        assertTrue(TaskList.taskDateMatch(event, startDate));
+        assertTrue(TaskList.isTaskMatchingDate(event, startDate));
     }
 
     /**
-     * Tests that taskDateMatch returns true when queried on the end date of an Event.
+     * Tests that isTaskMatchingDate returns true when queried on the end date of an Event.
      */
     @Test
-    public void taskDateMatch_eventOnEndDate_returnsTrue() {
+    public void isTaskMatchingDate_eventOnEndDate_returnsTrue() {
         LocalDate startDate = LocalDate.parse("2026-06-01");
         LocalDate endDate = LocalDate.parse("2026-06-05");
         Event event = new Event("Camp", startDate, endDate);
-        assertTrue(TaskList.taskDateMatch(event, endDate));
+        assertTrue(TaskList.isTaskMatchingDate(event, endDate));
     }
 
     /**
-     * Tests that taskDateMatch returns true when queried on a date between the start and end dates of an Event.
+     * Tests that isTaskMatchingDate returns true when queried on a date between the start and end dates of an Event.
      */
     @Test
-    public void taskDateMatch_eventWithinDateRange_returnsTrue() {
+    public void isTaskMatchingDate_eventWithinDateRange_returnsTrue() {
         LocalDate startDate = LocalDate.parse("2026-06-01");
         LocalDate intermediateDate = LocalDate.parse("2026-06-03");
         LocalDate endDate = LocalDate.parse("2026-06-05");
         Event event = new Event("Camp", startDate, endDate);
-        assertTrue(TaskList.taskDateMatch(event, intermediateDate));
+        assertTrue(TaskList.isTaskMatchingDate(event, intermediateDate));
     }
 
     /**
-     * Tests that taskDateMatch returns false when queried on a date before the Event starts.
+     * Tests that isTaskMatchingDate returns false when queried on a date before the Event starts.
      */
     @Test
-    public void taskDateMatch_eventBeforeStartDate_returnsFalse() {
+    public void isTaskMatchingDate_eventBeforeStartDate_returnsFalse() {
         LocalDate startDate = LocalDate.parse("2026-06-01");
         LocalDate endDate = LocalDate.parse("2026-06-05");
         LocalDate dateBefore = LocalDate.parse("2026-05-31");
         Event event = new Event("Camp", startDate, endDate);
-        assertFalse(TaskList.taskDateMatch(event, dateBefore));
+        assertFalse(TaskList.isTaskMatchingDate(event, dateBefore));
     }
 
     /**
-     * Tests that taskDateMatch returns false when queried on a date after the Event ends.
+     * Tests that isTaskMatchingDate returns false when queried on a date after the Event ends.
      */
     @Test
-    public void taskDateMatch_eventAfterEndDate_returnsFalse() {
+    public void isTaskMatchingDate_eventAfterEndDate_returnsFalse() {
         LocalDate startDate = LocalDate.parse("2026-06-01");
         LocalDate endDate = LocalDate.parse("2026-06-05");
         LocalDate dateAfter = LocalDate.parse("2026-06-06");
         Event event = new Event("Camp", startDate, endDate);
-        assertFalse(TaskList.taskDateMatch(event, dateAfter));
+        assertFalse(TaskList.isTaskMatchingDate(event, dateAfter));
     }
 
     /**
-     * Tests that taskDateMatch returns false for ToDo tasks since they do not have dates.
+     * Tests that isTaskMatchingDate returns false for ToDo tasks since they do not have dates.
      */
     @Test
-    public void taskDateMatch_toDoTask_returnsFalse() {
+    public void isTaskMatchingDate_toDoTask_returnsFalse() {
         ToDo todo = new ToDo("Read book");
         LocalDate date = LocalDate.parse("2026-06-01");
-        assertFalse(TaskList.taskDateMatch(todo, date));
+        assertFalse(TaskList.isTaskMatchingDate(todo, date));
     }
 
     /**
-     * Tests that taskDateMatch returns false for generic Task instances without dates.
+     * Tests that isTaskMatchingDate returns false for generic Task instances without dates.
      */
     @Test
-    public void taskDateMatch_genericTask_returnsFalse() {
+    public void isTaskMatchingDate_genericTask_returnsFalse() {
         Task genericTask = new Task("Generic task");
         LocalDate date = LocalDate.parse("2026-06-01");
-        assertFalse(TaskList.taskDateMatch(genericTask, date));
+        assertFalse(TaskList.isTaskMatchingDate(genericTask, date));
     }
 
     // ==========================================
@@ -396,7 +396,9 @@ public class TaskListTest {
     public void toString_multipleTasks_returnsNumberedString() {
         taskList.addTask(new ToDo("read book"));
         taskList.addTask(new Deadline("return book", LocalDate.parse("2026-06-06")));
-        taskList.addTask(new Event("catch mouse", LocalDate.parse("2026-11-11"), LocalDate.parse("2026-11-11")));
+        taskList.addTask(new Event("catch mouse",
+                LocalDate.parse("2026-11-11"),
+                LocalDate.parse("2026-11-11")));
         String expected = "1.[T][ ] read book\n"
                 + "2.[D][ ] return book (by: Jun 06 2026)\n"
                 + "3.[E][ ] catch mouse (from: Nov 11 2026 to: Nov 11 2026)\n";

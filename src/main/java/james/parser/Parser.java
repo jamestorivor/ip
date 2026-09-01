@@ -17,9 +17,9 @@ public class Parser {
     /**
      * Parses and validates a date string argument into a LocalDate object.
      *
-     * @param arguments user-supplied date string
-     * @return parsed LocalDate object
-     * @throws UserInputException if the date argument is empty or formatted incorrectly
+     * @param arguments User-supplied date string.
+     * @return Parsed LocalDate object.
+     * @throws UserInputException If the date argument is empty or formatted incorrectly.
      */
     public static LocalDate parseDate(String arguments) throws UserInputException {
         if (arguments == null || arguments.trim().isEmpty()) {
@@ -35,9 +35,9 @@ public class Parser {
     /**
      * Parses a command keyword string into its corresponding Command enum.
      *
-     * @param commandString command word entered by user
-     * @return the matching Command enum constant
-     * @throws UserInputException if the command word is unrecognized
+     * @param commandString Command word entered by user.
+     * @return The matching Command enum constant.
+     * @throws UserInputException If the command word is unrecognized.
      */
     public static Command parseCommandType(String commandString) throws UserInputException {
         try {
@@ -50,11 +50,11 @@ public class Parser {
     /**
      * Parses and validates the task number supplied to a mark-related or delete command.
      *
-     * @param arguments the text after the command
-     * @param command the command being processed
-     * @param taskListSize the current number of tasks in the list
-     * @return the zero-based index of the selected task
-     * @throws UserInputException if no valid task number is supplied or index is out of bounds
+     * @param arguments The text after the command.
+     * @param command The command being processed.
+     * @param taskListSize The current number of tasks in the list.
+     * @return The zero-based index of the selected task.
+     * @throws UserInputException If no valid task number is supplied or index is out of bounds.
      */
     public static int parseTaskNumber(String arguments, String command, int taskListSize) throws UserInputException {
         if (arguments == null || arguments.trim().isEmpty()) {
@@ -80,9 +80,9 @@ public class Parser {
     /**
      * Parses arguments for a deadline command into a Deadline task instance.
      *
-     * @param arguments description and /by date arguments
-     * @return constructed Deadline task
-     * @throws UserInputException if description or date are missing or malformed
+     * @param arguments Description and /by date arguments.
+     * @return Constructed Deadline task.
+     * @throws UserInputException If description or date are missing or malformed.
      */
     public static Task parseDeadline(String arguments) throws UserInputException {
         if (arguments == null || arguments.trim().isEmpty()) {
@@ -104,9 +104,9 @@ public class Parser {
     /**
      * Parses arguments for a todo command into a ToDo task instance.
      *
-     * @param arguments description of the todo task
-     * @return constructed ToDo task
-     * @throws UserInputException if description is empty
+     * @param arguments Description of the todo task.
+     * @return Constructed ToDo task.
+     * @throws UserInputException If description is empty.
      */
     public static Task parseTodo(String arguments) throws UserInputException {
         if (arguments == null || arguments.trim().isEmpty()) {
@@ -119,9 +119,9 @@ public class Parser {
     /**
      * Parses arguments for an event command into an Event task instance.
      *
-     * @param arguments description, /from start date, and /to end date
-     * @return constructed Event task
-     * @throws UserInputException if description or dates are missing or malformed
+     * @param arguments Description, /from start date, and /to end date.
+     * @return Constructed Event task.
+     * @throws UserInputException If description or dates are missing or malformed.
      */
     public static Task parseEvent(String arguments) throws UserInputException {
         if (arguments == null || arguments.trim().isEmpty()) {
@@ -152,15 +152,15 @@ public class Parser {
     /**
      * Splits a raw user input line into the command keyword and remaining arguments.
      *
-     * @param string raw input line from the user
-     * @return an array of strings where index 0 is the command and index 1 (if present) is the arguments
-     * @throws UserInputException if the input is null or blank
+     * @param rawInput Raw input line from the user.
+     * @return An array of strings where index 0 is the command and index 1 (if present) is the arguments.
+     * @throws UserInputException If the input is null or blank.
      */
-    public static String[] parseCommand(String string) throws UserInputException {
-        if (string == null || string.trim().isEmpty()) {
+    public static String[] parseCommand(String rawInput) throws UserInputException {
+        if (rawInput == null || rawInput.trim().isEmpty()) {
             throw new UserInputException("No command specified\n" + "Try: <command> <arguments:optional>");
         }
 
-        return string.trim().split(" ", 2);
+        return rawInput.trim().split(" ", 2);
     }
 }

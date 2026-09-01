@@ -259,7 +259,8 @@ public class TaskTest {
      */
     @Test
     public void fromFileString_corruptedEventInvalidDate_throwsUserInputException() {
-        assertThrows(UserInputException.class, () -> Task.fromFileString("E | 0 | meeting | 2026-08-06 | invalid-date"));
+        assertThrows(UserInputException.class, () -> Task.fromFileString(
+                "E | 0 | meeting | 2026-08-06 | invalid-date"));
     }
 
     /**
