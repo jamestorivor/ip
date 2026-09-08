@@ -10,6 +10,8 @@ import james.task.TaskList;
  * Handles user interactions by reading inputs and displaying formatted output.
  */
 public class Ui {
+
+    private final String DIVIDER = "____________________________________________________________";
     private final Scanner scanner;
 
     /**
@@ -51,9 +53,7 @@ public class Ui {
      * @return The encased message string.
      */
     public String encaseMessage(String message) {
-        return "____________________________________________________________\n"
-                + message
-                + "____________________________________________________________";
+        return DIVIDER + "\n" + message + DIVIDER;
     }
 
     /**
@@ -70,6 +70,15 @@ public class Ui {
      */
     public void sayBye() {
         System.out.println(encaseMessage("Bye. Rest your eyes!\n"));
+    }
+
+    /**
+     * Displays a response from the shared command processor.
+     *
+     * @param message Response text.
+     */
+    public void showResponse(String message) {
+        System.out.println(encaseMessage(message));
     }
 
     /**
