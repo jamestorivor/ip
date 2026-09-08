@@ -147,7 +147,11 @@ public class TaskList {
     public String toString() {
         StringBuilder message = new StringBuilder();
         for (int i = 0; i < tasks.size(); i++) {
-            message.append("%d.%s\n".formatted(i + 1, tasks.get(i)));
+            message.append("%d.%s".formatted(i + 1, tasks.get(i)));
+
+            if (i < tasks.size() - 1) {
+                message.append("\n");
+            }
         }
         return message.toString();
     }

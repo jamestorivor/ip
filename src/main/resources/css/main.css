@@ -1,0 +1,23 @@
+.root {
+    -fx-background-color: #f4f7fb;
+    -fx-font-family: "Arial";
+}
+
+.text-field {
+    -fx-font-size: 14px;
+    -fx-padding: 10px;
+}
+
+.button {
+    -fx-background-color: #356ae6;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.scroll-pane, .scroll-pane .viewport {
+    -fx-background-color: transparent;
+}
+
+.label {
+    -fx-background-radius: 10px;
+}
