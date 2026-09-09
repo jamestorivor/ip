@@ -8,7 +8,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-import james.command.CommandProcessor;
 
 /** Provides the JavaFX entry point for James. */
 public class Main extends Application {

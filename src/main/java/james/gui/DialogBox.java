@@ -3,6 +3,7 @@ package james.gui;
 import java.io.IOException;
 import java.util.Collections;
 
+import james.command.CommandResponse;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -12,11 +13,10 @@ import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Region;
 import javafx.scene.layout.Priority;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
-import james.command.CommandResponse;
+
 
 /** Displays one message in the conversation. */
 public class DialogBox extends HBox {
