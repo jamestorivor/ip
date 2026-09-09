@@ -1,8 +1,9 @@
 package james.gui;
 
 import james.James;
-import javafx.fxml.FXML;
+import james.command.CommandResponse;
 import javafx.application.Platform;
+import javafx.fxml.FXML;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
@@ -10,8 +11,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.Window;
-import james.command.CommandProcessor;
-import james.command.CommandResponse;
 
 /** Controls the main JavaFX conversation window. */
 public class MainWindow extends AnchorPane {
