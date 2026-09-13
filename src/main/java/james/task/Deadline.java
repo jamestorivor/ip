@@ -6,6 +6,11 @@ import java.time.LocalDate;
  * Represents a task that needs to be completed by a specific deadline.
  */
 public class Deadline extends Task {
+    private static final String DEADLINE_STORAGE_PREFIX = "D | ";
+    private static final String STORAGE_FIELD_SEPARATOR = " | ";
+    private static final String DEADLINE_DISPLAY_PREFIX = "[D]";
+    private static final String DEADLINE_DATE_FORMAT = " (by: %s)";
+
     private final LocalDate by;
 
     /**
@@ -35,7 +40,7 @@ public class Deadline extends Task {
      */
     @Override
     public String toFileString() {
-        return "D | " + super.toFileString() + " | " + by;
+        return DEADLINE_STORAGE_PREFIX + super.toFileString() + STORAGE_FIELD_SEPARATOR + by;
     }
 
     /**
@@ -45,6 +50,6 @@ public class Deadline extends Task {
      */
     @Override
     public String toString() {
-        return "[D]" + super.toString() + " (by: %s)".formatted(by.format(DISPLAY_FORMAT));
+        return DEADLINE_DISPLAY_PREFIX + super.toString() + DEADLINE_DATE_FORMAT.formatted(by.format(DISPLAY_FORMAT));
     }
 }

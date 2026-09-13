@@ -16,6 +16,12 @@ import james.task.TaskList;
  * Handles reading tasks from and writing tasks to the file system.
  */
 public class Storage {
+    private static final String INVALID_TASK_WARNING_PREFIX = "Warning: Skipping invalid saved task entry: ";
+    private static final String READ_ERROR_WARNING_PREFIX = "Warning: Error reading saved tasks file: ";
+    private static final String DIRECTORY_ERROR_WARNING_PREFIX =
+            "Warning: Unable to create storage directory: ";
+    private static final String SAVE_ERROR_MESSAGE_PREFIX = "Error saving tasks: ";
+
     private final Path filePath;
 
     /**
@@ -49,14 +55,14 @@ public class Storage {
                         Task task = Task.fromFileString(line);
                         loadedTasks.add(task);
                     } catch (UserInputException e) {
-                        System.out.println("Warning: Skipping invalid saved task entry: " + line);
+                        System.out.println(INVALID_TASK_WARNING_PREFIX + line);
                     }
                 }
             }
         } catch (FileNotFoundException e) {
             // Storage file not found; return empty list
         } catch (Exception e) {
-            System.out.println("Warning: Error reading saved tasks file: " + e.getMessage());
+            System.out.println(READ_ERROR_WARNING_PREFIX + e.getMessage());
         }
         return loadedTasks;
     }
@@ -73,7 +79,7 @@ public class Storage {
             File parentDir = file.getParentFile();
             if (parentDir != null && !parentDir.exists()) {
                 if (!parentDir.mkdirs() && !parentDir.exists()) {
-                    System.out.println("Warning: Unable to create storage directory: " + parentDir.getPath());
+                    System.out.println(DIRECTORY_ERROR_WARNING_PREFIX + parentDir.getPath());
                     return;
                 }
             }
@@ -83,7 +89,7 @@ public class Storage {
                 }
             }
         } catch (IOException | SecurityException e) {
-            System.out.println("Error saving tasks: " + e.getMessage());
+            System.out.println(SAVE_ERROR_MESSAGE_PREFIX + e.getMessage());
         }
     }
 }

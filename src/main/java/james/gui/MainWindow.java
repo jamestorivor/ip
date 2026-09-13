@@ -14,12 +14,15 @@ import javafx.stage.Window;
 
 /** Controls the main JavaFX conversation window. */
 public class MainWindow extends AnchorPane {
+    private static final String GREETING_MESSAGE =
+            "JAMES THE CHATTY CHATBOT\nHello! I'm James.\nI can do anything for you!";
+
     @FXML private ScrollPane scrollPane;
     @FXML private VBox dialogContainer;
     @FXML private TextField userInput;
 
-    private final String JAMES_IMAGE_FILE_PATH = "/images/james.png";
-    private final String USER_IMAGE_FILE_PATH = "/images/user.png";
+    private static final String JAMES_IMAGE_FILE_PATH = "/images/james.png";
+    private static final String USER_IMAGE_FILE_PATH = "/images/user.png";
 
     private James james;
     private final Image JAMES_IMAGE = new Image(this.getClass().getResourceAsStream(JAMES_IMAGE_FILE_PATH));
@@ -44,7 +47,7 @@ public class MainWindow extends AnchorPane {
     public void setJames(James james) {
         this.james = james;
         dialogContainer.getChildren().add(DialogBox.james(new CommandResponse(
-                "JAMES THE CHATTY CHATBOT\nHello! I'm James.\nI can do anything for you!",
+                GREETING_MESSAGE,
                 CommandResponse.Type.NORMAL, false), JAMES_IMAGE));
     }
 

@@ -6,6 +6,11 @@ import java.time.LocalDate;
  * Represents an event task occurring during a specific time period.
  */
 public class Event extends Task {
+    private static final String EVENT_STORAGE_PREFIX = "E | ";
+    private static final String STORAGE_FIELD_SEPARATOR = " | ";
+    private static final String EVENT_DISPLAY_PREFIX = "[E]";
+    private static final String EVENT_DATES_FORMAT = " (from: %s to: %s)";
+
     private final LocalDate from;
     private final LocalDate to;
 
@@ -47,7 +52,8 @@ public class Event extends Task {
      */
     @Override
     public String toFileString() {
-        return "E | " + super.toFileString() + " | " + from + " | " + to;
+        return EVENT_STORAGE_PREFIX + super.toFileString() + STORAGE_FIELD_SEPARATOR + from
+                + STORAGE_FIELD_SEPARATOR + to;
     }
 
     /**
@@ -57,7 +63,7 @@ public class Event extends Task {
      */
     @Override
     public String toString() {
-        return "[E]" + super.toString() + " (from: %s to: %s)".formatted(
+        return EVENT_DISPLAY_PREFIX + super.toString() + EVENT_DATES_FORMAT.formatted(
                 from.format(DISPLAY_FORMAT),
                 to.format(DISPLAY_FORMAT));
     }

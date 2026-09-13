@@ -61,4 +61,20 @@ public class CommandProcessorTest {
     private String storagePath() {
         return temporaryDirectory.resolve("james.txt").toString();
     }
+
+    /**
+     * Tests that mutation confirmations report the size after the operation.
+     */
+    @Test
+    public void process_addThenDelete_reportsUpdatedTaskCounts() {
+        CommandProcessor processor = new CommandProcessor(storagePath());
+
+        CommandResponse added = processor.process("todo revise Java");
+        CommandResponse deleted = processor.process("delete 1");
+
+        assertEquals("Got it. I've added this task:\n[T][ ] revise Java"
+                + "\nNow you have 1 tasks in the list.", added.getMessage());
+        assertEquals("Noted. I've removed this task:\n[T][ ] revise Java"
+                + "\nNow you have 0 tasks in the list.\n", deleted.getMessage());
+    }
 }
