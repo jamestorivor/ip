@@ -25,7 +25,7 @@ public class CommandProcessorTest {
         CommandResponse listResponse = processor.process("list");
 
         assertEquals(CommandResponse.Type.ADD, addResponse.getType());
-        assertTrue(listResponse.getMessage().contains("1.[T][ ] revise Java"));
+        assertEquals("Here are the tasks in your list:\n1.[T][ ] revise Java\n", listResponse.getMessage());
     }
 
     /** Verifies that invalid input becomes a styled error response. */
@@ -34,7 +34,8 @@ public class CommandProcessorTest {
         CommandResponse response = new CommandProcessor(storagePath()).process("unknown");
 
         assertEquals(CommandResponse.Type.ERROR, response.getType());
-        assertTrue(response.getMessage().contains("James hasn't heard of this command"));
+        assertEquals("OH NO James Doesnt Know What To Do!!!\nJames hasn't heard of this command :(",
+                response.getMessage());
         assertFalse(response.isExit());
     }
 
@@ -56,6 +57,7 @@ public class CommandProcessorTest {
 
         assertTrue(response.isExit());
         assertEquals(CommandResponse.Type.NORMAL, response.getType());
+        assertEquals("Bye. Rest your eyes!\n", response.getMessage());
     }
 
     private String storagePath() {
@@ -76,5 +78,77 @@ public class CommandProcessorTest {
                 + "\nNow you have 1 tasks in the list.", added.getMessage());
         assertEquals("Noted. I've removed this task:\n[T][ ] revise Java"
                 + "\nNow you have 0 tasks in the list.\n", deleted.getMessage());
+    }
+
+    @Test
+    public void process_markTask_returnsCompletedTaskMessage() {
+        CommandProcessor processor = new CommandProcessor(storagePath());
+        processor.process("todo buy bread");
+
+        CommandResponse response = processor.process("mark 1");
+
+        assertEquals(CommandResponse.Type.MARK, response.getType());
+        assertEquals("Nice! I've marked this task as done:\n[T][X] buy bread", response.getMessage());
+    }
+
+    @Test
+    public void process_unmarkTask_returnsIncompleteTaskMessage() {
+        CommandProcessor processor = new CommandProcessor(storagePath());
+        processor.process("todo buy bread");
+        processor.process("mark 1");
+
+        CommandResponse response = processor.process("unmark 1");
+
+        assertEquals(CommandResponse.Type.MARK, response.getType());
+        assertEquals("OK, I've marked this task as not done yet:\n[T][ ] buy bread", response.getMessage());
+    }
+
+    @Test
+    public void process_findMatchingTasks_returnsNumberedMatches() {
+        CommandProcessor processor = new CommandProcessor(storagePath());
+        processor.process("todo buy bread");
+        processor.process("todo read book");
+        processor.process("deadline return book /by 2026-06-06");
+
+        CommandResponse response = processor.process("find BOOK");
+
+        assertEquals(CommandResponse.Type.NORMAL, response.getType());
+        assertEquals("Here are the matching tasks in your list:\n1.[T][ ] read book"
+                + "\n2.[D][ ] return book (by: Jun 06 2026)", response.getMessage());
+    }
+
+    @Test
+    public void process_findWithoutMatches_returnsHeadingOnly() {
+        CommandProcessor processor = new CommandProcessor(storagePath());
+        processor.process("todo read book");
+
+        CommandResponse response = processor.process("find magazine");
+
+        assertEquals("Here are the matching tasks in your list:", response.getMessage());
+    }
+
+    @Test
+    public void process_listByDateWithMatches_returnsNumberedMatches() {
+        CommandProcessor processor = new CommandProcessor(storagePath());
+        processor.process("todo read book");
+        processor.process("deadline return book /by 2026-10-15");
+        processor.process("event conference /from 2026-10-14 /to 2026-10-16");
+
+        CommandResponse response = processor.process("list_by_date 2026-10-15");
+
+        assertEquals(CommandResponse.Type.NORMAL, response.getType());
+        assertEquals("Here are the tasks in your list that matches the date 2026-10-15:"
+                + "\n1.[D][ ] return book (by: Oct 15 2026)"
+                + "\n2.[E][ ] conference (from: Oct 14 2026 to: Oct 16 2026)\n", response.getMessage());
+    }
+
+    @Test
+    public void process_listByDateWithoutMatches_returnsHeadingOnly() {
+        CommandProcessor processor = new CommandProcessor(storagePath());
+        processor.process("deadline return book /by 2026-10-15");
+
+        CommandResponse response = processor.process("list_by_date 2026-10-16");
+
+        assertEquals("Here are the tasks in your list that matches the date 2026-10-16:\n", response.getMessage());
     }
 }
