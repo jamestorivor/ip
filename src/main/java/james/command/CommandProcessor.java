@@ -72,6 +72,8 @@ public class CommandProcessor {
             case BYE:
                 return new CommandResponse("Bye. Rest your eyes!\n", CommandResponse.Type.NORMAL, true);
             default:
+//                Unknown commands should be handled by parser
+                assert false : "Unhandled command: " + command;
                 throw new UserInputException("James hasn't heard of this command :(");
             }
         } catch (UserInputException e) {
@@ -81,6 +83,9 @@ public class CommandProcessor {
     }
 
     private CommandResponse add(Task task) {
+        boolean taskIsNotNull = task != null;
+
+        assert taskIsNotNull : "Parser must return a task";
         taskList.addTask(task);
         storage.save(taskList);
         return new CommandResponse("Got it. I've added this task:\n" + task
@@ -89,6 +94,9 @@ public class CommandProcessor {
     }
 
     private String tasksOnDate(LocalDate date) {
+        boolean dateIsNotNull = date != null;
+
+        assert dateIsNotNull : "Parsed date must not be null";
         ArrayList<Task> tasks = taskList.getTasksOnDate(date);
         StringBuilder message = new StringBuilder(
                 "Here are the tasks in your list that matches the date %s:".formatted(date));
@@ -99,6 +107,10 @@ public class CommandProcessor {
     }
 
     private String matchingTasks(String keyword) {
+        boolean keywordNotNull = keyword != null;
+
+        boolean keywordNotBlank = !keyword.isBlank();
+        assert keywordNotNull && keywordNotBlank : "Parsed keyword should not be null";
         ArrayList<Task> tasks = taskList.findTasks(keyword);
         StringBuilder message = new StringBuilder("Here are the matching tasks in your list:");
         for (int i = 0; i < tasks.size(); i++) {
