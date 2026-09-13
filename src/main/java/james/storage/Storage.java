@@ -19,9 +19,6 @@ import james.task.TaskList;
 public class Storage {
     private static final String INVALID_TASK_WARNING_PREFIX = "Warning: Skipping invalid saved task entry: ";
     private static final String READ_ERROR_WARNING_PREFIX = "Warning: Error reading saved tasks file: ";
-    private static final String DIRECTORY_ERROR_WARNING_PREFIX =
-            "Warning: Unable to create storage directory: ";
-    private static final String SAVE_ERROR_MESSAGE_PREFIX = "Error saving tasks: ";
 
     private final Path filePath;
 
@@ -78,18 +75,6 @@ public class Storage {
     public boolean save(TaskList taskList) {
         Path temporaryFile = null;
         try {
-            File file = filePath.toFile();
-            File parentDir = file.getParentFile();
-            if (parentDir != null && !parentDir.exists()) {
-                if (!parentDir.mkdirs() && !parentDir.exists()) {
-                    System.out.println(DIRECTORY_ERROR_WARNING_PREFIX + parentDir.getPath());
-                    return;
-                }
-            }
-            try (FileWriter writer = new FileWriter(file)) {
-                for (Task task : taskList.getTasks()) {
-                    writer.write(task.toFileString() + System.lineSeparator());
-                }
             Path destination = filePath.toAbsolutePath();
             Files.createDirectories(destination.getParent());
             temporaryFile = Files.createTempFile(destination.getParent(), "james-", ".tmp");
@@ -112,7 +97,6 @@ public class Storage {
                     // A leftover temporary file does not change the saved task list.
                 }
             }
-            System.out.println(SAVE_ERROR_MESSAGE_PREFIX + e.getMessage());
         }
     }
 }

@@ -166,7 +166,6 @@ public class TaskList {
             message.append(TASK_LIST_ENTRY_FORMAT.formatted(i + 1, tasks.get(i)));
 
             message.append(LINE_BREAK);
-            message.append("%d.%s\n".formatted(i + 1, tasks.get(i)));
         }
         return message.toString();
     }

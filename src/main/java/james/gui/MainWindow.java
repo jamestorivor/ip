@@ -17,12 +17,12 @@ public class MainWindow extends AnchorPane {
     private static final String GREETING_MESSAGE =
             "JAMES THE CHATTY CHATBOT\nHello! I'm James.\nI can do anything for you!";
 
+    private static final String JAMES_IMAGE_FILE_PATH = "/images/james.png";
+    private static final String USER_IMAGE_FILE_PATH = "/images/user.png";
+
     @FXML private ScrollPane scrollPane;
     @FXML private VBox dialogContainer;
     @FXML private TextField userInput;
-
-    private static final String JAMES_IMAGE_FILE_PATH = "/images/james.png";
-    private static final String USER_IMAGE_FILE_PATH = "/images/user.png";
 
     private James james;
     private final Image JAMES_IMAGE = new Image(this.getClass().getResourceAsStream(JAMES_IMAGE_FILE_PATH));

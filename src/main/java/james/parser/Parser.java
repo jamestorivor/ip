@@ -23,17 +23,17 @@ public class Parser {
      * @throws UserInputException If the date argument is empty or formatted incorrectly.
      */
     public static LocalDate parseDate(String arguments) throws UserInputException {
-        String NO_DATE_MESSAGE = "Please provide a date in the format: yyyy-mm-dd";
-        String INVALID_DATE_FORMAT_MESSAGE = "The date format provided is incorrect! Please use the format: yyyy-mm-dd";
+        String noDateMessage = "Please provide a date in the format: yyyy-mm-dd";
+        String invalidDateFormatMessage = "The date format provided is incorrect! Please use the format: yyyy-mm-dd";
 
         boolean isDateMissing = arguments == null || arguments.trim().isEmpty();
         if (isDateMissing) {
-            throw new UserInputException(NO_DATE_MESSAGE);
+            throw new UserInputException(noDateMessage);
         }
         try {
             return LocalDate.parse(arguments.trim());
         } catch (DateTimeParseException e) {
-            throw new UserInputException(INVALID_DATE_FORMAT_MESSAGE);
+            throw new UserInputException(invalidDateFormatMessage);
         }
     }
 
@@ -45,12 +45,12 @@ public class Parser {
      * @throws UserInputException If the search keyword is empty.
      */
     public static String parseFindKeyword(String arguments) throws UserInputException {
-        String NO_FIND_KEYWORD_MESSAGE = "Please provide a keyword to search for.\n"
+        String noFindKeywordMessage = "Please provide a keyword to search for.\n"
                 + "Try: find <keyword>";
 
         boolean isFindKeywordMissing = arguments == null || arguments.trim().isEmpty();
         if (isFindKeywordMissing) {
-            throw new UserInputException(NO_FIND_KEYWORD_MESSAGE);
+            throw new UserInputException(noFindKeywordMessage);
         }
         return arguments.trim();
     }
@@ -63,12 +63,12 @@ public class Parser {
      * @throws UserInputException If the command word is unrecognized.
      */
     public static Command parseCommandType(String commandString) throws UserInputException {
-        String UNKNOWN_COMMAND_MESSAGE = "James hasn't heard of this command :(";
+        String unknownCommandMessage = "James hasn't heard of this command :(";
 
         try {
             return Command.valueOf(commandString.toUpperCase());
         } catch (IllegalArgumentException e) {
-            throw new UserInputException(UNKNOWN_COMMAND_MESSAGE);
+            throw new UserInputException(unknownCommandMessage);
         }
     }
 
@@ -86,11 +86,11 @@ public class Parser {
 
         boolean isTaskNumberBelowMinimum = taskNumber < 1;
         boolean isTaskNumberAboveMaximum = taskNumber > taskListSize;
-        String TASK_NUMBER_DOESNT_EXIST_MESSAGE = "James says there is no task number " + taskNumber + ".\n"
+        String taskNumberDoesntExistMessage = "James says there is no task number " + taskNumber + ".\n"
                 + "Your list currently has " + taskListSize + " tasks.";
 
         if (isTaskNumberBelowMinimum || isTaskNumberAboveMaximum) {
-            throw new UserInputException(TASK_NUMBER_DOESNT_EXIST_MESSAGE);
+            throw new UserInputException(taskNumberDoesntExistMessage);
         }
         return taskNumber - 1;
     }
@@ -104,21 +104,21 @@ public class Parser {
      * @throws UserInputException If the argument is missing or is not a whole number.
      */
     private static int getTaskNumber(String arguments, String command) throws UserInputException {
-        String NO_TASK_NUMBER_MESSAGE = "James asks that you provide a task number.\n"
+        String noTaskNumberMessage = "James asks that you provide a task number.\n"
                 + "Try: " + command + " <task number>";
-        String TASK_NUMBER_NOT_INT_MESSAGE = "James says that the task number must be a whole number.\n"
+        String taskNumberNotIntMessage = "James says that the task number must be a whole number.\n"
                 + "Try: " + command + " <task number>";
 
         boolean isTaskNumberMissing = arguments == null || arguments.trim().isEmpty();
         if (isTaskNumberMissing) {
-            throw new UserInputException(NO_TASK_NUMBER_MESSAGE);
+            throw new UserInputException(noTaskNumberMessage);
         }
 
         int taskNumber;
         try {
             taskNumber = Integer.parseInt(arguments.trim());
         } catch (NumberFormatException e) {
-            throw new UserInputException(TASK_NUMBER_NOT_INT_MESSAGE);
+            throw new UserInputException(taskNumberNotIntMessage);
         }
         return taskNumber;
     }
@@ -131,27 +131,27 @@ public class Parser {
      * @throws UserInputException If description or date are missing or malformed.
      */
     public static Task parseDeadline(String arguments) throws UserInputException {
-        String NO_DEADLINE_DESCRIPTION_MESSAGE = "The description of a deadline cannot be empty.\n"
+        String noDeadlineDescriptionMessage = "The description of a deadline cannot be empty.\n"
                 + "Try: deadline <description> /by <end-date>";
-        String NO_DEADLINE_DATE_MESSAGE = "A deadline needs a by date.\n" + "Try: deadline <description> /by <date>";
-        String INVALID_DATE_FORMAT_MESSAGE = "Formatting of the date is incorrect, try: yyyy-mm-dd";
-        String DEADLINE_DATE_SEPARATOR = " /by ";
+        String noDeadlineDateMessage = "A deadline needs a by date.\n" + "Try: deadline <description> /by <date>";
+        String invalidDateFormatMessage = "Formatting of the date is incorrect, try: yyyy-mm-dd";
+        String deadlineDateSeparator = " /by ";
 
         boolean isDeadlineDescriptionMissing = arguments == null || arguments.trim().isEmpty();
         if (isDeadlineDescriptionMissing) {
-            throw new UserInputException(NO_DEADLINE_DESCRIPTION_MESSAGE);
+            throw new UserInputException(noDeadlineDescriptionMessage);
         }
-        String[] deadlineParts = arguments.split(DEADLINE_DATE_SEPARATOR, 2);
+        String[] deadlineParts = arguments.split(deadlineDateSeparator, 2);
         boolean isDeadlineIncomplete = deadlineParts.length < 2
                 || deadlineParts[0].trim().isEmpty() || deadlineParts[1].trim().isEmpty();
         if (isDeadlineIncomplete) {
-            throw new UserInputException(NO_DEADLINE_DATE_MESSAGE);
+            throw new UserInputException(noDeadlineDateMessage);
         }
         try {
             LocalDate by = LocalDate.parse(deadlineParts[1].trim());
             return new Deadline(deadlineParts[0].trim(), by);
         } catch (DateTimeParseException e) {
-            throw new UserInputException(INVALID_DATE_FORMAT_MESSAGE);
+            throw new UserInputException(invalidDateFormatMessage);
         }
     }
 
@@ -163,12 +163,12 @@ public class Parser {
      * @throws UserInputException If description is empty.
      */
     public static Task parseTodo(String arguments) throws UserInputException {
-        String NO_TODO_DESCRIPTION_MESSAGE = "The description of a todo cannot be empty.\n"
+        String noTodoDescriptionMessage = "The description of a todo cannot be empty.\n"
                 + "Try: todo <description>";
 
         boolean isTodoDescriptionMissing = arguments == null || arguments.trim().isEmpty();
         if (isTodoDescriptionMissing) {
-            throw new UserInputException(NO_TODO_DESCRIPTION_MESSAGE);
+            throw new UserInputException(noTodoDescriptionMessage);
         }
         return new ToDo(arguments.trim());
     }
@@ -181,37 +181,37 @@ public class Parser {
      * @throws UserInputException If description or dates are missing or malformed.
      */
     public static Task parseEvent(String arguments) throws UserInputException {
-        String NO_EVENT_DESCRIPTION_MESSAGE = "The description of a event cannot be empty.\n"
+        String noEventDescriptionMessage = "The description of a event cannot be empty.\n"
                 + "Try: event <description> /from <start> /to <end>";
-        String NO_EVENT_FROM_MESSAGE = "An event needs a description followed by /from.\n"
+        String noEventFromMessage = "An event needs a description followed by /from.\n"
                 + "Try: event <description> /from <start> /to <end>";
-        String NO_EVENT_TIMES_MESSAGE = "An event needs both a start and end time.\n"
+        String noEventTimesMessage = "An event needs both a start and end time.\n"
                 + "Try: event <description> /from <start> /to <end>";
-        String INVALID_DATE_FORMAT_MESSAGE = "Formatting of the date is incorrect, try: yyyy-mm-dd";
-        String EVENT_START_SEPARATOR = " /from ";
-        String EVENT_END_SEPARATOR = " /to ";
+        String invalidDateFormatMessage = "Formatting of the date is incorrect, try: yyyy-mm-dd";
+        String eventStartSeparator = " /from ";
+        String eventEndSeparator = " /to ";
 
         boolean isEventDescriptionMissing = arguments == null || arguments.trim().isEmpty();
         if (isEventDescriptionMissing) {
-            throw new UserInputException(NO_EVENT_DESCRIPTION_MESSAGE);
+            throw new UserInputException(noEventDescriptionMessage);
         }
-        String[] eventParts = arguments.split(EVENT_START_SEPARATOR, 2);
+        String[] eventParts = arguments.split(eventStartSeparator, 2);
         boolean isEventDescriptionOrStartSeparatorMissing = eventParts.length < 2 || eventParts[0].trim().isEmpty();
         if (isEventDescriptionOrStartSeparatorMissing) {
-            throw new UserInputException(NO_EVENT_FROM_MESSAGE);
+            throw new UserInputException(noEventFromMessage);
         }
-        String[] timeParts = eventParts[1].split(EVENT_END_SEPARATOR, 2);
+        String[] timeParts = eventParts[1].split(eventEndSeparator, 2);
         boolean isEventTimeRangeIncomplete = timeParts.length < 2
                 || timeParts[0].trim().isEmpty() || timeParts[1].trim().isEmpty();
         if (isEventTimeRangeIncomplete) {
-            throw new UserInputException(NO_EVENT_TIMES_MESSAGE);
+            throw new UserInputException(noEventTimesMessage);
         }
         try {
             LocalDate from = LocalDate.parse(timeParts[0].trim());
             LocalDate to = LocalDate.parse(timeParts[1].trim());
             return new Event(eventParts[0].trim(), from, to);
         } catch (DateTimeParseException e) {
-            throw new UserInputException(INVALID_DATE_FORMAT_MESSAGE);
+            throw new UserInputException(invalidDateFormatMessage);
         }
     }
 
@@ -223,15 +223,15 @@ public class Parser {
      * @throws UserInputException If the input is null or blank.
      */
     public static String[] parseCommand(String rawInput) throws UserInputException {
-        String NO_COMMAND_MESSAGE = "No command specified\n" + "Try: <command> <arguments:optional>";
-        String COMMAND_ARGUMENT_SEPARATOR = " ";
+        String noCommandMessage = "No command specified\n" + "Try: <command> <arguments:optional>";
+        String commandArgumentSeparator = " ";
 
         boolean isCommandMissing = rawInput == null || rawInput.trim().isEmpty();
         if (isCommandMissing) {
-            throw new UserInputException(NO_COMMAND_MESSAGE);
+            throw new UserInputException(noCommandMessage);
         }
 
-        return rawInput.trim().split(COMMAND_ARGUMENT_SEPARATOR, 2);
+        return rawInput.trim().split(commandArgumentSeparator, 2);
     }
 
     /**

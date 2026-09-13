@@ -26,7 +26,7 @@ import james.task.ToDo;
 public class StorageTest {
 
     @TempDir
-    Path tempDir;
+    private Path tempDir;
 
     /**
      * Tests that load returns an empty ArrayList when the storage file does not exist.
