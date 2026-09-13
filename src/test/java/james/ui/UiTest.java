@@ -242,4 +242,34 @@ public class UiTest {
         assertTrue(output.contains("1.[T][ ] read book"));
         assertTrue(output.contains("2.[D][ ] return book"));
     }
+
+    /**
+     * Tests that an unterminated response puts the closing divider on its own line.
+     */
+    @Test
+    public void showResponse_missingTrailingNewline_addsNewlineBeforeDivider() {
+        Ui ui = new Ui();
+
+        ui.showResponse("Task added");
+
+        assertEquals("____________________________________________________________\n"
+                + "Task added\n"
+                + "____________________________________________________________" + System.lineSeparator(),
+                outputStreamCaptor.toString());
+    }
+
+    /**
+     * Tests that a terminated response does not gain a blank line.
+     */
+    @Test
+    public void showResponse_existingTrailingNewline_preservesSingleNewline() {
+        Ui ui = new Ui();
+
+        ui.showResponse("Task added\n");
+
+        assertEquals("____________________________________________________________\n"
+                + "Task added\n"
+                + "____________________________________________________________" + System.lineSeparator(),
+                outputStreamCaptor.toString());
+    }
 }
