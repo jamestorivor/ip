@@ -14,6 +14,13 @@ public class ToDo extends Task {
         super(description);
     }
 
+    @Override
+    public Task copy() {
+        Task copy = new ToDo(description);
+        copy.isDone = isDone;
+        return copy;
+    }
+
     /**
      * Returns the string representation of the todo task formatted for file storage.
      *

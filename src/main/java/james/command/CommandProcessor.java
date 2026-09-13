@@ -1,7 +1,9 @@
 package james.command;
 
 import java.time.LocalDate;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Deque;
 
 import james.exception.UserInputException;
 import james.parser.Parser;
@@ -13,8 +15,11 @@ import james.task.TaskList;
  * Processes commands independently of the console or graphical interface.
  */
 public class CommandProcessor {
+    private static final int MAX_UNDO_CHANGES = 20;
+
     private final Storage storage;
-    private final TaskList taskList;
+    private TaskList taskList;
+    private final Deque<TaskList> undoSnapshots = new ArrayDeque<>();
 
     /**
      * Initializes a processor with tasks loaded from the given file.
@@ -43,9 +48,15 @@ public class CommandProcessor {
                 return normal(tasksOnDate(date));
             case FIND:
                 return normal(matchingTasks(Parser.parseFindKeyword(arguments)));
+            case UNDO:
+                if (arguments != null && !arguments.isBlank()) {
+                    throw new UserInputException("Undo does not take arguments.\nTry: undo");
+                }
+                return undo();
             case DELETE:
+                TaskList beforeDelete = taskList.copy();
                 Task deleted = taskList.deleteTask(Parser.parseTaskNumber(arguments, "delete", taskList.size()));
-                storage.save(taskList);
+                saveChange(beforeDelete);
                 return new CommandResponse("Noted. I've removed this task:\n" + deleted
                         + "\nNow you have %d tasks in the list.\n".formatted(taskList.size()),
                         CommandResponse.Type.DELETE, false);
@@ -57,14 +68,20 @@ public class CommandProcessor {
                 return add(Parser.parseDeadline(arguments));
             case MARK:
                 Task marked = taskList.getTask(Parser.parseTaskNumber(arguments, "mark", taskList.size()));
-                marked.markDone();
-                storage.save(taskList);
+                if (!marked.isDone()) {
+                    TaskList beforeMark = taskList.copy();
+                    marked.markDone();
+                    saveChange(beforeMark);
+                }
                 return new CommandResponse("Nice! I've marked this task as done:\n" + marked,
                         CommandResponse.Type.MARK, false);
             case UNMARK:
                 Task unmarked = taskList.getTask(Parser.parseTaskNumber(arguments, "unmark", taskList.size()));
-                unmarked.markNotDone();
-                storage.save(taskList);
+                if (unmarked.isDone()) {
+                    TaskList beforeUnmark = taskList.copy();
+                    unmarked.markNotDone();
+                    saveChange(beforeUnmark);
+                }
                 return new CommandResponse("OK, I've marked this task as not done yet:\n" + unmarked,
                         CommandResponse.Type.MARK, false);
             case LIST:
@@ -72,7 +89,7 @@ public class CommandProcessor {
             case BYE:
                 return new CommandResponse("Bye. Rest your eyes!\n", CommandResponse.Type.NORMAL, true);
             default:
-//                Unknown commands should be handled by parser
+                // Unknown commands should be handled by the parser.
                 assert false : "Unhandled command: " + command;
                 throw new UserInputException("James hasn't heard of this command :(");
             }
@@ -82,15 +99,48 @@ public class CommandProcessor {
         }
     }
 
-    private CommandResponse add(Task task) {
+    /**
+     * Adds and saves a task while retaining the previous state for undo.
+     */
+    private CommandResponse add(Task task) throws UserInputException {
         boolean taskIsNotNull = task != null;
 
         assert taskIsNotNull : "Parser must return a task";
+        TaskList beforeAdd = taskList.copy();
         taskList.addTask(task);
-        storage.save(taskList);
+        saveChange(beforeAdd);
         return new CommandResponse("Got it. I've added this task:\n" + task
                 + "\nNow you have %d tasks in the list.".formatted(taskList.size()),
                 CommandResponse.Type.ADD, false);
+    }
+
+    /**
+     * Saves a change and records its snapshot, or rolls back on failure.
+     */
+    private void saveChange(TaskList previous) throws UserInputException {
+        if (!storage.save(taskList)) {
+            taskList = previous;
+            throw new UserInputException("Could not save tasks. No changes were made.");
+        }
+        undoSnapshots.push(previous);
+        if (undoSnapshots.size() > MAX_UNDO_CHANGES) {
+            undoSnapshots.removeLast();
+        }
+    }
+
+    /**
+     * Restores and saves the latest snapshot without recording another undo entry.
+     */
+    private CommandResponse undo() throws UserInputException {
+        if (undoSnapshots.isEmpty()) {
+            return normal("Nothing to undo.");
+        }
+        TaskList previous = undoSnapshots.peek();
+        if (!storage.save(previous)) {
+            throw new UserInputException("Could not save tasks. Undo was not applied; try again.");
+        }
+        taskList = undoSnapshots.pop();
+        return normal("Undid the last change.\nNow you have %d tasks in the list.".formatted(taskList.size()));
     }
 
     private String tasksOnDate(LocalDate date) {

@@ -22,6 +22,13 @@ public class Event extends Task {
         this.to = to;
     }
 
+    @Override
+    public Task copy() {
+        Task copy = new Event(description, from, to);
+        copy.isDone = isDone;
+        return copy;
+    }
+
     /**
      * Returns the start date of the event.
      *

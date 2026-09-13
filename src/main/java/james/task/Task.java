@@ -27,6 +27,17 @@ public class Task {
     }
 
     /**
+     * Returns an independent copy preserving the task's details and completion status.
+     *
+     * @return Independent task copy.
+     */
+    public Task copy() {
+        Task copy = new Task(description);
+        copy.isDone = isDone;
+        return copy;
+    }
+
+    /**
      * Marks the task as completed.
      */
     public void markDone() {

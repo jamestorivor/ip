@@ -19,6 +19,13 @@ public class Deadline extends Task {
         this.by = by;
     }
 
+    @Override
+    public Task copy() {
+        Task copy = new Deadline(description, by);
+        copy.isDone = isDone;
+        return copy;
+    }
+
     /**
      * Returns the deadline date.
      *

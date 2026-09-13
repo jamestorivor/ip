@@ -79,7 +79,7 @@ public class Ui {
      * @param message Response text.
      */
     public void showResponse(String message) {
-        System.out.println(encaseMessage(message));
+        System.out.println(encaseMessage(message.endsWith("\n") ? message : message + "\n"));
     }
 
     /**
