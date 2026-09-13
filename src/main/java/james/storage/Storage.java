@@ -2,9 +2,10 @@ package james.storage;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -66,24 +67,33 @@ public class Storage {
      * Automatically creates any necessary parent directories.
      *
      * @param taskList The TaskList whose tasks are to be saved.
+     * @return True if the complete task list was saved successfully.
      */
-    public void save(TaskList taskList) {
+    public boolean save(TaskList taskList) {
+        Path temporaryFile = null;
         try {
-            File file = filePath.toFile();
-            File parentDir = file.getParentFile();
-            if (parentDir != null && !parentDir.exists()) {
-                if (!parentDir.mkdirs() && !parentDir.exists()) {
-                    System.out.println("Warning: Unable to create storage directory: " + parentDir.getPath());
-                    return;
-                }
+            Path destination = filePath.toAbsolutePath();
+            Files.createDirectories(destination.getParent());
+            temporaryFile = Files.createTempFile(destination.getParent(), "james-", ".tmp");
+            StringBuilder contents = new StringBuilder();
+            for (Task task : taskList.getTasks()) {
+                contents.append(task.toFileString()).append(System.lineSeparator());
             }
-            try (FileWriter writer = new FileWriter(file)) {
-                for (Task task : taskList.getTasks()) {
-                    writer.write(task.toFileString() + System.lineSeparator());
-                }
-            }
+            Files.writeString(temporaryFile, contents);
+            // Replace only after the complete new contents have been written.
+            Files.move(temporaryFile, destination, StandardCopyOption.ATOMIC_MOVE,
+                    StandardCopyOption.REPLACE_EXISTING);
+            return true;
         } catch (IOException | SecurityException e) {
-            System.out.println("Error saving tasks: " + e.getMessage());
+            return false;
+        } finally {
+            if (temporaryFile != null) {
+                try {
+                    Files.deleteIfExists(temporaryFile);
+                } catch (IOException | SecurityException e) {
+                    // A leftover temporary file does not change the saved task list.
+                }
+            }
         }
     }
 }

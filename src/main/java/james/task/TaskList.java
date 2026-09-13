@@ -27,6 +27,19 @@ public class TaskList {
     }
 
     /**
+     * Returns a deep snapshot whose tasks can be changed independently.
+     *
+     * @return Independent task list snapshot.
+     */
+    public TaskList copy() {
+        TaskList copy = new TaskList();
+        for (Task task : tasks) {
+            copy.addTask(task.copy());
+        }
+        return copy;
+    }
+
+    /**
      * Retrieves the task at the specified zero-based index.
      *
      * @param index Zero-based index of the task.
@@ -147,11 +160,7 @@ public class TaskList {
     public String toString() {
         StringBuilder message = new StringBuilder();
         for (int i = 0; i < tasks.size(); i++) {
-            message.append("%d.%s".formatted(i + 1, tasks.get(i)));
-
-            if (i < tasks.size() - 1) {
-                message.append("\n");
-            }
+            message.append("%d.%s\n".formatted(i + 1, tasks.get(i)));
         }
         return message.toString();
     }

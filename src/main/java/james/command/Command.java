@@ -13,5 +13,6 @@ public enum Command {
     LIST,
     BYE,
     LIST_BY_DATE,
-    FIND
+    FIND,
+    UNDO
 }
