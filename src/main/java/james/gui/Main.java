@@ -11,21 +11,20 @@ import javafx.stage.Stage;
 
 /** Provides the JavaFX entry point for James. */
 public class Main extends Application {
+    private static final String MAIN_WINDOW_RESOURCE = "/view/MainWindow.fxml";
+    private static final String WINDOW_TITLE = "James";
+    private static final String JAMES_DATA_FILE_PATH = "data/james.txt";
 
-    private final String JAMES_DATA_FILE_PATH = "data/james.txt";
-
-    private final James james = new James(JAMES_DATA_FILE_PATH);
+    private James james = new James(JAMES_DATA_FILE_PATH);
 
     /** Loads and displays the main window. */
     @Override
     public void start(Stage stage) throws IOException {
-        String MAIN_WINDOW_FXML_FILE_PATH = "/view/MainWindow.fxml";
-
-        FXMLLoader loader = new FXMLLoader(Main.class.getResource(MAIN_WINDOW_FXML_FILE_PATH));
+        FXMLLoader loader = new FXMLLoader(Main.class.getResource(MAIN_WINDOW_RESOURCE));
         AnchorPane root = loader.load();
         loader.<MainWindow>getController().setJames(james);
         stage.setScene(new Scene(root));
-        stage.setTitle("James");
+        stage.setTitle(WINDOW_TITLE);
         stage.setMinWidth(417);
         stage.setMinHeight(220);
         stage.show();

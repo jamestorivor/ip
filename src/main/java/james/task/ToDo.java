@@ -4,6 +4,9 @@ package james.task;
  * Represents a todo task without any date/time attached.
  */
 public class ToDo extends Task {
+    private static final String TODO_STORAGE_PREFIX = "T | ";
+    private static final String TODO_DISPLAY_PREFIX = "[T]";
+
 
     /**
      * Initializes an uncompleted todo task with the given description.
@@ -28,7 +31,7 @@ public class ToDo extends Task {
      */
     @Override
     public String toFileString() {
-        return "T | " + super.toFileString();
+        return TODO_STORAGE_PREFIX + super.toFileString();
     }
 
     /**
@@ -38,6 +41,6 @@ public class ToDo extends Task {
      */
     @Override
     public String toString() {
-        return "[T]" + super.toString();
+        return TODO_DISPLAY_PREFIX + super.toString();
     }
 }

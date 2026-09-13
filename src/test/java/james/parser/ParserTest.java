@@ -3,6 +3,7 @@ package james.parser;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.time.LocalDate;
@@ -20,6 +21,18 @@ import james.task.ToDo;
  * Unit tests for {@link Parser}.
  */
 public class ParserTest {
+
+    @Test
+    public void extractArguments_commandWithArguments_returnsArgumentText() throws UserInputException {
+        String[] parts = Parser.parseCommand("todo read book");
+        assertEquals("read book", Parser.extractArguments(parts));
+    }
+
+    @Test
+    public void extractArguments_commandWithoutArguments_returnsNull() throws UserInputException {
+        String[] parts = Parser.parseCommand("list");
+        assertNull(Parser.extractArguments(parts));
+    }
 
     // ==========================================
     // parseCommand Tests

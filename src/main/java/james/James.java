@@ -9,6 +9,8 @@ import james.ui.Ui;
  * Ui, Storage, Parser, and TaskList components.
  */
 public class James {
+    private static final String DEFAULT_STORAGE_PATH = "data/james.txt";
+
 
     private final Ui ui;
     private final CommandProcessor commandProcessor;
@@ -47,6 +49,6 @@ public class James {
      * @param args Command line arguments.
      */
     public static void main(String[] args) {
-        new James("data/james.txt").run();
+        new James(DEFAULT_STORAGE_PATH).run();
     }
 }

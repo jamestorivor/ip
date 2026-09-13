@@ -17,6 +17,11 @@ import james.task.TaskList;
 public class CommandProcessor {
     private static final int MAX_UNDO_CHANGES = 20;
 
+    private static final String DELETE_COMMAND_STRING = "delete";
+    private static final String MARK_COMPLETE_MESSAGE_PREFIX = "Nice! I've marked this task as done:\n";
+    private static final String TASK_LIST_ENTRY_FORMAT = "\n%d.%s";
+    private static final String LINE_BREAK = "\n";
+
     private final Storage storage;
     private TaskList taskList;
     private final Deque<TaskList> undoSnapshots = new ArrayDeque<>();
@@ -38,9 +43,10 @@ public class CommandProcessor {
      * @return Result containing message, category, and exit state.
      */
     public CommandResponse process(String input) {
+        String EXCEPTION_MESSAGE = "OH NO James Doesnt Know What To Do!!!\n";
+
         try {
             String[] parts = Parser.parseCommand(input);
-            String arguments = parts.length > 1 ? parts[1] : null;
             Command command = Parser.parseCommandType(parts[0]);
             switch (command) {
             case LIST_BY_DATE:
@@ -97,8 +103,92 @@ public class CommandProcessor {
             return new CommandResponse("OH NO James Doesnt Know What To Do!!!\n" + e.getMessage(),
                     CommandResponse.Type.ERROR, false);
         }
+            String remainingArguments = Parser.extractArguments(parts);
+
+            return executeCommand(command, remainingArguments);
+        } catch (UserInputException e) {
+            return new CommandResponse(EXCEPTION_MESSAGE + e.getMessage(),
+                    CommandResponse.Type.ERROR, false);
+        }
     }
 
+    private CommandResponse executeCommand(Command command,String arguments) throws UserInputException{
+        String UNKNOWN_COMMAND_MESSAGE = "James hasn't heard of this command :(";
+
+        return switch (command) {
+            case LIST_BY_DATE -> listByDate(arguments);
+            case FIND -> find(arguments);
+            case DELETE -> delete(arguments);
+            case TODO -> add(Parser.parseTodo(arguments));
+            case EVENT -> add(Parser.parseEvent(arguments));
+            case DEADLINE -> add(Parser.parseDeadline(arguments));
+            case MARK -> mark(arguments);
+            case UNMARK -> unmark(arguments);
+            case LIST -> listTasks();
+            case BYE -> exit();
+            default -> throw new UserInputException(UNKNOWN_COMMAND_MESSAGE);
+        };
+    }
+
+
+    private CommandResponse listByDate(String arguments) throws UserInputException {
+        LocalDate date = Parser.parseDate(arguments);
+        return normal(tasksOnDate(date));
+    }
+
+
+    private CommandResponse find(String arguments) throws UserInputException {
+        return normal(matchingTasks(Parser.parseFindKeyword(arguments)));
+    }
+
+    private CommandResponse delete(String arguments) throws UserInputException {
+        String TASK_REMOVED_PREFIX_MESSAGE = "Noted. I've removed this task:\n";
+        String ALL_TASKS_MESSAGE = "\nNow you have %d tasks in the list.\n";
+
+        Task deleted = taskList.deleteTask(Parser.parseTaskNumber(arguments, DELETE_COMMAND_STRING, taskList.size()));
+        storage.save(taskList);
+        return new CommandResponse(TASK_REMOVED_PREFIX_MESSAGE + deleted + ALL_TASKS_MESSAGE.formatted(taskList.size()),
+                CommandResponse.Type.DELETE, false);
+    }
+
+    private CommandResponse mark(String arguments) throws UserInputException {
+        String MARK_COMMAND_STRING = "mark";
+
+        Task marked = taskList.getTask(Parser.parseTaskNumber(arguments, MARK_COMMAND_STRING, taskList.size()));
+        marked.markDone();
+        storage.save(taskList);
+        return new CommandResponse(MARK_COMPLETE_MESSAGE_PREFIX + marked,
+                CommandResponse.Type.MARK, false);
+    }
+
+    private CommandResponse exit() {
+        String EXIT_MESSAGE = "Bye. Rest your eyes!\n";
+
+        return new CommandResponse(EXIT_MESSAGE, CommandResponse.Type.NORMAL, true);
+    }
+
+    private CommandResponse listTasks() {
+        String LIST_TASK_MESSAGE = "Here are the tasks in your list:\n";
+
+        return normal(LIST_TASK_MESSAGE + taskList);
+    }
+
+
+    private CommandResponse unmark(String arguments) throws UserInputException {
+        String UNMARK_COMMAND_STRING = "unmark";
+        String UNMARK_COMPLETE_MESSAGE_PREFIX = "OK, I've marked this task as not done yet:\n";
+
+        Task unmarked = taskList.getTask(Parser.parseTaskNumber(arguments, UNMARK_COMMAND_STRING, taskList.size()));
+        unmarked.markNotDone();
+        storage.save(taskList);
+        return new CommandResponse(UNMARK_COMPLETE_MESSAGE_PREFIX + unmarked,
+                CommandResponse.Type.MARK, false);
+    }
+
+
+    private CommandResponse add(Task task) {
+        String TASK_ADDED_MESSAGE_PREFIX = "Got it. I've added this task:\n";
+        String NUMBER_OF_TASK_MESSAGE = "\nNow you have %d tasks in the list.";
     /**
      * Adds and saves a task while retaining the previous state for undo.
      */
@@ -108,6 +198,8 @@ public class CommandProcessor {
         assert taskIsNotNull : "Parser must return a task";
         TaskList beforeAdd = taskList.copy();
         taskList.addTask(task);
+        storage.save(taskList);
+        return new CommandResponse(TASK_ADDED_MESSAGE_PREFIX + task + NUMBER_OF_TASK_MESSAGE.formatted(taskList.size()),
         saveChange(beforeAdd);
         return new CommandResponse("Got it. I've added this task:\n" + task
                 + "\nNow you have %d tasks in the list.".formatted(taskList.size()),
@@ -144,27 +236,23 @@ public class CommandProcessor {
     }
 
     private String tasksOnDate(LocalDate date) {
-        boolean dateIsNotNull = date != null;
+        String TASKS_MATCHING_DATE_MESSAGE = "Here are the tasks in your list that matches the date %s:".formatted(date);
 
-        assert dateIsNotNull : "Parsed date must not be null";
         ArrayList<Task> tasks = taskList.getTasksOnDate(date);
-        StringBuilder message = new StringBuilder(
-                "Here are the tasks in your list that matches the date %s:".formatted(date));
+        StringBuilder message = new StringBuilder(TASKS_MATCHING_DATE_MESSAGE);
         for (int i = 0; i < tasks.size(); i++) {
-            message.append("\n%d.%s".formatted(i + 1, tasks.get(i)));
+            message.append(TASK_LIST_ENTRY_FORMAT.formatted(i + 1, tasks.get(i)));
         }
-        return message.append("\n").toString();
+        return message.append(LINE_BREAK).toString();
     }
 
     private String matchingTasks(String keyword) {
-        boolean keywordNotNull = keyword != null;
+        String MATCHING_TASKS_MESSAGE = "Here are the matching tasks in your list:";
 
-        boolean keywordNotBlank = !keyword.isBlank();
-        assert keywordNotNull && keywordNotBlank : "Parsed keyword should not be null";
         ArrayList<Task> tasks = taskList.findTasks(keyword);
-        StringBuilder message = new StringBuilder("Here are the matching tasks in your list:");
+        StringBuilder message = new StringBuilder(MATCHING_TASKS_MESSAGE);
         for (int i = 0; i < tasks.size(); i++) {
-            message.append("\n%d.%s".formatted(i + 1, tasks.get(i)));
+            message.append(TASK_LIST_ENTRY_FORMAT.formatted(i + 1, tasks.get(i)));
         }
         return message.toString();
     }

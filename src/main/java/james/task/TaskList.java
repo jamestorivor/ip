@@ -8,6 +8,9 @@ import java.util.ArrayList;
  * add, delete, query, and filter tasks.
  */
 public class TaskList {
+    private static final String TASK_LIST_ENTRY_FORMAT = "%d.%s";
+    private static final String LINE_BREAK = "\n";
+
     private final ArrayList<Task> tasks;
 
     /**
@@ -160,6 +163,9 @@ public class TaskList {
     public String toString() {
         StringBuilder message = new StringBuilder();
         for (int i = 0; i < tasks.size(); i++) {
+            message.append(TASK_LIST_ENTRY_FORMAT.formatted(i + 1, tasks.get(i)));
+
+            message.append(LINE_BREAK);
             message.append("%d.%s\n".formatted(i + 1, tasks.get(i)));
         }
         return message.toString();

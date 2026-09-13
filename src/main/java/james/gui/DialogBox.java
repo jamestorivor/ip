@@ -20,6 +20,10 @@ import javafx.scene.text.TextFlow;
 
 /** Displays one message in the conversation. */
 public class DialogBox extends HBox {
+    private static final String DIALOG_BOX_RESOURCE = "/view/DialogBox.fxml";
+    private static final String DIALOG_LOAD_ERROR_MESSAGE = "Unable to load dialog box";
+    private static final String REPLY_STYLE_CLASS = "reply-label";
+
     @FXML
     private TextFlow dialog;
     @FXML
@@ -27,12 +31,12 @@ public class DialogBox extends HBox {
 
     private DialogBox(String text, boolean isUser, CommandResponse.Type type, Image img) {
         try {
-            FXMLLoader loader = new FXMLLoader(DialogBox.class.getResource("/view/DialogBox.fxml"));
+            FXMLLoader loader = new FXMLLoader(DialogBox.class.getResource(DIALOG_BOX_RESOURCE));
             loader.setRoot(this);
             loader.setController(this);
             loader.load();
         } catch (IOException e) {
-            throw new IllegalStateException("Unable to load dialog box", e);
+            throw new IllegalStateException(DIALOG_LOAD_ERROR_MESSAGE, e);
         }
         dialog.getChildren().setAll(new Text(text));
         userImage.setImage(img);
@@ -58,7 +62,7 @@ public class DialogBox extends HBox {
         Collections.reverse(tmp);
         getChildren().setAll(tmp);
         setAlignment(Pos.TOP_LEFT);
-        dialog.getStyleClass().add("reply-label");
+        dialog.getStyleClass().add(REPLY_STYLE_CLASS);
     }
 
     /** Creates a user message box. */

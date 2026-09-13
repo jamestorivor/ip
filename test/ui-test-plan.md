@@ -5,6 +5,8 @@
 - Java version: 25
 - Build command: `javac -d out/production/ip $(find src/main/java -name "*.java" ! -path "*/gui/*")`
 - Launch command: `java -cp out/production/ip james.James`
+- Build command: `./gradlew classes`
+- Launch command: `java -cp build/classes/java/main james.James`
 - Comparison: expected output is compared exactly, including line breaks and spaces.
 - Isolation: each test case starts a new application session in an empty temporary directory.
 - The build compiles the console backend; the JavaFX GUI is built and tested through Gradle.

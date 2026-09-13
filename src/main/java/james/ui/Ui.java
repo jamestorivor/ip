@@ -1,18 +1,16 @@
 package james.ui;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Scanner;
-
-import james.task.Task;
-import james.task.TaskList;
 
 /**
  * Handles user interactions by reading inputs and displaying formatted output.
  */
 public class Ui {
-
-    private final String DIVIDER = "____________________________________________________________";
+    private static final String LINE_BREAK = "\n";
+    private static final String GREETING_TITLE = "JAMES THE CHATTY CHATBOT\n";
+    private static final String GREETING_INTRODUCTION = "Hello! I'm James.\n";
+    private static final String GREETING_OFFER = "I can do anything for you!\n";
+    private static final String DIVIDER = "____________________________________________________________";
     private final Scanner scanner;
 
     /**
@@ -54,23 +52,16 @@ public class Ui {
      * @return The encased message string.
      */
     public String encaseMessage(String message) {
-        return DIVIDER + "\n" + message + DIVIDER;
+        return DIVIDER + LINE_BREAK + message + DIVIDER;
     }
 
     /**
      * Displays the welcome message and greeting banner.
      */
     public void greet() {
-        System.out.println(encaseMessage("JAMES THE CHATTY CHATBOT\n"
-                + "Hello! I'm James.\n"
-                + "I can do anything for you!\n") + "\n");
-    }
-
-    /**
-     * Displays the exit message.
-     */
-    public void sayBye() {
-        System.out.println(encaseMessage("Bye. Rest your eyes!\n"));
+        System.out.println(encaseMessage(GREETING_TITLE
+                + GREETING_INTRODUCTION
+                + GREETING_OFFER) + LINE_BREAK);
     }
 
     /**
@@ -79,6 +70,9 @@ public class Ui {
      * @param message Response text.
      */
     public void showResponse(String message) {
+        boolean hasTrailingLineBreak = message.endsWith(LINE_BREAK);
+        String terminatedMessage = hasTrailingLineBreak ? message : message + LINE_BREAK;
+        System.out.println(encaseMessage(terminatedMessage));
         System.out.println(encaseMessage(message.endsWith("\n") ? message : message + "\n"));
     }
 
