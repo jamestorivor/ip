@@ -129,67 +129,108 @@ public class Task {
         }
         boolean isTaskDone = doneStr.equals(DONE_STORAGE_VALUE);
 
-        Task task;
-        switch (type) {
-        case TODO_STORAGE_TYPE:
-            String[] todoParts = line.split(STORAGE_FIELD_PATTERN, 3);
-            String todoDesc = todoParts[2].trim();
-            if (todoDesc.isEmpty()) {
-                throw new UserInputException(EMPTY_TODO_DESCRIPTION_MESSAGE);
-            }
-            task = new ToDo(todoDesc);
-            break;
-        case DEADLINE_STORAGE_TYPE:
-            String[] deadlineParts = line.split(STORAGE_FIELD_PATTERN, 4);
-            if (deadlineParts.length < 4) {
-                throw new UserInputException(CORRUPTED_DEADLINE_MESSAGE_PREFIX + line);
-            }
-            String deadlineDesc = deadlineParts[2].trim();
-            String byStr = deadlineParts[3].trim();
-            if (deadlineDesc.isEmpty()) {
-                throw new UserInputException(EMPTY_DEADLINE_DESCRIPTION_MESSAGE);
-            }
-            if (byStr.isEmpty()) {
-                throw new UserInputException(EMPTY_DEADLINE_DATE_MESSAGE);
-            }
-            try {
-                LocalDate by = LocalDate.parse(byStr);
-                task = new Deadline(deadlineDesc, by);
-            } catch (DateTimeParseException e) {
-                throw new UserInputException(CORRUPTED_DEADLINE_DATE_MESSAGE_PREFIX + byStr);
-            }
-            break;
-        case EVENT_STORAGE_TYPE:
-            String[] eventParts = line.split(STORAGE_FIELD_PATTERN, 5);
-            if (eventParts.length < 5) {
-                throw new UserInputException(CORRUPTED_EVENT_MESSAGE_PREFIX + line);
-            }
-            String eventDesc = eventParts[2].trim();
-            String fromStr = eventParts[3].trim();
-            String toStr = eventParts[4].trim();
-            if (eventDesc.isEmpty()) {
-                throw new UserInputException(EMPTY_EVENT_DESCRIPTION_MESSAGE);
-            }
-            if (fromStr.isEmpty() || toStr.isEmpty()) {
-                throw new UserInputException(EMPTY_EVENT_TIMES_MESSAGE);
-            }
-            try {
-                LocalDate from = LocalDate.parse(fromStr);
-                LocalDate to = LocalDate.parse(toStr);
-                task = new Event(eventDesc, from, to);
-            } catch (DateTimeParseException e) {
-                throw new UserInputException(CORRUPTED_EVENT_DATE_MESSAGE_PREFIX + fromStr
-                        + EVENT_END_DATE_LABEL + toStr);
-            }
-            break;
-        default:
-            throw new UserInputException(UNKNOWN_TASK_TYPE_MESSAGE_PREFIX + type);
-        }
+        Task task = parseStoredTask(type, line);
 
         if (isTaskDone) {
             task.markDone();
         }
         return task;
+    }
+
+    /**
+     * Parses the fields belonging to the identified storage task type.
+     *
+     * @param type Trimmed storage type field.
+     * @param line Complete storage line.
+     * @return Task with its default uncompleted status.
+     * @throws UserInputException If the type is unknown or its fields are invalid.
+     */
+    private static Task parseStoredTask(String type, String line) throws UserInputException {
+        switch (type) {
+        case TODO_STORAGE_TYPE:
+            return parseStoredTodo(line);
+        case DEADLINE_STORAGE_TYPE:
+            return parseStoredDeadline(line);
+        case EVENT_STORAGE_TYPE:
+            return parseStoredEvent(line);
+        default:
+            throw new UserInputException(UNKNOWN_TASK_TYPE_MESSAGE_PREFIX + type);
+        }
+    }
+
+    /**
+     * Parses and validates the fields of a stored todo.
+     *
+     * @param line Complete storage line with validated common fields.
+     * @return Uncompleted todo with the stored description.
+     * @throws UserInputException If the task-specific fields are missing or invalid.
+     */
+    private static Task parseStoredTodo(String line) throws UserInputException {
+        String[] todoParts = line.split(STORAGE_FIELD_PATTERN, 3);
+        String todoDesc = todoParts[2].trim();
+        if (todoDesc.isEmpty()) {
+            throw new UserInputException(EMPTY_TODO_DESCRIPTION_MESSAGE);
+        }
+        return new ToDo(todoDesc);
+    }
+
+    /**
+     * Parses and validates the fields of a stored deadline.
+     *
+     * @param line Complete storage line with validated common fields.
+     * @return Uncompleted deadline with the stored description and due date.
+     * @throws UserInputException If the task-specific fields are missing or invalid.
+     */
+    private static Task parseStoredDeadline(String line) throws UserInputException {
+        String[] deadlineParts = line.split(STORAGE_FIELD_PATTERN, 4);
+        if (deadlineParts.length < 4) {
+            throw new UserInputException(CORRUPTED_DEADLINE_MESSAGE_PREFIX + line);
+        }
+        String deadlineDesc = deadlineParts[2].trim();
+        String byStr = deadlineParts[3].trim();
+        if (deadlineDesc.isEmpty()) {
+            throw new UserInputException(EMPTY_DEADLINE_DESCRIPTION_MESSAGE);
+        }
+        if (byStr.isEmpty()) {
+            throw new UserInputException(EMPTY_DEADLINE_DATE_MESSAGE);
+        }
+        try {
+            LocalDate by = LocalDate.parse(byStr);
+            return new Deadline(deadlineDesc, by);
+        } catch (DateTimeParseException e) {
+            throw new UserInputException(CORRUPTED_DEADLINE_DATE_MESSAGE_PREFIX + byStr);
+        }
+    }
+
+    /**
+     * Parses and validates the fields of a stored event.
+     *
+     * @param line Complete storage line with validated common fields.
+     * @return Uncompleted event with the stored description and dates.
+     * @throws UserInputException If the task-specific fields are missing or invalid.
+     */
+    private static Task parseStoredEvent(String line) throws UserInputException {
+        String[] eventParts = line.split(STORAGE_FIELD_PATTERN, 5);
+        if (eventParts.length < 5) {
+            throw new UserInputException(CORRUPTED_EVENT_MESSAGE_PREFIX + line);
+        }
+        String eventDesc = eventParts[2].trim();
+        String fromStr = eventParts[3].trim();
+        String toStr = eventParts[4].trim();
+        if (eventDesc.isEmpty()) {
+            throw new UserInputException(EMPTY_EVENT_DESCRIPTION_MESSAGE);
+        }
+        if (fromStr.isEmpty() || toStr.isEmpty()) {
+            throw new UserInputException(EMPTY_EVENT_TIMES_MESSAGE);
+        }
+        try {
+            LocalDate from = LocalDate.parse(fromStr);
+            LocalDate to = LocalDate.parse(toStr);
+            return new Event(eventDesc, from, to);
+        } catch (DateTimeParseException e) {
+            throw new UserInputException(CORRUPTED_EVENT_DATE_MESSAGE_PREFIX + fromStr
+                    + EVENT_END_DATE_LABEL + toStr);
+        }
     }
 
     /**

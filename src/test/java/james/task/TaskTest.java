@@ -270,4 +270,67 @@ public class TaskTest {
     public void fromFileString_unknownTaskType_throwsUserInputException() {
         assertThrows(UserInputException.class, () -> Task.fromFileString("X | 0 | unknown"));
     }
+
+    @Test
+    public void fromFileString_todoWithDelimiter_preservesDescription() throws UserInputException {
+        Task task = Task.fromFileString(" T | 1 |  read | discuss  ");
+
+        assertInstanceOf(ToDo.class, task);
+        assertEquals("read | discuss", task.getDescription());
+        assertTrue(task.isDone());
+    }
+
+    @Test
+    public void fromFileString_deadlineWithBlankDescription_preservesErrorMessage() {
+        UserInputException exception = assertThrows(UserInputException.class,
+                () -> Task.fromFileString("D | 0 |   | 2026-06-06"));
+
+        assertEquals("Deadline description cannot be empty in storage.", exception.getMessage());
+    }
+
+    @Test
+    public void fromFileString_deadlineWithBlankDate_preservesErrorMessage() {
+        UserInputException exception = assertThrows(UserInputException.class,
+                () -> Task.fromFileString("D | 0 | return book |   "));
+
+        assertEquals("Deadline date cannot be empty in storage.", exception.getMessage());
+    }
+
+    @Test
+    public void fromFileString_eventWithBlankDescription_preservesErrorMessage() {
+        UserInputException exception = assertThrows(UserInputException.class,
+                () -> Task.fromFileString("E | 0 |   | 2026-08-06 | 2026-08-08"));
+
+        assertEquals("Event description cannot be empty in storage.", exception.getMessage());
+    }
+
+    @Test
+    public void fromFileString_eventWithEitherDateBlank_preservesErrorMessage() {
+        String[] lines = {
+            "E | 0 | meeting |   | 2026-08-08",
+            "E | 0 | meeting | 2026-08-06 |   "
+        };
+        for (String line : lines) {
+            UserInputException exception = assertThrows(UserInputException.class,
+                    () -> Task.fromFileString(line));
+
+            assertEquals("Event times cannot be empty in storage.", exception.getMessage());
+        }
+    }
+
+    @Test
+    public void fromFileString_eventWithInvalidStartDate_preservesErrorMessage() {
+        UserInputException exception = assertThrows(UserInputException.class,
+                () -> Task.fromFileString("E | 0 | meeting | invalid-date | 2026-08-08"));
+
+        assertEquals("Corrupt event date in storage from:invalid-date to: 2026-08-08", exception.getMessage());
+    }
+
+    @Test
+    public void fromFileString_invalidStatusAndUnknownType_reportsStatusFirst() {
+        UserInputException exception = assertThrows(UserInputException.class,
+                () -> Task.fromFileString("X | 2 | unknown"));
+
+        assertEquals("Invalid completion status in storage: 2", exception.getMessage());
+    }
 }
