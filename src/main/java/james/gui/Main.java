@@ -14,12 +14,14 @@ public class Main extends Application {
 
     private final String JAMES_DATA_FILE_PATH = "data/james.txt";
 
-    private James james = new James(JAMES_DATA_FILE_PATH);
+    private final James james = new James(JAMES_DATA_FILE_PATH);
 
     /** Loads and displays the main window. */
     @Override
     public void start(Stage stage) throws IOException {
-        FXMLLoader loader = new FXMLLoader(Main.class.getResource("/view/MainWindow.fxml"));
+        String MAIN_WINDOW_FXML_FILE_PATH = "/view/MainWindow.fxml";
+
+        FXMLLoader loader = new FXMLLoader(Main.class.getResource(MAIN_WINDOW_FXML_FILE_PATH));
         AnchorPane root = loader.load();
         loader.<MainWindow>getController().setJames(james);
         stage.setScene(new Scene(root));
