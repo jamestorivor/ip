@@ -98,19 +98,19 @@ public class CommandProcessor {
         String unknownCommandMessage = "I don't know that recipe! Try list or todo <description>.";
 
         return switch (command) {
-            case LIST_BY_DATE -> listByDate(arguments);
-            case FIND -> find(arguments);
-            case UNDO -> undo(arguments);
-            case DELETE -> delete(arguments);
-            case TODO -> add(Parser.parseTodo(arguments));
-            case EVENT -> add(Parser.parseEvent(arguments));
-            case DEADLINE -> add(Parser.parseDeadline(arguments));
-            case MARK -> mark(arguments);
-            case UNMARK -> unmark(arguments);
-            case LIST -> listTasks();
-            case RANDOM_STICKER -> selectRandomSticker();
-            case BYE -> exit();
-            default -> throw new UserInputException(unknownCommandMessage);
+        case LIST_BY_DATE -> listByDate(arguments);
+        case FIND -> find(arguments);
+        case UNDO -> undo(arguments);
+        case DELETE -> delete(arguments);
+        case TODO -> add(Parser.parseTodo(arguments));
+        case EVENT -> add(Parser.parseEvent(arguments));
+        case DEADLINE -> add(Parser.parseDeadline(arguments));
+        case MARK -> mark(arguments);
+        case UNMARK -> unmark(arguments);
+        case LIST -> listTasks();
+        case RANDOM_STICKER -> selectRandomSticker();
+        case BYE -> exit();
+        default -> throw new UserInputException(unknownCommandMessage);
         };
     }
 

@@ -17,12 +17,16 @@ import james.command.CommandProcessor;
 import james.command.CommandResponse;
 import james.command.Sticker;
 
-/** Tests command processing across the shared application backend. */
+/**
+ * Tests command processing across the shared application backend.
+ */
 public class CommandProcessorTest {
     @TempDir
     private Path temporaryDirectory;
 
-    /** Verifies that adding and listing a task updates the shared state. */
+    /**
+     * Verifies that adding and listing a task updates the shared state.
+     */
     @Test
     public void process_addThenList_returnsUpdatedTaskList() {
         CommandProcessor processor = new CommandProcessor(getStoragePath());
@@ -34,7 +38,9 @@ public class CommandProcessorTest {
         assertEquals("Let's peek in the basket. Your tasks:\n1.[T][ ] revise Java", listResponse.getMessage());
     }
 
-    /** Verifies that invalid input becomes a styled error response. */
+    /**
+     * Verifies that invalid input becomes a styled error response.
+     */
     @Test
     public void process_invalidCommand_returnsErrorResponse() {
         CommandResponse response = new CommandProcessor(getStoragePath()).process("unknown");
@@ -45,7 +51,9 @@ public class CommandProcessorTest {
         assertFalse(response.isExit());
     }
 
-    /** Verifies that mutations persist when a new processor is created. */
+    /**
+     * Verifies that mutations persist when a new processor is created.
+     */
     @Test
     public void process_addThenReload_persistsTask() {
         String storagePath = getStoragePath();
@@ -56,7 +64,9 @@ public class CommandProcessorTest {
         assertTrue(response.getMessage().contains("submit report"));
     }
 
-    /** Verifies that the bye command requests application termination. */
+    /**
+     * Verifies that the bye command requests application termination.
+     */
     @Test
     public void process_bye_returnsExitResponse() {
         CommandResponse response = new CommandProcessor(getStoragePath()).process("bye");

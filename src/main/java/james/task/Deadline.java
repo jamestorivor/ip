@@ -14,7 +14,7 @@ public class Deadline extends Task {
     private final LocalDate by;
 
     /**
-     * Initializes an uncompleted deadline task with the given description and due time.
+     * Initializes an uncompleted deadline task with the given description and due date.
      *
      * @param description Description of the deadline task.
      * @param by The deadline date.

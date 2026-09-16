@@ -15,11 +15,11 @@ public class Event extends Task {
     private final LocalDate to;
 
     /**
-     * Initializes an uncompleted event task with the given description, start time, and end time.
+     * Initializes an uncompleted event task with the given description, start date, and end date.
      *
      * @param description Description of the event.
-     * @param from Start date LocalDate.
-     * @param to End date LocalDate.
+     * @param from Start date of the event.
+     * @param to End date of the event.
      */
     public Event(String description, LocalDate from, LocalDate to) {
         super(description);

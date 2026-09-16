@@ -113,6 +113,9 @@ public class DialogBox extends HBox {
 
     /**
      * Creates a user message box.
+     *
+     * @param text Message entered by the user.
+     * @return Dialog displaying the user's message.
      */
     public static DialogBox createUser(String text) {
         return new DialogBox(text, true, CommandResponse.Type.NORMAL);
@@ -120,6 +123,9 @@ public class DialogBox extends HBox {
 
     /**
      * Creates a James response box.
+     *
+     * @param response Command result containing reply text and optional sticker information.
+     * @return Dialog displaying the response in its requested display mode.
      */
     public static DialogBox createJames(CommandResponse response) {
         DialogBox db = new DialogBox(response.getMessage(), false, response.getType());

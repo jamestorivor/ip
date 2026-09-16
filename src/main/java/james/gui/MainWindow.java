@@ -38,7 +38,7 @@ public class MainWindow extends AnchorPane {
     private James james;
 
     /**
-     * Initializes automatic scrolling for new messages.
+     * Initializes automatic scrolling, responsive dialog widths, and the compact header.
      */
     @FXML
     public void initialize() {
@@ -74,7 +74,9 @@ public class MainWindow extends AnchorPane {
     }
 
     /**
-     * Injects the James instance.
+     * Sets the James instance and displays the greeting and any task-loading warnings.
+     *
+     * @param james Application backend used to process commands and retrieve loading warnings.
      */
     public void setJames(James james) {
         this.james = james;
