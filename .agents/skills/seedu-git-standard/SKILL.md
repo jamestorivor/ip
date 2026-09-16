@@ -47,14 +47,7 @@ Non-trivial commits must include a detailed commit body giving context and ratio
 * **Separation**:
   * Always separate the subject line from the body with a single **blank line**.
 * **Line wrapping**:
-  * If a body line exceeds **72 characters**, insert actual newline
-    characters at word boundaries so each resulting line is at most
-    **72 characters**. Do not rely on visual wrapping in the editor.
-  * Count bullet markers and indentation toward the limit; preserve
-    paragraph breaks and indent wrapped bullet continuations.
-  * Check the final message before presenting or committing it, and wrap
-    any remaining body lines longer than **72 characters**. Shorten an
-    overlong subject instead of wrapping it onto multiple lines.
+  * Wrap every line in the commit body at **72 characters**.
 * **Paragraph separation**:
   * Use a single blank line between paragraphs in the body.
 * **Explain WHAT and WHY, not HOW**:

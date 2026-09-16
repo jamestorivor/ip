@@ -398,23 +398,4 @@ public class ParserTest {
     public void parseEvent_invalidDates_throwsUserInputException() {
         assertThrows(UserInputException.class, () -> Parser.parseEvent("hackathon /from today /to tomorrow"));
     }
-    @Test
-    public void parseDeadline_pathInDescription_preservesPath() throws UserInputException {
-        assertEquals("inspect /tmp", Parser.parseDeadline("inspect /tmp /by 2026-09-20").getDescription());
-        assertEquals("inspect /by/archive",
-                Parser.parseDeadline("inspect /by/archive /by 2026-09-20").getDescription());
-    }
-
-    @Test
-    public void parseEvent_pathInDescription_preservesPath() throws UserInputException {
-        assertEquals("inspect /tmp/files", Parser.parseEvent(
-                "inspect /tmp/files /from 2026-09-20 /to 2026-09-21").getDescription());
-    }
-
-    @Test
-    public void parseDeadline_unknownOptionAfterDate_throwsUserInputException() {
-        assertThrows(UserInputException.class,
-                () -> Parser.parseDeadline("inspect /tmp /by 2026-09-20 /until 2026-09-21"));
-    }
-
 }

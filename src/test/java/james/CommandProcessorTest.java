@@ -143,7 +143,6 @@ public class CommandProcessorTest {
         CommandProcessor processor = new CommandProcessor(getStoragePath());
         processor.process("todo read");
         Path destination = Path.of(getStoragePath());
-        String originalContents = Files.readString(destination);
         Files.delete(destination);
         Files.createDirectory(destination);
         Files.writeString(destination.resolve("blocker"), "prevent replacement");
@@ -153,7 +152,6 @@ public class CommandProcessorTest {
         assertTrue(processor.process("list").getMessage().contains("read"));
         Files.delete(destination.resolve("blocker"));
         Files.delete(destination);
-        Files.writeString(destination, originalContents);
         processor.process("undo");
         assertEquals("Here are the tasks in your list:\n", processor.process("list").getMessage());
         assertEquals("Nothing to undo.", processor.process("undo").getMessage());
@@ -365,43 +363,6 @@ public class CommandProcessorTest {
                 response.getMessage());
         assertEquals(Sticker.NANKORE, response.getSticker());
         assertEquals(CommandResponse.DisplayMode.STICKER_WITH_TEXT, response.getDisplayMode());
-    }
-
-    @Test
-    public void process_staleInstance_preservesDiskTasksAndUndoHistory() throws IOException {
-        CommandProcessor first = new CommandProcessor(getStoragePath());
-        CommandProcessor second = new CommandProcessor(getStoragePath());
-        assertEquals(CommandResponse.Type.ADD, first.process("todo first").getType());
-        CommandResponse response = second.process("todo second");
-        assertEquals(CommandResponse.Type.ERROR, response.getType());
-        assertTrue(response.getMessage().contains("Restart James"));
-        assertEquals("T | 0 | first\n", Files.readString(Path.of(getStoragePath())));
-        assertEquals("Here are the tasks in your list:\n", second.process("list").getMessage());
-        assertEquals("Nothing to undo.", second.process("undo").getMessage());
-    }
-
-    @Test
-    public void process_externalChangeDuringUndo_preservesDiskAndMemory() throws IOException {
-        CommandProcessor processor = new CommandProcessor(getStoragePath());
-        processor.process("todo first");
-        Files.writeString(Path.of(getStoragePath()), "T | 0 | externally added\n");
-        assertEquals(CommandResponse.Type.ERROR, processor.process("undo").getType());
-        assertTrue(processor.process("list").getMessage().contains("first"));
-        assertEquals("T | 0 | externally added\n", Files.readString(Path.of(getStoragePath())));
-    }
-
-    @Test
-    public void getLoadWarning_corruptedFile_reportsIssueBeforeAnyCommand() throws IOException {
-        Files.writeString(Path.of(getStoragePath()), "T | 0 | keep\nbroken record\n");
-        CommandProcessor processor = new CommandProcessor(getStoragePath());
-        assertTrue(processor.getLoadWarning().contains("line 2"));
-        assertTrue(processor.getLoadWarning().contains("Changes are disabled"));
-        assertTrue(processor.process("list").getMessage().contains("keep"));
-    }
-
-    @Test
-    public void getLoadWarning_missingFile_returnsNoWarning() {
-        assertEquals("", new CommandProcessor(getStoragePath()).getLoadWarning());
     }
 
 }

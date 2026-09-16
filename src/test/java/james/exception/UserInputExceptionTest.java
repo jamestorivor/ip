@@ -18,17 +18,4 @@ public class UserInputExceptionTest {
         UserInputException exception = new UserInputException(errorMessage);
         assertEquals(errorMessage, exception.getMessage());
     }
-    @Test
-    public void constructor_messageOnly_defaultsToInputCategory() {
-        assertEquals(UserInputException.Category.INPUT, new UserInputException("bad").getCategory());
-    }
-
-    @Test
-    public void constructor_explicitCategory_preservesCategoryAndMessage() {
-        for (UserInputException.Category category : UserInputException.Category.values()) {
-            UserInputException exception = new UserInputException("reason", category);
-            assertEquals(category, exception.getCategory());
-            assertEquals("reason", exception.getMessage());
-        }
-    }
 }

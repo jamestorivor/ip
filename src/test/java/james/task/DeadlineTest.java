@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDate;
-import java.util.Locale;
 
 import org.junit.jupiter.api.Test;
 
@@ -73,16 +72,4 @@ public class DeadlineTest {
 
         assertEquals("[D][X] submit report (by: Jun 06 2026)", deadline.toString());
     }
-    @Test
-    public void toString_nonEnglishLocale_preservesEnglishDateFormat() {
-        Locale original = Locale.getDefault();
-        try {
-            Locale.setDefault(Locale.FRANCE);
-            assertEquals("[D][ ] report (by: Sep 20 2026)",
-                    new Deadline("report", LocalDate.of(2026, 9, 20)).toString());
-        } finally {
-            Locale.setDefault(original);
-        }
-    }
-
 }

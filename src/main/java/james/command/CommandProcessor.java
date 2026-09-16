@@ -54,15 +54,6 @@ public class CommandProcessor {
     }
 
     /**
-     * Returns loading diagnostics for display before the first command.
-     *
-     * @return Startup warning, or an empty string if all tasks loaded successfully.
-     */
-    public String getLoadWarning() {
-        return storage.getLoadWarning();
-    }
-
-    /**
      * Processes one command and returns its displayable result.
      *
      * @param input Raw command input.
@@ -236,20 +227,13 @@ public class CommandProcessor {
                         "Repair the saved file or restore read access, then restart James.",
                         UserInputException.Category.STORAGE);
             }
-            throw new UserInputException("Could not save tasks. No changes were made." + getSaveGuidance(),
+            throw new UserInputException("Could not save tasks. No changes were made.",
                     UserInputException.Category.STORAGE);
         }
         undoSnapshots.push(previous);
         if (undoSnapshots.size() > MAX_UNDO_CHANGES) {
             undoSnapshots.removeLast();
         }
-    }
-
-    /**
-     * Appends available storage recovery guidance to a failed command response.
-     */
-    private String getSaveGuidance() {
-        return storage.getSaveError().isEmpty() ? "" : "\n" + storage.getSaveError();
     }
 
     /**
@@ -264,7 +248,7 @@ public class CommandProcessor {
         }
         TaskList previous = undoSnapshots.peek();
         if (!storage.save(previous)) {
-            throw new UserInputException("Could not save tasks. Undo was not applied; try again." + getSaveGuidance(),
+            throw new UserInputException("Could not save tasks. Undo was not applied; try again.",
                     UserInputException.Category.STORAGE);
         }
         taskList = undoSnapshots.pop();
