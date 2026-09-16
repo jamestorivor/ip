@@ -908,7 +908,7 @@ ____________________________________________________________
 
 ## TC-16: Protect corrupted storage
 
-**Aim:** Explain recovery and preserve the original file when saved data is malformed.
+**Aim:** Show a startup warning before any command, explain recovery, and preserve the original file when saved data is malformed.
 
 **Setup:** Create `data/james.txt` containing `broken record` followed by a newline. Verify its contents remain unchanged afterwards.
 
@@ -923,13 +923,17 @@ bye
 **Expected output:**
 
 ```text
-Warning: Skipping invalid saved task entry: broken record
 ____________________________________________________________
 JAMES THE CHATTY CHATBOT
 Hello! I'm James.
 I can do anything for you!
 ____________________________________________________________
 
+____________________________________________________________
+Warning: Skipping invalid saved task at line 1.
+Some saved tasks could not be loaded. Changes are disabled.
+Repair the saved file or restore read access, then restart James.
+____________________________________________________________
 ____________________________________________________________
 OH NO James Doesnt Know What To Do!!!
 Saved tasks could not be fully loaded. No changes were made.
@@ -982,6 +986,89 @@ Here are the tasks in your list:
 ____________________________________________________________
 ____________________________________________________________
 Nothing to undo.
+____________________________________________________________
+____________________________________________________________
+Bye. Rest your eyes!
+____________________________________________________________
+```
+
+## TC-18: Allow paths in descriptions
+
+**Aim:** Accept slash-prefixed paths in deadline and event descriptions while rejecting repeated date options.
+
+**Inputs:**
+
+```text
+deadline inspect /tmp /by 2026-09-20
+event inspect /tmp/files /from 2026-09-20 /to 2026-09-21
+deadline inspect /tmp /by 2026-09-20 /by 2026-09-21
+list
+bye
+```
+
+**Expected output:**
+
+```text
+____________________________________________________________
+JAMES THE CHATTY CHATBOT
+Hello! I'm James.
+I can do anything for you!
+____________________________________________________________
+
+____________________________________________________________
+Got it. I've added this task:
+[D][ ] inspect /tmp (by: Sep 20 2026)
+Now you have 1 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Got it. I've added this task:
+[E][ ] inspect /tmp/files (from: Sep 20 2026 to: Sep 21 2026)
+Now you have 2 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+OH NO James Doesnt Know What To Do!!!
+Date options must appear once and in order: /by
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list:
+1.[D][ ] inspect /tmp (by: Sep 20 2026)
+2.[E][ ] inspect /tmp/files (from: Sep 20 2026 to: Sep 21 2026)
+____________________________________________________________
+____________________________________________________________
+Bye. Rest your eyes!
+____________________________________________________________
+```
+
+## TC-19: Reject saved control characters
+
+**Aim:** Keep legacy pipes, reject control characters without printing them, and show the startup warning.
+
+**Setup:** Create `data/james.txt` with two newline-terminated records: `T | 0 | safe | legacy` and `T | 0 | unsafe<U+001B>[2Jrecord`, replacing `<U+001B>` with the actual ESC character. Verify the file remains unchanged.
+
+**Inputs:**
+
+```text
+list
+bye
+```
+
+**Expected output:**
+
+```text
+____________________________________________________________
+JAMES THE CHATTY CHATBOT
+Hello! I'm James.
+I can do anything for you!
+____________________________________________________________
+
+____________________________________________________________
+Warning: Skipping invalid saved task at line 2.
+Some saved tasks could not be loaded. Changes are disabled.
+Repair the saved file or restore read access, then restart James.
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list:
+1.[T][ ] safe | legacy
 ____________________________________________________________
 ____________________________________________________________
 Bye. Rest your eyes!

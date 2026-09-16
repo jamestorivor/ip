@@ -57,6 +57,10 @@ public class MainWindow extends AnchorPane {
         dialogContainer.getChildren().add(DialogBox.createJames(new CommandResponse(
                 GREETING_MESSAGE,
                 CommandResponse.Type.NORMAL, false), jamesImage));
+        if (!james.getLoadWarning().isEmpty()) {
+            dialogContainer.getChildren().add(DialogBox.createJames(new CommandResponse(
+                    james.getLoadWarning(), CommandResponse.Type.ERROR, false), jamesImage));
+        }
     }
 
     /**

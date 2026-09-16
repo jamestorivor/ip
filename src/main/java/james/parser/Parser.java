@@ -244,12 +244,13 @@ public class Parser {
     }
 
     /**
-     * Rejects repeated, unknown, or out-of-order date options.
+     * Validates date options while allowing slash-prefixed paths in the description.
      */
     private static void validateOptions(String arguments, String... expected) throws UserInputException {
         int optionIndex = 0;
         for (String token : arguments.trim().split("\\s+")) {
-            if (token.startsWith("/")) {
+            boolean isDateOption = token.equals("/by") || token.equals("/from") || token.equals("/to");
+            if (isDateOption || (optionIndex > 0 && token.startsWith("/"))) {
                 if (optionIndex >= expected.length || !token.equals(expected[optionIndex])) {
                     throw new UserInputException("Date options must appear once and in order: " +
                             String.join(" ", expected));

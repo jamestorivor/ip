@@ -1,13 +1,17 @@
 package james.storage;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
+import java.nio.channels.FileChannel;
+import java.nio.channels.FileLock;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -158,7 +162,7 @@ public class StorageTest {
         Storage storage = new Storage(file.toString());
         storage.load();
         assertFalse(storage.save(new TaskList()));
-        assertEquals(2, Files.size(file));
+        assertArrayEquals(contents, Files.readAllBytes(file));
     }
 
     @Test
@@ -167,6 +171,48 @@ public class StorageTest {
         assertTrue(storage.load().isEmpty());
         assertFalse(storage.save(new TaskList()));
         assertTrue(Files.isDirectory(tempDir));
+    }
+
+    @Test
+    public void save_deletedLoadedFile_refusesToRecreateStaleData() throws IOException {
+        Path file = tempDir.resolve("tasks.txt");
+        Files.writeString(file, "T | 0 | keep\n");
+        Storage storage = new Storage(file.toString());
+        storage.load();
+        Files.delete(file);
+        assertFalse(storage.save(new TaskList()));
+        assertFalse(Files.exists(file));
+        assertTrue(storage.getSaveError().contains("Restart James"));
+    }
+
+    @Test
+    public void save_heldWriterLock_refusesThenAllowsRetry() throws IOException {
+        Path file = tempDir.resolve("tasks.txt");
+        Storage storage = new Storage(file.toString());
+        storage.load();
+        try (FileChannel channel = FileChannel.open(tempDir.resolve("tasks.txt.lock"),
+                StandardOpenOption.CREATE, StandardOpenOption.WRITE);
+                FileLock lock = channel.lock()) {
+            assertTrue(lock.isValid());
+            assertFalse(storage.save(new TaskList()));
+            assertTrue(storage.getSaveError().contains("Another instance"));
+            assertFalse(Files.exists(file));
+        }
+        assertTrue(storage.save(new TaskList()));
+        assertEquals("", storage.getSaveError());
+    }
+
+    @Test
+    public void load_controlCharacterInTodo_reportsLineAndProtectsOriginal() throws IOException {
+        Path file = tempDir.resolve("tasks.txt");
+        String contents = "T | 0 | safe | legacy\nT | 0 | unsafe" + (char) 27 + "[2Jrecord\n";
+        Files.writeString(file, contents);
+        Storage storage = new Storage(file.toString());
+        assertEquals(1, storage.load().size());
+        assertTrue(storage.getLoadWarning().contains("line 2"));
+        assertFalse(storage.getLoadWarning().contains(String.valueOf((char) 27)));
+        assertFalse(storage.save(new TaskList()));
+        assertEquals(contents, Files.readString(file));
     }
 
 }

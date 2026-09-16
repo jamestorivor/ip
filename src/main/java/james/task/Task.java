@@ -3,6 +3,7 @@ package james.task;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.Locale;
 
 import james.exception.UserInputException;
 
@@ -11,7 +12,7 @@ import james.exception.UserInputException;
  */
 public class Task {
     protected static final DateTimeFormatter DISPLAY_FORMAT =
-            DateTimeFormatter.ofPattern("MMM dd yyyy");
+            DateTimeFormatter.ofPattern("MMM dd yyyy", Locale.US);
 
     private static final String DONE_MARK = "[X]";
     private static final String NOT_DONE_MARK = "[ ]";
@@ -154,6 +155,9 @@ public class Task {
             throw new UserInputException(EMPTY_STORAGE_LINE_MESSAGE);
         }
 
+        if (line.chars().anyMatch(Character::isISOControl)) {
+            throw new UserInputException("Saved task entries cannot contain control characters.");
+        }
         String[] initialParts = line.split(STORAGE_FIELD_PATTERN, 3);
         if (initialParts.length < 3) {
             throw new UserInputException(CORRUPTED_TASK_MESSAGE_PREFIX + line);

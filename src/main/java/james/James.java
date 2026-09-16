@@ -36,10 +36,22 @@ public class James {
     }
 
     /**
+     * Returns any startup warning for display by the console or graphical interface.
+     *
+     * @return Loading diagnostics, or an empty string if loading succeeded.
+     */
+    public String getLoadWarning() {
+        return commandProcessor.getLoadWarning();
+    }
+
+    /**
      * Starts the main command processing loop.
      */
     public void run() {
         ui.greet();
+        if (!getLoadWarning().isEmpty()) {
+            ui.showResponse(getLoadWarning());
+        }
         boolean isRunning = true;
         while (isRunning && ui.hasNextCommand()) {
             CommandResponse response = commandProcessor.process(ui.readCommand());
