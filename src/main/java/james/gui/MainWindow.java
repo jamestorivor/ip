@@ -6,7 +6,6 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
-import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
@@ -17,18 +16,15 @@ import javafx.stage.Window;
  */
 public class MainWindow extends AnchorPane {
     private static final String GREETING_MESSAGE =
-            "JAMES THE CHATTY CHATBOT\nHello! I'm James.\nI can do anything for you!";
+            "James the ぱんどろぼう\nShh! I'm James, your bread thief.\n" +
+            "I'll guard your tasks. The bread? No promises!";
 
-    private static final String JAMES_IMAGE_FILE_PATH = "/images/james.png";
-    private static final String USER_IMAGE_FILE_PATH = "/images/user.png";
 
     @FXML private ScrollPane scrollPane;
     @FXML private VBox dialogContainer;
     @FXML private TextField userInput;
 
     private James james;
-    private final Image jamesImage = new Image(getClass().getResourceAsStream(JAMES_IMAGE_FILE_PATH));
-    private final Image userImage = new Image(getClass().getResourceAsStream(USER_IMAGE_FILE_PATH));
 
     /**
      * Initializes automatic scrolling for new messages.
@@ -56,7 +52,11 @@ public class MainWindow extends AnchorPane {
         this.james = james;
         dialogContainer.getChildren().add(DialogBox.createJames(new CommandResponse(
                 GREETING_MESSAGE,
-                CommandResponse.Type.NORMAL, false), jamesImage));
+                CommandResponse.Type.NORMAL, false)));
+        if (!james.getLoadWarning().isEmpty()) {
+            dialogContainer.getChildren().add(DialogBox.createJames(new CommandResponse(
+                    james.getLoadWarning(), CommandResponse.Type.ERROR, false)));
+        }
     }
 
     /**
@@ -69,8 +69,8 @@ public class MainWindow extends AnchorPane {
             return;
         }
         CommandResponse response = james.getResponse(input);
-        DialogBox userDialog = DialogBox.createUser(input, userImage);
-        DialogBox jamesDialog = DialogBox.createJames(response, jamesImage);
+        DialogBox userDialog = DialogBox.createUser(input);
+        DialogBox jamesDialog = DialogBox.createJames(response);
         setDialogWidth(userDialog);
         setDialogWidth(jamesDialog);
         dialogContainer.getChildren().addAll(userDialog, jamesDialog);
