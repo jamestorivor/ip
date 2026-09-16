@@ -1,20 +1,18 @@
 package james.gui;
 
 import java.io.IOException;
-import java.util.Collections;
 
 import james.command.CommandResponse;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
@@ -28,22 +26,22 @@ public class DialogBox extends HBox {
     private static final String DIALOG_LOAD_ERROR_MESSAGE = "Unable to load dialog box";
     private static final double RANDOM_STICKER_SIZE = 160;
     private static final double RESPONSE_STICKER_SIZE = 120;
+    private static final double GROUPED_MESSAGE_GAP = 4;
+    private static final double USER_WIDTH_FRACTION = 0.82;
+    private static final double DIALOG_HORIZONTAL_MARGIN = 24;
     private static final String REPLY_STYLE_CLASS = "reply-label";
 
     @FXML
     private TextFlow dialog;
-    @FXML
-    private ImageView userImage;
 
     /**
-     * Loads the message layout and configures its text, profile image, and response styling.
+     * Loads the message layout and configures its text and response styling.
      *
      * @param text Message text.
      * @param isUser Whether this message belongs to the user.
      * @param type Response category used for styling James's replies.
-     * @param img Profile image displayed beside the message.
      */
-    private DialogBox(String text, boolean isUser, CommandResponse.Type type, Image img) {
+    private DialogBox(String text, boolean isUser, CommandResponse.Type type) {
         try {
             FXMLLoader loader = new FXMLLoader(DialogBox.class.getResource(DIALOG_BOX_RESOURCE));
             loader.setRoot(this);
@@ -53,7 +51,6 @@ public class DialogBox extends HBox {
             throw new IllegalStateException(DIALOG_LOAD_ERROR_MESSAGE, e);
         }
         dialog.getChildren().setAll(new Text(text));
-        userImage.setImage(img);
         setFillHeight(false);
         setMinWidth(0);
         setPrefWidth(0);
@@ -63,24 +60,25 @@ public class DialogBox extends HBox {
         dialog.setMinHeight(0);
 
         HBox.setHgrow(dialog, Priority.ALWAYS);
-        if (!isUser) {
+        if (isUser) {
+            HBox.setHgrow(dialog, Priority.NEVER);
+            dialog.maxWidthProperty().bind(Bindings.max(0, widthProperty().subtract(DIALOG_HORIZONTAL_MARGIN)
+                    .multiply(USER_WIDTH_FRACTION)));
+            dialog.getStyleClass().add("user-command");
+        } else {
+            setAlignment(Pos.TOP_LEFT);
+            dialog.getStyleClass().add(REPLY_STYLE_CLASS);
             dialog.getStyleClass().add(type.name().toLowerCase());
+            if (type == CommandResponse.Type.ERROR) {
+                Text heading = new Text("Error\n");
+                heading.getStyleClass().add("error-heading");
+                dialog.getChildren().addFirst(heading);
+            }
         }
     }
 
     /**
-     * Flips the dialog box such that the ImageView is on the left and text on the right.
-     */
-    private void flip() {
-        ObservableList<Node> tmp = FXCollections.observableArrayList(getChildren());
-        Collections.reverse(tmp);
-        getChildren().setAll(tmp);
-        setAlignment(Pos.TOP_LEFT);
-        dialog.getStyleClass().add(REPLY_STYLE_CLASS);
-    }
-
-    /**
-     * Displays a large standalone sticker or a smaller sticker above the existing text.
+     * Displays a compact sticker bubble, grouped below any reply text.
      */
     private void showSticker(CommandResponse response) {
         boolean isStickerOnly = response.getDisplayMode() == CommandResponse.DisplayMode.STICKER_ONLY;
@@ -91,15 +89,23 @@ public class DialogBox extends HBox {
         sticker.setPreserveRatio(true);
         sticker.setAccessibleText(response.getSticker().name() + " sticker");
 
-        // A separate container keeps the sticker above the text while allowing the text to wrap.
+        // Cap the bubble at its preferred size so it hugs the artwork instead of filling the row.
+        VBox stickerBubble = new VBox(sticker);
+        stickerBubble.getStyleClass().addAll("sticker-bubble", REPLY_STYLE_CLASS);
+        stickerBubble.setMaxWidth(Region.USE_PREF_SIZE);
+        stickerBubble.setMinHeight(Region.USE_PREF_SIZE);
+
+        // Keep text flexible while the two bubbles form one closely spaced reply group.
         int contentIndex = getChildren().indexOf(dialog);
         getChildren().remove(dialog);
-        VBox content = new VBox(8, sticker);
+        VBox content = new VBox(GROUPED_MESSAGE_GAP);
+        content.setAlignment(Pos.TOP_LEFT);
         content.setMinWidth(0);
         content.setMaxWidth(Double.MAX_VALUE);
         if (!isStickerOnly) {
             content.getChildren().add(dialog);
         }
+        content.getChildren().add(stickerBubble);
         HBox.setMargin(content, new Insets(0, 7, 0, 7));
         HBox.setHgrow(content, Priority.ALWAYS);
         getChildren().add(contentIndex, content);
@@ -108,19 +114,18 @@ public class DialogBox extends HBox {
     /**
      * Creates a user message box.
      */
-    public static DialogBox createUser(String text, Image image) {
-        return new DialogBox(text, true, CommandResponse.Type.NORMAL, image);
+    public static DialogBox createUser(String text) {
+        return new DialogBox(text, true, CommandResponse.Type.NORMAL);
     }
 
     /**
      * Creates a James response box.
      */
-    public static DialogBox createJames(CommandResponse response, Image image) {
-        DialogBox db = new DialogBox(response.getMessage(), false, response.getType(), image);
+    public static DialogBox createJames(CommandResponse response) {
+        DialogBox db = new DialogBox(response.getMessage(), false, response.getType());
         if (response.getStickerPath() != null) {
             db.showSticker(response);
         }
-        db.flip();
         return db;
     }
 }

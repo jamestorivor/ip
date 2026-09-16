@@ -14,7 +14,7 @@ import javafx.stage.Stage;
  */
 public class Main extends Application {
     private static final String MAIN_WINDOW_RESOURCE = "/view/MainWindow.fxml";
-    private static final String WINDOW_TITLE = "James";
+    private static final String WINDOW_TITLE = "James the ぱんどろぼう";
     private static final String JAMES_DATA_FILE_PATH = "data/james.txt";
 
     private James james = new James(JAMES_DATA_FILE_PATH);

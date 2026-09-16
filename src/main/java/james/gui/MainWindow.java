@@ -3,11 +3,14 @@ package james.gui;
 import james.James;
 import james.command.CommandResponse;
 import javafx.application.Platform;
+import javafx.css.PseudoClass;
 import javafx.fxml.FXML;
+import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
-import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.Window;
@@ -17,24 +20,32 @@ import javafx.stage.Window;
  */
 public class MainWindow extends AnchorPane {
     private static final String GREETING_MESSAGE =
-            "JAMES THE CHATTY CHATBOT\nHello! I'm James.\nI can do anything for you!";
+            "James the ぱんどろぼう\nShh! I'm James, your bread thief.\n" +
+            "I'll guard your tasks. The bread? No promises!";
 
-    private static final String JAMES_IMAGE_FILE_PATH = "/images/james.png";
-    private static final String USER_IMAGE_FILE_PATH = "/images/user.png";
 
+    private static final double COMPACT_WINDOW_HEIGHT = 360;
+    private static final PseudoClass COMPACT_HEADER = PseudoClass.getPseudoClass("compact");
+
+    @FXML private AnchorPane windowRoot;
+    @FXML private HBox bakeryHeader;
+    @FXML private Label headerSubtitle;
+    @FXML private ImageView headerArtwork;
     @FXML private ScrollPane scrollPane;
     @FXML private VBox dialogContainer;
     @FXML private TextField userInput;
 
     private James james;
-    private final Image jamesImage = new Image(getClass().getResourceAsStream(JAMES_IMAGE_FILE_PATH));
-    private final Image userImage = new Image(getClass().getResourceAsStream(USER_IMAGE_FILE_PATH));
 
     /**
      * Initializes automatic scrolling for new messages.
      */
     @FXML
     public void initialize() {
+        headerSubtitle.managedProperty().bind(headerSubtitle.visibleProperty());
+        windowRoot.heightProperty().addListener((observable, oldHeight, newHeight) ->
+                updateHeader(newHeight.doubleValue()));
+        updateHeader(windowRoot.getHeight());
         // Keep the scroll position in its valid range and free for manual scrolling.
         dialogContainer.heightProperty().addListener((observable, oldHeight, newHeight) ->
                 scrollPane.setVvalue(scrollPane.getVmax()));
@@ -50,13 +61,30 @@ public class MainWindow extends AnchorPane {
     }
 
     /**
+     * Gives short windows more conversation space and restores the full header when enlarged.
+     *
+     * @param height Current content height in pixels.
+     */
+    private void updateHeader(double height) {
+        boolean isCompact = height < COMPACT_WINDOW_HEIGHT;
+        headerSubtitle.setVisible(!isCompact);
+        headerArtwork.setFitWidth(isCompact ? 28 : 48);
+        headerArtwork.setFitHeight(isCompact ? 28 : 48);
+        bakeryHeader.pseudoClassStateChanged(COMPACT_HEADER, isCompact);
+    }
+
+    /**
      * Injects the James instance.
      */
     public void setJames(James james) {
         this.james = james;
         dialogContainer.getChildren().add(DialogBox.createJames(new CommandResponse(
                 GREETING_MESSAGE,
-                CommandResponse.Type.NORMAL, false), jamesImage));
+                CommandResponse.Type.NORMAL, false)));
+        if (!james.getLoadWarning().isEmpty()) {
+            dialogContainer.getChildren().add(DialogBox.createJames(new CommandResponse(
+                    james.getLoadWarning(), CommandResponse.Type.ERROR, false)));
+        }
     }
 
     /**
@@ -69,8 +97,8 @@ public class MainWindow extends AnchorPane {
             return;
         }
         CommandResponse response = james.getResponse(input);
-        DialogBox userDialog = DialogBox.createUser(input, userImage);
-        DialogBox jamesDialog = DialogBox.createJames(response, jamesImage);
+        DialogBox userDialog = DialogBox.createUser(input);
+        DialogBox jamesDialog = DialogBox.createJames(response);
         setDialogWidth(userDialog);
         setDialogWidth(jamesDialog);
         dialogContainer.getChildren().addAll(userDialog, jamesDialog);
