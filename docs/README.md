@@ -4,6 +4,8 @@ James is a playful bread-thief chatbot that keeps track of your tasks, deadlines
 
 [Getting started](#getting-started) · [Commands](#commands) · [Saving and undo](#saving-and-undo)
 
+<img src="Ui.png" alt="James chatbot interface" width="350">
+
 ## Getting started
 
 With **JDK 25** installed, open a terminal in the project folder and run `./gradlew run`
