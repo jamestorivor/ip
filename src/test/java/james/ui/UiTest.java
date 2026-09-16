@@ -2,20 +2,24 @@ package james.ui;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.ResourceLock;
 
 /**
  * Unit tests for {@link Ui}.
  */
+@ResourceLock("standardStreams")
 public class UiTest {
 
     private final PrintStream standardOut = System.out;
@@ -131,5 +135,23 @@ public class UiTest {
                 "Task added\n" +
                 "____________________________________________________________" + System.lineSeparator(),
                 outputStreamCaptor.toString());
+    }
+    @Test
+    public void readCommand_emptyInput_returnsNull() {
+        System.setIn(new ByteArrayInputStream(new byte[0]));
+        Ui ui = new Ui();
+        assertNull(ui.readCommand());
+        ui.close();
+    }
+
+    @Test
+    public void readCommand_blankThenUnterminatedLine_distinguishesBlankFromEof() {
+        System.setIn(new ByteArrayInputStream("\nlist".getBytes(StandardCharsets.UTF_8)));
+        Ui ui = new Ui();
+        assertEquals("", ui.readCommand());
+        assertEquals("list", ui.readCommand());
+        assertFalse(ui.hasNextCommand());
+        assertNull(ui.readCommand());
+        ui.close();
     }
 }
