@@ -98,7 +98,7 @@ actual outputs, and the failing expected output are in ui-test-record.md.
 
 | Aim | Input / setup | Expected result |
 | --- | --- | --- |
-| Header | Start at 500 × 600 and resize to 417 × 220 | Naisu artwork, James title, and bakery subtitle remain visible; composer stays inside the window. |
+| Header | Start at 500 × 600 and resize to 417 × 220 | Naisu artwork and James title remain visible; below 360 px content height, the subtitle hides and the header shrinks; composer stays inside the window. |
 | Readability | Greeting, long task, and invalid command | Cocoa text, wrapped lines, and muted red error text remain legible on the cream background. |
 | Controls | Tab through input and Send; hover and press Send | Clear focus border and darker hover/pressed button states; Enter and Send still submit once. |
 
@@ -133,3 +133,22 @@ including compact bubble sizing, image containment, long-text wrapping, and the
 Visual inspection confirmed the grouped bubbles at 500 × 600 and scrolling at
 417 × 220. Previews are in `build/reports/grouped-stickers/`. The runnable JAR
 was rebuilt.
+
+## Conversation UX checks
+
+| Aim | Input / setup | Expected result |
+| --- | --- | --- |
+| Asymmetric messages | `list`, then a long todo command | User commands fit their text, align right, and wrap within 82% of available width; app replies stay wide and left-aligned. |
+| Errors without color | Invalid command or startup storage warning | A bold Error heading precedes the unchanged explanation; regular replies have no error heading. |
+| Responsive header | Resize below 360 px content height, then enlarge | Header artwork and padding shrink; subtitle is hidden without reserving space, and restores when enlarged. |
+
+### Conversation UX verification
+
+Java 25: all 201 JUnit tests, both Checkstyle checks, and all 22 exact-output
+console cases pass. Reviewed the console plan; expectations remain unchanged.
+The complete console transcript is in `ui-test-record.md`. Added regression
+coverage for short/long right-aligned commands at two widths and shrinking then
+restoring the header. Updated error-response assertions for the visible heading.
+Visual inspection at 500 × 600 and 417 × 220 confirmed compact user commands,
+the bold Error heading, and the smaller header. Previews are in
+`build/reports/chat-ux/`. The runnable JAR was rebuilt.

@@ -30,3 +30,12 @@
     -fx-padding: 8px;
     -fx-border-width: 1.5px;
 }
+
+.user-command {
+    -fx-border-width: 0;
+    -fx-padding: 7px 10px;
+}
+
+.reply-label.error .error-heading {
+    -fx-font-weight: bold;
+}

@@ -3,6 +3,7 @@ package james.gui;
 import java.io.IOException;
 
 import james.command.CommandResponse;
+import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
@@ -26,6 +27,8 @@ public class DialogBox extends HBox {
     private static final double RANDOM_STICKER_SIZE = 160;
     private static final double RESPONSE_STICKER_SIZE = 120;
     private static final double GROUPED_MESSAGE_GAP = 4;
+    private static final double USER_WIDTH_FRACTION = 0.82;
+    private static final double DIALOG_HORIZONTAL_MARGIN = 24;
     private static final String REPLY_STYLE_CLASS = "reply-label";
 
     @FXML
@@ -57,10 +60,20 @@ public class DialogBox extends HBox {
         dialog.setMinHeight(0);
 
         HBox.setHgrow(dialog, Priority.ALWAYS);
-        if (!isUser) {
+        if (isUser) {
+            HBox.setHgrow(dialog, Priority.NEVER);
+            dialog.maxWidthProperty().bind(Bindings.max(0, widthProperty().subtract(DIALOG_HORIZONTAL_MARGIN)
+                    .multiply(USER_WIDTH_FRACTION)));
+            dialog.getStyleClass().add("user-command");
+        } else {
             setAlignment(Pos.TOP_LEFT);
             dialog.getStyleClass().add(REPLY_STYLE_CLASS);
             dialog.getStyleClass().add(type.name().toLowerCase());
+            if (type == CommandResponse.Type.ERROR) {
+                Text heading = new Text("Error\n");
+                heading.getStyleClass().add("error-heading");
+                dialog.getChildren().addFirst(heading);
+            }
         }
     }
 

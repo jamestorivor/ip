@@ -124,7 +124,8 @@ public class MainWindowTest {
                         assertEquals(2, content.getChildren().size());
                         assertEquals(120, sticker.getFitWidth());
                         TextFlow text = assertInstanceOf(TextFlow.class, content.getChildren().get(0));
-                        assertEquals("error", assertInstanceOf(Text.class, text.getChildren().get(0)).getText());
+                        assertEquals("error", assertInstanceOf(Text.class, text.getChildren().getLast()).getText());
+                        assertEquals("Error\n", ((Text) text.getChildren().getFirst()).getText());
                         assertTrue(text.getStyleClass().contains("error"));
                     }
                 }
@@ -206,6 +207,61 @@ public class MainWindowTest {
                     }
                 }
             }
+            return null;
+        });
+        Platform.runLater(check);
+        check.get(10, TimeUnit.SECONDS);
+    }
+
+    @Test
+    public void createUser_shortAndLongCommands_alignRightAndWrap() throws Exception {
+        FutureTask<Void> check = new FutureTask<>(() -> {
+            for (int width : new int[] {417, 700}) {
+                DialogBox shortCommand = DialogBox.createUser("list");
+                DialogBox longCommand = DialogBox.createUser("todo a long description ".repeat(15));
+                VBox root = new VBox(shortCommand, longCommand);
+                new Scene(root, width, 800);
+                root.applyCss();
+                root.layout();
+                TextFlow shortText = (TextFlow) shortCommand.getChildren().getFirst();
+                TextFlow longText = (TextFlow) longCommand.getChildren().getFirst();
+                assertTrue(shortText.getWidth() < width / 2.0);
+                assertTrue(shortText.getLayoutX() > width / 2.0);
+                assertTrue(longText.getWidth() < width * 0.85);
+                assertTrue(longText.getHeight() > shortText.getHeight());
+                assertEquals(shortText.getBoundsInParent().getMaxX(),
+                        longText.getBoundsInParent().getMaxX(), 0.1);
+            }
+            return null;
+        });
+        Platform.runLater(check);
+        check.get(10, TimeUnit.SECONDS);
+    }
+
+    @Test
+    public void initialize_resizeHeight_compactsAndRestoresHeader() throws Exception {
+        FutureTask<Void> check = new FutureTask<>(() -> {
+            FXMLLoader loader = new FXMLLoader(MainWindow.class.getResource("/view/MainWindow.fxml"));
+            AnchorPane root = loader.load();
+            new Scene(root, 500, 600);
+            root.applyCss();
+            root.layout();
+            Region header = (Region) loader.getNamespace().get("bakeryHeader");
+            javafx.scene.control.Label subtitle =
+                    (javafx.scene.control.Label) loader.getNamespace().get("headerSubtitle");
+            double fullHeight = header.getHeight();
+            root.resize(417, 220);
+            root.applyCss();
+            root.layout();
+            assertFalse(subtitle.isVisible());
+            assertFalse(subtitle.isManaged());
+            assertTrue(header.getHeight() < fullHeight);
+            root.resize(500, 600);
+            root.applyCss();
+            root.layout();
+            assertTrue(subtitle.isVisible());
+            assertTrue(subtitle.isManaged());
+            assertEquals(fullHeight, header.getHeight(), 0.1);
             return null;
         });
         Platform.runLater(check);

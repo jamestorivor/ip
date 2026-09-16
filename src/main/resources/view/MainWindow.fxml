@@ -9,19 +9,19 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<AnchorPane prefHeight="600.0" prefWidth="500.0" stylesheets="@../css/main.css"
+<AnchorPane fx:id="windowRoot" prefHeight="600.0" prefWidth="500.0" stylesheets="@../css/main.css"
         xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="james.gui.MainWindow">
     <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
             AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-        <HBox alignment="CENTER_LEFT" spacing="12.0" styleClass="bakery-header">
-            <ImageView fitWidth="48.0" fitHeight="48.0" preserveRatio="true"
+        <HBox fx:id="bakeryHeader" alignment="CENTER_LEFT" spacing="12.0" styleClass="bakery-header">
+            <ImageView fx:id="headerArtwork" fitWidth="48.0" fitHeight="48.0" preserveRatio="true"
                     accessibleText="Pandorobou holding a Naisu sign">
                 <image><Image url="@../images/naisu_pandorobou.png" /></image>
             </ImageView>
             <VBox alignment="CENTER_LEFT" spacing="3.0" minWidth="0.0" HBox.hgrow="ALWAYS">
                 <Label text="James the ぱんどろぼう" styleClass="bakery-title" />
-                <Label text="Fresh bread. Fewer forgotten tasks." styleClass="bakery-subtitle" />
+                <Label fx:id="headerSubtitle" text="Fresh bread. Fewer forgotten tasks." styleClass="bakery-subtitle" />
             </VBox>
         </HBox>
         <ScrollPane fx:id="scrollPane" fitToWidth="true" hbarPolicy="NEVER"
