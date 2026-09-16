@@ -51,7 +51,7 @@ public class Task {
      */
     public Task(String description) {
         this.description = description != null ? description.trim() : "";
-        this.isDone = false;
+        isDone = false;
     }
 
     /**
@@ -271,8 +271,8 @@ public class Task {
             }
             return new Event(eventDesc, from, to);
         } catch (DateTimeParseException e) {
-            throw new UserInputException(CORRUPTED_EVENT_DATE_MESSAGE_PREFIX + fromStr
-                    + EVENT_END_DATE_LABEL + toStr);
+            throw new UserInputException(CORRUPTED_EVENT_DATE_MESSAGE_PREFIX + fromStr +
+                    EVENT_END_DATE_LABEL + toStr);
         }
     }
 

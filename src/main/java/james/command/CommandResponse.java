@@ -4,7 +4,9 @@ package james.command;
  * Represents the result of processing one user command.
  */
 public class CommandResponse {
-    /** Describes the response category used by graphical styling. */
+    /**
+     * Describes the response category used by graphical styling.
+     */
     public enum Type { NORMAL, ADD, MARK, DELETE, ERROR }
 
     private final String message;

@@ -18,7 +18,9 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 
 
-/** Displays one message in the conversation. */
+/**
+ * Displays one message in the conversation.
+ */
 public class DialogBox extends HBox {
     private static final String DIALOG_BOX_RESOURCE = "/view/DialogBox.fxml";
     private static final String DIALOG_LOAD_ERROR_MESSAGE = "Unable to load dialog box";
@@ -30,6 +32,14 @@ public class DialogBox extends HBox {
     @FXML
     private ImageView userImage;
 
+    /**
+     * Loads the message layout and configures its text, profile image, and response styling.
+     *
+     * @param text Message text.
+     * @param isUser Whether this message belongs to the user.
+     * @param type Response category used for styling James's replies.
+     * @param img Profile image displayed beside the message.
+     */
     private DialogBox(String text, boolean isUser, CommandResponse.Type type, Image img) {
         try {
             FXMLLoader loader = new FXMLLoader(DialogBox.class.getResource(DIALOG_BOX_RESOURCE));
@@ -59,7 +69,7 @@ public class DialogBox extends HBox {
      * Flips the dialog box such that the ImageView is on the left and text on the right.
      */
     private void flip() {
-        ObservableList<Node> tmp = FXCollections.observableArrayList(this.getChildren());
+        ObservableList<Node> tmp = FXCollections.observableArrayList(getChildren());
         Collections.reverse(tmp);
         getChildren().setAll(tmp);
         setAlignment(Pos.TOP_LEFT);
@@ -79,13 +89,17 @@ public class DialogBox extends HBox {
         dialog.getStyleClass().add("sticker-dialog");
     }
 
-    /** Creates a user message box. */
-    public static DialogBox user(String text, Image image) {
+    /**
+     * Creates a user message box.
+     */
+    public static DialogBox createUser(String text, Image image) {
         return new DialogBox(text, true, CommandResponse.Type.NORMAL, image);
     }
 
-    /** Creates a James response box. */
-    public static DialogBox james(CommandResponse response, Image image) {
+    /**
+     * Creates a James response box.
+     */
+    public static DialogBox createJames(CommandResponse response, Image image) {
         DialogBox db = new DialogBox(response.getMessage(), false, response.getType(), image);
         if (response.getStickerPath() != null) {
             db.showSticker(response.getStickerPath());

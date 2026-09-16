@@ -25,7 +25,7 @@ public class CommandProcessorTest {
     /** Verifies that adding and listing a task updates the shared state. */
     @Test
     public void process_addThenList_returnsUpdatedTaskList() {
-        CommandProcessor processor = new CommandProcessor(storagePath());
+        CommandProcessor processor = new CommandProcessor(getStoragePath());
 
         CommandResponse addResponse = processor.process("todo revise Java");
         CommandResponse listResponse = processor.process("list");
@@ -37,7 +37,7 @@ public class CommandProcessorTest {
     /** Verifies that invalid input becomes a styled error response. */
     @Test
     public void process_invalidCommand_returnsErrorResponse() {
-        CommandResponse response = new CommandProcessor(storagePath()).process("unknown");
+        CommandResponse response = new CommandProcessor(getStoragePath()).process("unknown");
 
         assertEquals(CommandResponse.Type.ERROR, response.getType());
         assertEquals("OH NO James Doesnt Know What To Do!!!\nJames hasn't heard of this command :(",
@@ -48,7 +48,7 @@ public class CommandProcessorTest {
     /** Verifies that mutations persist when a new processor is created. */
     @Test
     public void process_addThenReload_persistsTask() {
-        String storagePath = storagePath();
+        String storagePath = getStoragePath();
         new CommandProcessor(storagePath).process("deadline submit report /by 2026-09-07");
 
         CommandResponse response = new CommandProcessor(storagePath).process("list");
@@ -59,7 +59,7 @@ public class CommandProcessorTest {
     /** Verifies that the bye command requests application termination. */
     @Test
     public void process_bye_returnsExitResponse() {
-        CommandResponse response = new CommandProcessor(storagePath()).process("bye");
+        CommandResponse response = new CommandProcessor(getStoragePath()).process("bye");
 
         assertTrue(response.isExit());
         assertEquals(CommandResponse.Type.NORMAL, response.getType());
@@ -68,7 +68,7 @@ public class CommandProcessorTest {
 
     @Test
     public void process_undoMixedChanges_restoresDetailsAndOrder() {
-        CommandProcessor processor = new CommandProcessor(storagePath());
+        CommandProcessor processor = new CommandProcessor(getStoragePath());
         processor.process("todo read");
         processor.process("deadline report /by 2026-09-15");
         processor.process("event meeting /from 2026-09-15 /to 2026-09-16");
@@ -94,7 +94,7 @@ public class CommandProcessorTest {
 
     @Test
     public void process_readOnlyInvalidAndNoOpCommands_preservesUndoHistory() {
-        CommandProcessor processor = new CommandProcessor(storagePath());
+        CommandProcessor processor = new CommandProcessor(getStoragePath());
         processor.process("todo read");
         processor.process("unmark 1");
         processor.process("mark 1");
@@ -112,7 +112,7 @@ public class CommandProcessorTest {
 
     @Test
     public void process_moreThanTwentyChanges_limitsHistoryAndSupportsNewChanges() {
-        CommandProcessor processor = new CommandProcessor(storagePath());
+        CommandProcessor processor = new CommandProcessor(getStoragePath());
         for (int i = 0; i < 21; i++) {
             processor.process("todo task " + i);
         }
@@ -129,20 +129,20 @@ public class CommandProcessorTest {
 
     @Test
     public void process_undoThenRestart_persistsRestorationWithoutHistory() {
-        CommandProcessor processor = new CommandProcessor(storagePath());
+        CommandProcessor processor = new CommandProcessor(getStoragePath());
         processor.process("todo read");
         processor.process("mark 1");
         processor.process("undo");
-        CommandProcessor restarted = new CommandProcessor(storagePath());
+        CommandProcessor restarted = new CommandProcessor(getStoragePath());
         assertTrue(restarted.process("list").getMessage().contains("[ ] read"));
         assertEquals("Nothing to undo.", restarted.process("undo").getMessage());
     }
 
     @Test
     public void process_saveFailure_preservesStateAndUndoForRetry() throws IOException {
-        CommandProcessor processor = new CommandProcessor(storagePath());
+        CommandProcessor processor = new CommandProcessor(getStoragePath());
         processor.process("todo read");
-        Path destination = Path.of(storagePath());
+        Path destination = Path.of(getStoragePath());
         Files.delete(destination);
         Files.createDirectory(destination);
         Files.writeString(destination.resolve("blocker"), "prevent replacement");
@@ -157,7 +157,7 @@ public class CommandProcessorTest {
         assertEquals("Nothing to undo.", processor.process("undo").getMessage());
     }
 
-    private String storagePath() {
+    private String getStoragePath() {
         return temporaryDirectory.resolve("james.txt").toString();
     }
 
@@ -166,20 +166,20 @@ public class CommandProcessorTest {
      */
     @Test
     public void process_addThenDelete_reportsUpdatedTaskCounts() {
-        CommandProcessor processor = new CommandProcessor(storagePath());
+        CommandProcessor processor = new CommandProcessor(getStoragePath());
 
         CommandResponse added = processor.process("todo revise Java");
         CommandResponse deleted = processor.process("delete 1");
 
-        assertEquals("Got it. I've added this task:\n[T][ ] revise Java"
-                + "\nNow you have 1 tasks in the list.", added.getMessage());
-        assertEquals("Noted. I've removed this task:\n[T][ ] revise Java"
-                + "\nNow you have 0 tasks in the list.\n", deleted.getMessage());
+        assertEquals("Got it. I've added this task:\n[T][ ] revise Java" +
+                "\nNow you have 1 tasks in the list.", added.getMessage());
+        assertEquals("Noted. I've removed this task:\n[T][ ] revise Java" +
+                "\nNow you have 0 tasks in the list.\n", deleted.getMessage());
     }
 
     @Test
     public void process_markTask_returnsCompletedTaskMessage() {
-        CommandProcessor processor = new CommandProcessor(storagePath());
+        CommandProcessor processor = new CommandProcessor(getStoragePath());
         processor.process("todo buy bread");
 
         CommandResponse response = processor.process("mark 1");
@@ -190,7 +190,7 @@ public class CommandProcessorTest {
 
     @Test
     public void process_unmarkTask_returnsIncompleteTaskMessage() {
-        CommandProcessor processor = new CommandProcessor(storagePath());
+        CommandProcessor processor = new CommandProcessor(getStoragePath());
         processor.process("todo buy bread");
         processor.process("mark 1");
 
@@ -202,7 +202,7 @@ public class CommandProcessorTest {
 
     @Test
     public void process_findMatchingTasks_returnsNumberedMatches() {
-        CommandProcessor processor = new CommandProcessor(storagePath());
+        CommandProcessor processor = new CommandProcessor(getStoragePath());
         processor.process("todo buy bread");
         processor.process("todo read book");
         processor.process("deadline return book /by 2026-06-06");
@@ -210,13 +210,13 @@ public class CommandProcessorTest {
         CommandResponse response = processor.process("find BOOK");
 
         assertEquals(CommandResponse.Type.NORMAL, response.getType());
-        assertEquals("Here are the matching tasks in your list:\n1.[T][ ] read book"
-                + "\n2.[D][ ] return book (by: Jun 06 2026)", response.getMessage());
+        assertEquals("Here are the matching tasks in your list:\n1.[T][ ] read book" +
+                "\n2.[D][ ] return book (by: Jun 06 2026)", response.getMessage());
     }
 
     @Test
     public void process_findWithoutMatches_returnsHeadingOnly() {
-        CommandProcessor processor = new CommandProcessor(storagePath());
+        CommandProcessor processor = new CommandProcessor(getStoragePath());
         processor.process("todo read book");
 
         CommandResponse response = processor.process("find magazine");
@@ -226,7 +226,7 @@ public class CommandProcessorTest {
 
     @Test
     public void process_listByDateWithMatches_returnsNumberedMatches() {
-        CommandProcessor processor = new CommandProcessor(storagePath());
+        CommandProcessor processor = new CommandProcessor(getStoragePath());
         processor.process("todo read book");
         processor.process("deadline return book /by 2026-10-15");
         processor.process("event conference /from 2026-10-14 /to 2026-10-16");
@@ -234,14 +234,14 @@ public class CommandProcessorTest {
         CommandResponse response = processor.process("list_by_date 2026-10-15");
 
         assertEquals(CommandResponse.Type.NORMAL, response.getType());
-        assertEquals("Here are the tasks in your list that matches the date 2026-10-15:"
-                + "\n1.[D][ ] return book (by: Oct 15 2026)"
-                + "\n2.[E][ ] conference (from: Oct 14 2026 to: Oct 16 2026)\n", response.getMessage());
+        assertEquals("Here are the tasks in your list that matches the date 2026-10-15:" +
+                "\n1.[D][ ] return book (by: Oct 15 2026)" +
+                "\n2.[E][ ] conference (from: Oct 14 2026 to: Oct 16 2026)\n", response.getMessage());
     }
 
     @Test
     public void process_listByDateWithoutMatches_returnsHeadingOnly() {
-        CommandProcessor processor = new CommandProcessor(storagePath());
+        CommandProcessor processor = new CommandProcessor(getStoragePath());
         processor.process("deadline return book /by 2026-10-15");
 
         CommandResponse response = processor.process("list_by_date 2026-10-16");
@@ -250,7 +250,7 @@ public class CommandProcessorTest {
     }
     @Test
     public void process_invalidInputs_preservesTasksAndHistory() {
-        CommandProcessor processor = new CommandProcessor(storagePath());
+        CommandProcessor processor = new CommandProcessor(getStoragePath());
         processor.process("todo keep");
         String[] invalidInputs = {
             "todo keep", "todo bad | description", "todo bad\nrecord", "list extra", "bye extra",
@@ -274,7 +274,7 @@ public class CommandProcessorTest {
 
     @Test
     public void process_whitespaceBetweenArguments_acceptsCommands() {
-        CommandProcessor processor = new CommandProcessor(storagePath());
+        CommandProcessor processor = new CommandProcessor(getStoragePath());
         assertEquals(CommandResponse.Type.ADD,
                 processor.process("  deadline\t report   /by\t2026-09-16  ").getType());
         assertEquals(CommandResponse.Type.ADD,
@@ -283,7 +283,7 @@ public class CommandProcessorTest {
 
     @Test
     public void process_duplicateCompletedTask_rejectsButAllowsDifferentDates() {
-        CommandProcessor processor = new CommandProcessor(storagePath());
+        CommandProcessor processor = new CommandProcessor(getStoragePath());
         processor.process("deadline report /by 2026-09-16");
         processor.process("mark 1");
         assertEquals(CommandResponse.Type.ERROR,
@@ -294,7 +294,7 @@ public class CommandProcessorTest {
 
     @Test
     public void process_corruptedStorage_explainsRecoveryAndPreservesData() throws IOException {
-        Path file = Path.of(storagePath());
+        Path file = Path.of(getStoragePath());
         Files.writeString(file, "broken record\n");
         CommandProcessor processor = new CommandProcessor(file.toString());
         CommandResponse response = processor.process("todo keep");
@@ -321,7 +321,7 @@ public class CommandProcessorTest {
                     return selectedIndex;
                 }
             };
-            CommandProcessor processor = new CommandProcessor(storagePath(), generator);
+            CommandProcessor processor = new CommandProcessor(getStoragePath(), generator);
             CommandResponse response = processor.process("  RANDOM_STICKER  ");
             String expectedPath = "/images/" + names[i] + "_pandorobou.png";
             assertEquals(expectedPath, response.getStickerPath());
@@ -338,15 +338,15 @@ public class CommandProcessorTest {
 
     @Test
     public void process_randomSticker_preservesTasksStorageAndUndo() throws IOException {
-        CommandProcessor processor = new CommandProcessor(storagePath());
+        CommandProcessor processor = new CommandProcessor(getStoragePath());
         processor.process("random_sticker");
-        assertFalse(Files.exists(Path.of(storagePath())));
+        assertFalse(Files.exists(Path.of(getStoragePath())));
         assertEquals("Nothing to undo.", processor.process("undo").getMessage());
         processor.process("todo keep");
-        String saved = Files.readString(Path.of(storagePath()));
+        String saved = Files.readString(Path.of(getStoragePath()));
         String tasks = processor.process("list").getMessage();
         processor.process("random_sticker");
-        assertEquals(saved, Files.readString(Path.of(storagePath())));
+        assertEquals(saved, Files.readString(Path.of(getStoragePath())));
         assertEquals(tasks, processor.process("list").getMessage());
         processor.process("undo");
         assertEquals("Here are the tasks in your list:\n", processor.process("list").getMessage());
@@ -354,7 +354,7 @@ public class CommandProcessorTest {
 
     @Test
     public void process_randomStickerExtraArguments_returnsTextError() {
-        CommandProcessor processor = new CommandProcessor(storagePath());
+        CommandProcessor processor = new CommandProcessor(getStoragePath());
         CommandResponse response = processor.process("random_sticker extra");
         assertEquals(CommandResponse.Type.ERROR, response.getType());
         assertEquals("OH NO James Doesnt Know What To Do!!!\nRANDOM_STICKER does not take arguments.",

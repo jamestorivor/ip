@@ -5,7 +5,7 @@ import james.command.CommandResponse;
 import james.ui.Ui;
 
 /**
- * Main application class that orchestrates interactions between
+ * Orchestrates interactions between
  * Ui, Storage, Parser, and TaskList components.
  */
 public class James {
@@ -21,10 +21,16 @@ public class James {
      * @param filePath Path to the persistent storage file.
      */
     public James(String filePath) {
-        this.ui = new Ui();
-        this.commandProcessor = new CommandProcessor(filePath);
+        ui = new Ui();
+        commandProcessor = new CommandProcessor(filePath);
     }
 
+    /**
+     * Processes a command and returns its response for display.
+     *
+     * @param input Command entered by the user.
+     * @return Response containing the command result and display information.
+     */
     public CommandResponse getResponse(String input) {
         return commandProcessor.process(input);
     }
@@ -44,7 +50,7 @@ public class James {
     }
 
     /**
-     * Main application entry point.
+     * Starts the console application.
      *
      * @param args Command line arguments.
      */

@@ -36,7 +36,7 @@ public class TaskListTest {
     @Test
     public void constructor_default_createsEmptyList() {
         TaskList emptyList = new TaskList();
-        assertEquals(0, emptyList.size());
+        assertEquals(0, emptyList.getSize());
         assertEquals(new ArrayList<>(), emptyList.getTasks());
     }
 
@@ -46,7 +46,7 @@ public class TaskListTest {
     @Test
     public void constructor_nullList_createsEmptyList() {
         TaskList nullList = new TaskList(null);
-        assertEquals(0, nullList.size());
+        assertEquals(0, nullList.getSize());
         assertEquals(new ArrayList<>(), nullList.getTasks());
     }
 
@@ -62,7 +62,7 @@ public class TaskListTest {
         initialList.add(task2);
 
         TaskList initializedList = new TaskList(initialList);
-        assertEquals(2, initializedList.size());
+        assertEquals(2, initializedList.getSize());
         assertEquals(task1, initializedList.getTask(0));
         assertEquals(task2, initializedList.getTask(1));
     }
@@ -75,8 +75,8 @@ public class TaskListTest {
      * Tests that size returns 0 for an empty task list.
      */
     @Test
-    public void size_emptyList_returnsZero() {
-        assertEquals(0, taskList.size());
+    public void getSize_emptyList_returnsZero() {
+        assertEquals(0, taskList.getSize());
     }
 
     /**
@@ -87,7 +87,7 @@ public class TaskListTest {
         ToDo task = new ToDo("Buy groceries");
         taskList.addTask(task);
 
-        assertEquals(1, taskList.size());
+        assertEquals(1, taskList.getSize());
         assertEquals(task, taskList.getTask(0));
     }
 
@@ -126,7 +126,7 @@ public class TaskListTest {
      * Tests that getTasks returns the underlying list of tasks.
      */
     @Test
-    public void getTasks_returnsUnderlyingList() {
+    public void getTasks_populatedList_returnsUnderlyingList() {
         ToDo task = new ToDo("Test task");
         taskList.addTask(task);
 
@@ -151,7 +151,7 @@ public class TaskListTest {
 
         Task removedTask = taskList.deleteTask(0);
         assertEquals(task1, removedTask);
-        assertEquals(1, taskList.size());
+        assertEquals(1, taskList.getSize());
         assertEquals(task2, taskList.getTask(0));
     }
 
@@ -182,7 +182,7 @@ public class TaskListTest {
         taskList.addTask(task2);
 
         taskList.deleteTask(task1);
-        assertEquals(1, taskList.size());
+        assertEquals(1, taskList.getSize());
         assertEquals(task2, taskList.getTask(0));
     }
 
@@ -196,7 +196,7 @@ public class TaskListTest {
         taskList.addTask(task1);
 
         taskList.deleteTask(nonExistentTask);
-        assertEquals(1, taskList.size());
+        assertEquals(1, taskList.getSize());
         assertEquals(task1, taskList.getTask(0));
     }
 
@@ -426,9 +426,9 @@ public class TaskListTest {
         taskList.addTask(new Event("catch mouse",
                 LocalDate.parse("2026-11-11"),
                 LocalDate.parse("2026-11-11")));
-        String expected = "1.[T][ ] read book\n"
-                + "2.[D][ ] return book (by: Jun 06 2026)\n"
-                + "3.[E][ ] catch mouse (from: Nov 11 2026 to: Nov 11 2026)\n";
+        String expected = "1.[T][ ] read book\n" +
+                "2.[D][ ] return book (by: Jun 06 2026)\n" +
+                "3.[E][ ] catch mouse (from: Nov 11 2026 to: Nov 11 2026)\n";
         assertEquals(expected, taskList.toString());
     }
 }

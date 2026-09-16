@@ -141,8 +141,8 @@ public class StorageTest {
     @Test
     public void save_corruptedLoad_preservesOriginalFile() throws IOException {
         Path file = tempDir.resolve("tasks.txt");
-        String contents = "T | 0 | keep\nE | 0 | bad | 2026-09-16 | 2026-09-16\n"
-                + "T | 1 | keep\nD | 0 | extra | field | 2026-09-16\n";
+        String contents = "T | 0 | keep\nE | 0 | bad | 2026-09-16 | 2026-09-16\n" +
+                "T | 1 | keep\nD | 0 | extra | field | 2026-09-16\n";
         Files.writeString(file, contents);
         Storage storage = new Storage(file.toString());
         assertEquals(1, storage.load().size());

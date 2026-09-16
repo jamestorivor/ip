@@ -51,9 +51,9 @@ public class UiTest {
     public void encaseMessage_validString_returnsMessageEnclosedInDividers() {
         Ui ui = new Ui();
         String result = ui.encaseMessage("Test message\n");
-        String expected = "____________________________________________________________\n"
-                + "Test message\n"
-                + "____________________________________________________________";
+        String expected = "____________________________________________________________\n" +
+                "Test message\n" +
+                "____________________________________________________________";
         assertEquals(expected, result);
     }
 
@@ -112,9 +112,9 @@ public class UiTest {
 
         ui.showResponse("Task added");
 
-        assertEquals("____________________________________________________________\n"
-                + "Task added\n"
-                + "____________________________________________________________" + System.lineSeparator(),
+        assertEquals("____________________________________________________________\n" +
+                "Task added\n" +
+                "____________________________________________________________" + System.lineSeparator(),
                 outputStreamCaptor.toString());
     }
 
@@ -127,9 +127,9 @@ public class UiTest {
 
         ui.showResponse("Task added\n");
 
-        assertEquals("____________________________________________________________\n"
-                + "Task added\n"
-                + "____________________________________________________________" + System.lineSeparator(),
+        assertEquals("____________________________________________________________\n" +
+                "Task added\n" +
+                "____________________________________________________________" + System.lineSeparator(),
                 outputStreamCaptor.toString());
     }
 }
