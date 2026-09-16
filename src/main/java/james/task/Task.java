@@ -3,6 +3,7 @@ package james.task;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.Locale;
 
 import james.exception.UserInputException;
 
@@ -11,7 +12,7 @@ import james.exception.UserInputException;
  */
 public class Task {
     protected static final DateTimeFormatter DISPLAY_FORMAT =
-            DateTimeFormatter.ofPattern("MMM dd yyyy");
+            DateTimeFormatter.ofPattern("MMM dd yyyy", Locale.ENGLISH);
 
     private static final String DONE_MARK = "[X]";
     private static final String NOT_DONE_MARK = "[ ]";
@@ -152,6 +153,11 @@ public class Task {
     public static Task fromFileString(String line) throws UserInputException {
         if (line == null || line.trim().isEmpty()) {
             throw new UserInputException(EMPTY_STORAGE_LINE_MESSAGE);
+        }
+        // Validate before trimming so control characters cannot be silently removed.
+        // Legacy todo descriptions may contain pipes, but never control characters.
+        if (line.chars().anyMatch(Character::isISOControl)) {
+            throw new UserInputException("Stored tasks cannot contain control characters.");
         }
 
         String[] initialParts = line.split(STORAGE_FIELD_PATTERN, 3);

@@ -17,6 +17,39 @@ import james.task.Task;
  */
 public class ParserValidationTest {
     @Test
+    public void parseDeadline_pathDescriptions_preservesPaths() throws UserInputException {
+        for (String description : new String[]{"inspect /tmp", "/tmp/files", "inspect /by/path /from/path /to/path"}) {
+            Task task = Parser.parseDeadline(description + " /by 2026-09-20");
+            assertEquals(description, task.getDescription());
+        }
+    }
+
+    @Test
+    public void parseEvent_pathDescriptions_preservesPaths() throws UserInputException {
+        for (String description : new String[]{"inspect /tmp/files", "/tmp", "inspect /by/path /from/path /to/path"}) {
+            Task task = Parser.parseEvent(description + " /from 2026-09-20 /to 2026-09-21");
+            assertEquals(description, task.getDescription());
+        }
+    }
+
+    @Test
+    public void parseDeadline_repeatedOptionAfterPath_reportsOptionError() {
+        UserInputException exception = assertThrows(UserInputException.class,
+                () -> Parser.parseDeadline("inspect /tmp /by 2026-09-20 /by 2026-09-21"));
+        assertEquals("Date options must appear once and in order: /by", exception.getMessage());
+    }
+
+    @Test
+    public void parseEvent_invalidOptionsAfterPath_reportsOptionError() {
+        for (String options : new String[]{"/to 2026-09-21 /from 2026-09-20",
+            "/from 2026-09-20 /to 2026-09-21 /to 2026-09-22", "/by 2026-09-20"}) {
+            UserInputException exception = assertThrows(UserInputException.class,
+                    () -> Parser.parseEvent("inspect /tmp " + options));
+            assertEquals("Date options must appear once and in order: /from /to", exception.getMessage());
+        }
+    }
+
+    @Test
     public void parseTodo_reservedDescriptions_reportsSpecificError() {
         for (String description : invalidDescriptions()) {
             assertDescriptionError(assertThrows(UserInputException.class, () -> Parser.parseTodo(description)));

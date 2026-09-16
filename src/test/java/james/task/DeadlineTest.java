@@ -13,6 +13,12 @@ import org.junit.jupiter.api.Test;
  */
 public class DeadlineTest {
 
+    @Test
+    public void toString_septemberDate_usesEnglishMonthAbbreviation() {
+        Deadline task = new Deadline("report", LocalDate.of(2026, 9, 20));
+        assertEquals("[D][ ] report (by: Sep 20 2026)", task.toString());
+    }
+
     /**
      * Tests that the constructor correctly initializes the description, due date, and completion status.
      */

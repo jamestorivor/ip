@@ -281,6 +281,20 @@ public class TaskTest {
     }
 
     @Test
+    public void fromFileString_controlCharacters_rejectsAllTaskTypesBeforeTrimming() {
+        for (String description : new String[]{"unsafe" + (char) 27 + "[2Jrecord", "unsafe\trecord",
+            "unsafe" + (char) 0, "unsafe" + (char) 127, "unsafe" + (char) 133}) {
+            for (String line : new String[]{"T | 0 | " + description,
+                "D | 0 | " + description + " | 2026-09-20",
+                "E | 0 | " + description + " | 2026-09-20 | 2026-09-21"}) {
+                UserInputException exception = assertThrows(UserInputException.class,
+                        () -> Task.fromFileString(line));
+                assertEquals("Stored tasks cannot contain control characters.", exception.getMessage());
+            }
+        }
+    }
+
+    @Test
     public void fromFileString_deadlineWithBlankDescription_preservesErrorMessage() {
         UserInputException exception = assertThrows(UserInputException.class,
                 () -> Task.fromFileString("D | 0 |   | 2026-06-06"));

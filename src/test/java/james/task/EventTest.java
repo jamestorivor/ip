@@ -13,6 +13,12 @@ import org.junit.jupiter.api.Test;
  */
 public class EventTest {
 
+    @Test
+    public void toString_septemberDates_usesEnglishMonthAbbreviations() {
+        Event task = new Event("trip", LocalDate.of(2026, 9, 20), LocalDate.of(2026, 9, 21));
+        assertEquals("[E][ ] trip (from: Sep 20 2026 to: Sep 21 2026)", task.toString());
+    }
+
     /**
      * Tests that the constructor correctly initializes the description, start date, end date, and completion status.
      */
