@@ -1,17 +1,19 @@
-# UI test console records
+# Console UI test record
 
-Java 25; exact combined stdout/stderr comparisons.
-
-19 cases passed.
+Java 25.0.3.fx-zulu; exact combined output comparison; isolated process and directory per case.
 
 ## TC-01: Start and exit cleanly — PASS
 
-Inputs:
+**Aim:** Verify that the application shows its greeting and exit message when the user exits immediately.
+
+**Input:**
+
 ```text
 bye
 ```
 
-Actual output:
+**Actual output:**
+
 ```text
 ____________________________________________________________
 JAMES THE CHATTY CHATBOT
@@ -26,7 +28,11 @@ ____________________________________________________________
 
 ## TC-13: Find tasks by keyword — PASS
 
-Inputs:
+**Aim:** Verify that `find` returns case-insensitive partial matches across task types,
+preserves insertion order, and reports no-match searches without changing the task list.
+
+**Input:**
+
 ```text
 todo read book
 deadline return book /by 2019-06-06
@@ -35,7 +41,8 @@ find magazine
 bye
 ```
 
-Actual output:
+**Actual output:**
+
 ```text
 ____________________________________________________________
 JAMES THE CHATTY CHATBOT
@@ -68,13 +75,17 @@ ____________________________________________________________
 
 ## TC-02: List an empty task list — PASS
 
-Inputs:
+**Aim:** Verify that listing tasks before any task is added displays the empty-list heading without creating a task.
+
+**Input:**
+
 ```text
 list
 bye
 ```
 
-Actual output:
+**Actual output:**
+
 ```text
 ____________________________________________________________
 JAMES THE CHATTY CHATBOT
@@ -92,7 +103,10 @@ ____________________________________________________________
 
 ## TC-03: Reject invalid delete commands without changing the task list — PASS
 
-Inputs:
+**Aim:** Verify that deletion rejects a missing, non-numeric, zero, and out-of-range task number; the valid task must remain in the list after every error.
+
+**Input:**
+
 ```text
 todo protect task
 delete
@@ -106,7 +120,8 @@ list
 bye
 ```
 
-Actual output:
+**Actual output:**
+
 ```text
 ____________________________________________________________
 JAMES THE CHATTY CHATBOT
@@ -162,7 +177,10 @@ ____________________________________________________________
 
 ## TC-04: Reject invalid mark and unmark commands without changing task status — PASS
 
-Inputs:
+**Aim:** Verify that invalid mark and unmark task numbers preserve the task and its incomplete status; valid mark and unmark commands must still work afterwards.
+
+**Input:**
+
 ```text
 todo persistent task
 mark
@@ -176,7 +194,8 @@ list
 bye
 ```
 
-Actual output:
+**Actual output:**
+
 ```text
 ____________________________________________________________
 JAMES THE CHATTY CHATBOT
@@ -232,7 +251,10 @@ ____________________________________________________________
 
 ## TC-05: Reject malformed deadline and event formats without creating tasks — PASS
 
-Inputs:
+**Aim:** Verify that deadlines without a description and events with missing descriptions, `/from`, or `/to` values are rejected; the final list must remain empty.
+
+**Input:**
+
 ```text
 deadline /by Sunday
 event /from Monday /to Tuesday
@@ -242,7 +264,8 @@ list
 bye
 ```
 
-Actual output:
+**Actual output:**
+
 ```text
 ____________________________________________________________
 JAMES THE CHATTY CHATBOT
@@ -280,7 +303,10 @@ ____________________________________________________________
 
 ## TC-06: Delete a task and renumber the remaining list — PASS
 
-Inputs:
+**Aim:** Verify that deleting a valid task removes the selected task, reports the updated task count, and preserves the remaining tasks in order.
+
+**Input:**
+
 ```text
 todo read book
 deadline return book /by 2019-06-06
@@ -295,7 +321,8 @@ list
 bye
 ```
 
-Actual output:
+**Actual output:**
+
 ```text
 ____________________________________________________________
 JAMES THE CHATTY CHATBOT
@@ -363,7 +390,10 @@ ____________________________________________________________
 
 ## TC-07: Add tasks, list them, and retain their details — PASS
 
-Inputs:
+**Aim:** Verify that tasks can be added, marked, listed, and that deadline and event details are displayed in the expected format.
+
+**Input:**
+
 ```text
 todo read book
 deadline return book /by 2019-06-06
@@ -378,7 +408,8 @@ event project meeting /from 2019-08-12 /to 2019-08-13
 bye
 ```
 
-Actual output:
+**Actual output:**
+
 ```text
 ____________________________________________________________
 JAMES THE CHATTY CHATBOT
@@ -444,7 +475,10 @@ ____________________________________________________________
 
 ## TC-08: Reject malformed commands without changing the task list — PASS
 
-Inputs:
+**Aim:** Verify that invalid deadline, event, and task-number inputs show the current error message, while valid operations before and after them leave the single task in the expected state.
+
+**Input:**
+
 ```text
 todo keep this task
 deadline submit report
@@ -457,7 +491,8 @@ unmark 1
 bye
 ```
 
-Actual output:
+**Actual output:**
+
 ```text
 ____________________________________________________________
 JAMES THE CHATTY CHATBOT
@@ -508,7 +543,10 @@ ____________________________________________________________
 
 ## TC-09: Handle blank, unknown, and incomplete commands without changing the task list — PASS
 
-Inputs:
+**Aim:** Verify that a blank command, an unknown command, and a todo without a description report errors; valid commands interleaved between them must preserve the one valid task.
+
+**Input:**
+
 ```text
 
 todo retained task
@@ -519,7 +557,8 @@ list
 bye
 ```
 
-Actual output:
+**Actual output:**
+
 ```text
 ____________________________________________________________
 JAMES THE CHATTY CHATBOT
@@ -561,7 +600,10 @@ ____________________________________________________________
 
 ## TC-10: Reject invalid date format without creating tasks — PASS
 
-Inputs:
+**Aim:** Verify that deadlines and events with invalid or malformed dates are rejected with formatting guidance; no tasks must be added.
+
+**Input:**
+
 ```text
 deadline return book /by invalid-date
 event team meeting /from 2019-02-30 /to 2019-03-01
@@ -569,7 +611,8 @@ list
 bye
 ```
 
-Actual output:
+**Actual output:**
+
 ```text
 ____________________________________________________________
 JAMES THE CHATTY CHATBOT
@@ -595,7 +638,10 @@ ____________________________________________________________
 
 ## TC-11: List tasks occurring on a specific date — PASS
 
-Inputs:
+**Aim:** Verify that list_by_date retrieves deadlines due on that date and events whose period covers that date (including intermediate dates), and shows an empty list if no tasks match.
+
+**Input:**
+
 ```text
 todo read book
 deadline return book /by 2019-10-15
@@ -607,7 +653,8 @@ list_by_date 2019-10-18
 bye
 ```
 
-Actual output:
+**Actual output:**
+
 ```text
 ____________________________________________________________
 JAMES THE CHATTY CHATBOT
@@ -654,7 +701,10 @@ ____________________________________________________________
 
 ## TC-12: Reject invalid arguments for list_by_date — PASS
 
-Inputs:
+**Aim:** Verify that list_by_date rejects missing date arguments and invalid date formats with descriptive error messages.
+
+**Input:**
+
 ```text
 list_by_date
 list_by_date 2019-13-01
@@ -662,7 +712,8 @@ list_by_date invalid-date
 bye
 ```
 
-Actual output:
+**Actual output:**
+
 ```text
 ____________________________________________________________
 JAMES THE CHATTY CHATBOT
@@ -689,7 +740,10 @@ ____________________________________________________________
 
 ## TC-14: Undo changes in reverse order — PASS
 
-Inputs:
+**Aim:** Verify empty history, undoing mark/delete/add, restored completion status, and skipping searches and repeated marks.
+
+**Input:**
+
 ```text
 undo
 todo read book
@@ -706,7 +760,8 @@ undo
 bye
 ```
 
-Actual output:
+**Actual output:**
+
 ```text
 ____________________________________________________________
 JAMES THE CHATTY CHATBOT
@@ -769,7 +824,10 @@ ____________________________________________________________
 
 ## TC-15: Reject invalid data and recover — PASS
 
-Inputs:
+**Aim:** Accept extra whitespace and reject duplicates, equal/reversed dates, impossible dates, repeated parameters, reserved characters, and extra arguments without changing tasks or exiting.
+
+**Input:**
+
 ```text
   todo   keep  
 todo keep
@@ -784,7 +842,8 @@ list
 bye
 ```
 
-Actual output:
+**Actual output:**
+
 ```text
 ____________________________________________________________
 JAMES THE CHATTY CHATBOT
@@ -840,14 +899,18 @@ ____________________________________________________________
 
 ## TC-16: Protect corrupted storage — PASS
 
-Inputs:
+**Aim:** Show a startup warning before any command, explain recovery, and preserve the original file when saved data is malformed.
+
+**Input:**
+
 ```text
 todo keep
 undo
 bye
 ```
 
-Actual output:
+**Actual output:**
+
 ```text
 ____________________________________________________________
 JAMES THE CHATTY CHATBOT
@@ -875,7 +938,10 @@ ____________________________________________________________
 
 ## TC-17: Request stickers without changing tasks — PASS
 
-Inputs:
+**Aim:** Verify the fixed console fallback, repeated requests, argument rejection, and unchanged empty task list and undo history.
+
+**Input:**
+
 ```text
 random_sticker
 random_sticker
@@ -885,7 +951,8 @@ undo
 bye
 ```
 
-Actual output:
+**Actual output:**
+
 ```text
 ____________________________________________________________
 JAMES THE CHATTY CHATBOT
@@ -916,7 +983,10 @@ ____________________________________________________________
 
 ## TC-18: Allow paths in descriptions — PASS
 
-Inputs:
+**Aim:** Accept slash-prefixed paths in deadline and event descriptions while rejecting repeated date options.
+
+**Input:**
+
 ```text
 deadline inspect /tmp /by 2026-09-20
 event inspect /tmp/files /from 2026-09-20 /to 2026-09-21
@@ -925,7 +995,8 @@ list
 bye
 ```
 
-Actual output:
+**Actual output:**
+
 ```text
 ____________________________________________________________
 JAMES THE CHATTY CHATBOT
@@ -959,13 +1030,17 @@ ____________________________________________________________
 
 ## TC-19: Reject saved control characters — PASS
 
-Inputs:
+**Aim:** Keep legacy pipes, reject control characters without printing them, and show the startup warning.
+
+**Input:**
+
 ```text
 list
 bye
 ```
 
-Actual output:
+**Actual output:**
+
 ```text
 ____________________________________________________________
 JAMES THE CHATTY CHATBOT
@@ -986,3 +1061,40 @@ ____________________________________________________________
 Bye. Rest your eyes!
 ____________________________________________________________
 ```
+
+## TC-20: Search independently of the OS language — PASS
+
+**Aim:** Verify English case-insensitive search under a Turkish default locale, including the letter I.
+
+**Input:**
+
+```text
+todo TITLE
+find title
+bye
+```
+
+**Actual output:**
+
+```text
+____________________________________________________________
+JAMES THE CHATTY CHATBOT
+Hello! I'm James.
+I can do anything for you!
+____________________________________________________________
+
+____________________________________________________________
+Got it. I've added this task:
+[T][ ] TITLE
+Now you have 1 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Here are the matching tasks in your list:
+1.[T][ ] TITLE
+____________________________________________________________
+____________________________________________________________
+Bye. Rest your eyes!
+____________________________________________________________
+```
+
+All 20 cases passed.

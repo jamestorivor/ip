@@ -263,10 +263,28 @@ public class CommandProcessorTest {
             "event trip /from 2026-09-16 /from 2026-09-17 /to 2026-09-18",
             "mark 99999999999999999999", "delete 1 1", "deadline report /until 2026-09-16"
         };
-        for (String input : invalidInputs) {
+        String[] expectedErrors = {
+            "This task already exists in your list.",
+            "Task descriptions cannot contain | or control characters.",
+            "Task descriptions cannot contain | or control characters.",
+            "LIST does not take arguments.", "BYE does not take arguments.",
+            "Formatting of the date is incorrect, try: yyyy-mm-dd",
+            "Date options must appear once and in order: /by",
+            "An event must end after its start date.", "An event must end after its start date.",
+            "Date options must appear once and in order: /from /to",
+            "Date options must appear once and in order: /from /to",
+            "James says that the task number must be a whole number.\nTry: mark <task number>",
+            "James says that the task number must be a whole number.\nTry: delete <task number>",
+            "A deadline needs a by date.\nTry: deadline <description> /by <date>"
+        };
+        String originalList = processor.process("list").getMessage();
+        for (int i = 0; i < invalidInputs.length; i++) {
+            String input = invalidInputs[i];
             CommandResponse response = processor.process(input);
             assertEquals(CommandResponse.Type.ERROR, response.getType(), input);
+            assertEquals("OH NO James Doesnt Know What To Do!!!\n" + expectedErrors[i], response.getMessage(), input);
             assertFalse(response.isExit(), input);
+            assertEquals(originalList, processor.process("list").getMessage(), input);
         }
         assertEquals("Here are the tasks in your list:\n1.[T][ ] keep\n",
                 processor.process("list").getMessage());
