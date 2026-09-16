@@ -2,11 +2,14 @@ package james;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.random.RandomGenerator;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -245,4 +248,119 @@ public class CommandProcessorTest {
 
         assertEquals("Here are the tasks in your list that matches the date 2026-10-16:\n", response.getMessage());
     }
+    @Test
+    public void process_invalidInputs_preservesTasksAndHistory() {
+        CommandProcessor processor = new CommandProcessor(storagePath());
+        processor.process("todo keep");
+        String[] invalidInputs = {
+            "todo keep", "todo bad | description", "todo bad\nrecord", "list extra", "bye extra",
+            "deadline report /by 2026-02-30", "deadline report /by 2026-09-16 /by 2026-09-17",
+            "event trip /from 2026-09-16 /to 2026-09-16",
+            "event trip /from 2026-09-17 /to 2026-09-16",
+            "event trip /to 2026-09-17 /from 2026-09-16",
+            "event trip /from 2026-09-16 /from 2026-09-17 /to 2026-09-18",
+            "mark 99999999999999999999", "delete 1 1", "deadline report /until 2026-09-16"
+        };
+        for (String input : invalidInputs) {
+            CommandResponse response = processor.process(input);
+            assertEquals(CommandResponse.Type.ERROR, response.getType(), input);
+            assertFalse(response.isExit(), input);
+        }
+        assertEquals("Here are the tasks in your list:\n1.[T][ ] keep\n",
+                processor.process("list").getMessage());
+        processor.process("undo");
+        assertEquals("Here are the tasks in your list:\n", processor.process("list").getMessage());
+    }
+
+    @Test
+    public void process_whitespaceBetweenArguments_acceptsCommands() {
+        CommandProcessor processor = new CommandProcessor(storagePath());
+        assertEquals(CommandResponse.Type.ADD,
+                processor.process("  deadline\t report   /by\t2026-09-16  ").getType());
+        assertEquals(CommandResponse.Type.ADD,
+                processor.process("event\ttrip\t/from  2026-09-16\t/to  2026-09-17").getType());
+    }
+
+    @Test
+    public void process_duplicateCompletedTask_rejectsButAllowsDifferentDates() {
+        CommandProcessor processor = new CommandProcessor(storagePath());
+        processor.process("deadline report /by 2026-09-16");
+        processor.process("mark 1");
+        assertEquals(CommandResponse.Type.ERROR,
+                processor.process("deadline report /by 2026-09-16").getType());
+        assertEquals(CommandResponse.Type.ADD,
+                processor.process("deadline report /by 2026-09-17").getType());
+    }
+
+    @Test
+    public void process_corruptedStorage_explainsRecoveryAndPreservesData() throws IOException {
+        Path file = Path.of(storagePath());
+        Files.writeString(file, "broken record\n");
+        CommandProcessor processor = new CommandProcessor(file.toString());
+        CommandResponse response = processor.process("todo keep");
+        assertEquals(CommandResponse.Type.ERROR, response.getType());
+        assertTrue(response.getMessage().contains("restart James"));
+        assertEquals("broken record\n", Files.readString(file));
+        assertEquals("Nothing to undo.", processor.process("undo").getMessage());
+    }
+
+    @Test
+    public void process_randomStickerControlledIndexes_returnsEveryPackagedSticker() throws IOException {
+        String[] names = {"nankore", "otsu", "naisu", "gomen", "yatta"};
+        for (int i = 0; i < names.length; i++) {
+            final int selectedIndex = i;
+            RandomGenerator generator = new RandomGenerator() {
+                @Override
+                public long nextLong() {
+                    throw new AssertionError("Selection should use nextInt(bound)");
+                }
+
+                @Override
+                public int nextInt(int bound) {
+                    assertEquals(names.length, bound);
+                    return selectedIndex;
+                }
+            };
+            CommandProcessor processor = new CommandProcessor(storagePath(), generator);
+            CommandResponse response = processor.process("  RANDOM_STICKER  ");
+            String expectedPath = "/images/" + names[i] + "_pandorobou.png";
+            assertEquals(expectedPath, response.getStickerPath());
+            assertEquals("Here's a random sticker!", response.getMessage());
+            assertEquals(CommandResponse.Type.NORMAL, response.getType());
+            assertFalse(response.isExit());
+            try (var stream = getClass().getResourceAsStream(expectedPath)) {
+                assertNotNull(stream);
+                assertNotNull(javax.imageio.ImageIO.read(stream));
+            }
+            assertEquals(expectedPath, processor.process("random_sticker").getStickerPath());
+        }
+    }
+
+    @Test
+    public void process_randomSticker_preservesTasksStorageAndUndo() throws IOException {
+        CommandProcessor processor = new CommandProcessor(storagePath());
+        processor.process("random_sticker");
+        assertFalse(Files.exists(Path.of(storagePath())));
+        assertEquals("Nothing to undo.", processor.process("undo").getMessage());
+        processor.process("todo keep");
+        String saved = Files.readString(Path.of(storagePath()));
+        String tasks = processor.process("list").getMessage();
+        processor.process("random_sticker");
+        assertEquals(saved, Files.readString(Path.of(storagePath())));
+        assertEquals(tasks, processor.process("list").getMessage());
+        processor.process("undo");
+        assertEquals("Here are the tasks in your list:\n", processor.process("list").getMessage());
+    }
+
+    @Test
+    public void process_randomStickerExtraArguments_returnsTextError() {
+        CommandProcessor processor = new CommandProcessor(storagePath());
+        CommandResponse response = processor.process("random_sticker extra");
+        assertEquals(CommandResponse.Type.ERROR, response.getType());
+        assertEquals("OH NO James Doesnt Know What To Do!!!\nRANDOM_STICKER does not take arguments.",
+                response.getMessage());
+        assertNull(response.getStickerPath());
+        assertNull(processor.process("list").getStickerPath());
+    }
+
 }

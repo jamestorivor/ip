@@ -4,6 +4,9 @@ import java.time.LocalDate;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
+import java.util.List;
+import java.util.Random;
+import java.util.random.RandomGenerator;
 
 import james.exception.UserInputException;
 import james.parser.Parser;
@@ -15,6 +18,13 @@ import james.task.TaskList;
  * Processes commands independently of the console or graphical interface.
  */
 public class CommandProcessor {
+    private static final List<String> STICKER_PATHS = List.of(
+            "/images/nankore_pandorobou.png",
+            "/images/otsu_pandorobou.png",
+            "/images/naisu_pandorobou.png",
+            "/images/gomen_pandorobou.png",
+            "/images/yatta_pandorobou.png");
+
     private static final int MAX_UNDO_CHANGES = 20;
 
     private static final String DELETE_COMMAND_STRING = "delete";
@@ -22,6 +32,7 @@ public class CommandProcessor {
     private static final String TASK_LIST_ENTRY_FORMAT = "\n%d.%s";
     private static final String LINE_BREAK = "\n";
 
+    private final RandomGenerator random;
     private final Storage storage;
     private TaskList taskList;
     private final Deque<TaskList> undoSnapshots = new ArrayDeque<>();
@@ -32,6 +43,17 @@ public class CommandProcessor {
      * @param filePath Persistent storage file path.
      */
     public CommandProcessor(String filePath) {
+        this(filePath, new Random());
+    }
+
+    /**
+     * Initializes a processor with a supplied random generator for reproducible selection.
+     *
+     * @param filePath Persistent storage file path.
+     * @param random Generator used to select stickers.
+     */
+    public CommandProcessor(String filePath, RandomGenerator random) {
+        this.random = random;
         storage = new Storage(filePath);
         taskList = new TaskList(storage.load());
     }
@@ -50,6 +72,10 @@ public class CommandProcessor {
             Command command = Parser.parseCommandType(parts[0]);
             String remainingArguments = Parser.extractArguments(parts);
 
+            if ((command == Command.LIST || command == Command.BYE || command == Command.RANDOM_STICKER)
+                    && remainingArguments != null) {
+                throw new UserInputException(command.name() + " does not take arguments.");
+            }
             return executeCommand(command, remainingArguments);
         } catch (UserInputException e) {
             return new CommandResponse(exceptionMessage + e.getMessage(),
@@ -74,9 +100,19 @@ public class CommandProcessor {
             case MARK -> mark(arguments);
             case UNMARK -> unmark(arguments);
             case LIST -> listTasks();
+            case RANDOM_STICKER -> randomSticker();
             case BYE -> exit();
             default -> throw new UserInputException(unknownCommandMessage);
         };
+    }
+
+    /**
+     * Selects a sticker uniformly without modifying tasks or undo history.
+     */
+    private CommandResponse randomSticker() {
+        int index = random.nextInt(STICKER_PATHS.size());
+        return new CommandResponse("Here's a random sticker!", CommandResponse.Type.NORMAL,
+                false, STICKER_PATHS.get(index));
     }
 
     /**
@@ -164,6 +200,11 @@ public class CommandProcessor {
      */
     private CommandResponse add(Task task) throws UserInputException {
         assert task != null : "Parser must return a task";
+        for (Task existing : taskList.getTasks()) {
+            if (existing.hasSameDetails(task)) {
+                throw new UserInputException("This task already exists in your list.");
+            }
+        }
         TaskList beforeAdd = taskList.copy();
         taskList.addTask(task);
         saveChange(beforeAdd);
@@ -178,6 +219,10 @@ public class CommandProcessor {
     private void saveChange(TaskList previous) throws UserInputException {
         if (!storage.save(taskList)) {
             taskList = previous;
+            if (storage.hasLoadErrors()) {
+                throw new UserInputException("Saved tasks could not be fully loaded. No changes were made.\n"
+                        + "Repair the saved file or restore read access, then restart James.");
+            }
             throw new UserInputException("Could not save tasks. No changes were made.");
         }
         undoSnapshots.push(previous);

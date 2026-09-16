@@ -24,4 +24,5 @@ text-ui-test/EXPECTED-UNIX.TXT
 
 # data files
 data/
-/src/main/resources/images
+/src/main/resources/images/*
+!/src/main/resources/images/*.png

@@ -23,3 +23,8 @@
     -fx-rotate: 0;
 }
 
+
+.sticker-dialog {
+    -fx-background-color: transparent;
+    -fx-border-width: 0;
+}

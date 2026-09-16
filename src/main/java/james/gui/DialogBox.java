@@ -22,6 +22,7 @@ import javafx.scene.text.TextFlow;
 public class DialogBox extends HBox {
     private static final String DIALOG_BOX_RESOURCE = "/view/DialogBox.fxml";
     private static final String DIALOG_LOAD_ERROR_MESSAGE = "Unable to load dialog box";
+    private static final double STICKER_SIZE_MULTIPLIER = 2;
     private static final String REPLY_STYLE_CLASS = "reply-label";
 
     @FXML
@@ -65,6 +66,19 @@ public class DialogBox extends HBox {
         dialog.getStyleClass().add(REPLY_STYLE_CLASS);
     }
 
+    /**
+     * Replaces the response text with a sticker twice the profile image dimensions.
+     */
+    private void showSticker(String resourcePath) {
+        ImageView sticker = new ImageView(new Image(DialogBox.class.getResourceAsStream(resourcePath)));
+        sticker.fitWidthProperty().bind(userImage.fitWidthProperty().multiply(STICKER_SIZE_MULTIPLIER));
+        sticker.fitHeightProperty().bind(userImage.fitHeightProperty().multiply(STICKER_SIZE_MULTIPLIER));
+        sticker.setPreserveRatio(true);
+        sticker.setAccessibleText("Pandorobou sticker");
+        dialog.getChildren().setAll(sticker);
+        dialog.getStyleClass().add("sticker-dialog");
+    }
+
     /** Creates a user message box. */
     public static DialogBox user(String text, Image image) {
         return new DialogBox(text, true, CommandResponse.Type.NORMAL, image);
@@ -73,6 +87,9 @@ public class DialogBox extends HBox {
     /** Creates a James response box. */
     public static DialogBox james(CommandResponse response, Image image) {
         DialogBox db = new DialogBox(response.getMessage(), false, response.getType(), image);
+        if (response.getStickerPath() != null) {
+            db.showSticker(response.getStickerPath());
+        }
         db.flip();
         return db;
     }

@@ -27,6 +27,7 @@ public class CommandTest {
         assertEquals(Command.LIST_BY_DATE, Command.valueOf("LIST_BY_DATE"));
         assertEquals(Command.FIND, Command.valueOf("FIND"));
         assertEquals(Command.UNDO, Command.valueOf("UNDO"));
+        assertEquals(Command.RANDOM_STICKER, Command.valueOf("RANDOM_STICKER"));
     }
 
     /**
@@ -41,9 +42,9 @@ public class CommandTest {
      * Tests that values returns an array containing all defined Command enum constants.
      */
     @Test
-    public void values_allDefinedCommands_containsElevenCommands() {
+    public void values_allDefinedCommands_containsTwelveCommands() {
         Command[] commands = Command.values();
         assertNotNull(commands);
-        assertEquals(11, commands.length);
+        assertEquals(12, commands.length);
     }
 }

@@ -2,6 +2,7 @@ package james.parser;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
+import java.util.Locale;
 
 import james.command.Command;
 import james.exception.UserInputException;
@@ -66,7 +67,7 @@ public class Parser {
         String unknownCommandMessage = "James hasn't heard of this command :(";
 
         try {
-            return Command.valueOf(commandString.toUpperCase());
+            return Command.valueOf(commandString.toUpperCase(Locale.ROOT));
         } catch (IllegalArgumentException e) {
             throw new UserInputException(unknownCommandMessage);
         }
@@ -135,12 +136,13 @@ public class Parser {
                 + "Try: deadline <description> /by <end-date>";
         String noDeadlineDateMessage = "A deadline needs a by date.\n" + "Try: deadline <description> /by <date>";
         String invalidDateFormatMessage = "Formatting of the date is incorrect, try: yyyy-mm-dd";
-        String deadlineDateSeparator = " /by ";
+        String deadlineDateSeparator = "\\s+/by(?:\\s+|$)";
 
         boolean isDeadlineDescriptionMissing = arguments == null || arguments.trim().isEmpty();
         if (isDeadlineDescriptionMissing) {
             throw new UserInputException(noDeadlineDescriptionMessage);
         }
+        validateOptions(arguments, "/by");
         String[] deadlineParts = arguments.split(deadlineDateSeparator, 2);
         boolean isDeadlineIncomplete = deadlineParts.length < 2
                 || deadlineParts[0].trim().isEmpty() || deadlineParts[1].trim().isEmpty();
@@ -149,6 +151,7 @@ public class Parser {
         }
         try {
             LocalDate by = LocalDate.parse(deadlineParts[1].trim());
+            Task.validateDescription(deadlineParts[0]);
             return new Deadline(deadlineParts[0].trim(), by);
         } catch (DateTimeParseException e) {
             throw new UserInputException(invalidDateFormatMessage);
@@ -170,6 +173,7 @@ public class Parser {
         if (isTodoDescriptionMissing) {
             throw new UserInputException(noTodoDescriptionMessage);
         }
+        Task.validateDescription(arguments);
         return new ToDo(arguments.trim());
     }
 
@@ -188,13 +192,14 @@ public class Parser {
         String noEventTimesMessage = "An event needs both a start and end time.\n"
                 + "Try: event <description> /from <start> /to <end>";
         String invalidDateFormatMessage = "Formatting of the date is incorrect, try: yyyy-mm-dd";
-        String eventStartSeparator = " /from ";
-        String eventEndSeparator = " /to ";
+        String eventStartSeparator = "\\s+/from(?:\\s+|$)";
+        String eventEndSeparator = "\\s+/to(?:\\s+|$)";
 
         boolean isEventDescriptionMissing = arguments == null || arguments.trim().isEmpty();
         if (isEventDescriptionMissing) {
             throw new UserInputException(noEventDescriptionMessage);
         }
+        validateOptions(arguments, "/from", "/to");
         String[] eventParts = arguments.split(eventStartSeparator, 2);
         boolean isEventDescriptionOrStartSeparatorMissing = eventParts.length < 2 || eventParts[0].trim().isEmpty();
         if (isEventDescriptionOrStartSeparatorMissing) {
@@ -209,6 +214,10 @@ public class Parser {
         try {
             LocalDate from = LocalDate.parse(timeParts[0].trim());
             LocalDate to = LocalDate.parse(timeParts[1].trim());
+            Task.validateDescription(eventParts[0]);
+            if (!from.isBefore(to)) {
+                throw new UserInputException("An event must end after its start date.");
+            }
             return new Event(eventParts[0].trim(), from, to);
         } catch (DateTimeParseException e) {
             throw new UserInputException(invalidDateFormatMessage);
@@ -224,7 +233,7 @@ public class Parser {
      */
     public static String[] parseCommand(String rawInput) throws UserInputException {
         String noCommandMessage = "No command specified\n" + "Try: <command> <arguments:optional>";
-        String commandArgumentSeparator = " ";
+        String commandArgumentSeparator = "\\s+";
 
         boolean isCommandMissing = rawInput == null || rawInput.trim().isEmpty();
         if (isCommandMissing) {
@@ -232,6 +241,22 @@ public class Parser {
         }
 
         return rawInput.trim().split(commandArgumentSeparator, 2);
+    }
+
+    /**
+     * Rejects repeated, unknown, or out-of-order date options.
+     */
+    private static void validateOptions(String arguments, String... expected) throws UserInputException {
+        int optionIndex = 0;
+        for (String token : arguments.trim().split("\\s+")) {
+            if (token.startsWith("/")) {
+                if (optionIndex >= expected.length || !token.equals(expected[optionIndex])) {
+                    throw new UserInputException("Date options must appear once and in order: "
+                            + String.join(" ", expected));
+                }
+                optionIndex++;
+            }
+        }
     }
 
     /**
