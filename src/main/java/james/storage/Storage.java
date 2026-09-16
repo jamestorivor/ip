@@ -1,13 +1,11 @@
 package james.storage;
 
-import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 import james.exception.UserInputException;
 import james.task.Task;
@@ -21,6 +19,8 @@ public class Storage {
     private static final String READ_ERROR_WARNING_PREFIX = "Warning: Error reading saved tasks file: ";
 
     private final Path filePath;
+    // Prevents a partial or failed load from replacing the original data.
+    private boolean hasLoadErrors;
 
     /**
      * Constructs a Storage instance with the given file path.
@@ -40,29 +40,43 @@ public class Storage {
      */
     public ArrayList<Task> load() {
         ArrayList<Task> loadedTasks = new ArrayList<>();
-        File file = filePath.toFile();
-        if (!file.exists()) {
-            return loadedTasks;
-        }
-
-        try (Scanner fileScanner = new Scanner(file)) {
-            while (fileScanner.hasNextLine()) {
-                String line = fileScanner.nextLine();
-                if (!line.trim().isEmpty()) {
+        hasLoadErrors = false;
+        try {
+            if (Files.notExists(filePath)) {
+                return loadedTasks;
+            }
+            try (BufferedReader reader = Files.newBufferedReader(filePath)) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    if (line.isBlank()) {
+                        continue;
+                    }
                     try {
                         Task task = Task.fromFileString(line);
+                        if (loadedTasks.stream().anyMatch(existing -> existing.hasSameDetails(task))) {
+                            throw new UserInputException("Duplicate saved task.");
+                        }
                         loadedTasks.add(task);
                     } catch (UserInputException e) {
+                        hasLoadErrors = true;
                         System.out.println(INVALID_TASK_WARNING_PREFIX + line);
                     }
                 }
             }
-        } catch (FileNotFoundException e) {
-            // Storage file not found; return empty list
-        } catch (Exception e) {
+        } catch (IOException | SecurityException e) {
+            hasLoadErrors = true;
             System.out.println(READ_ERROR_WARNING_PREFIX + e.getMessage());
         }
         return loadedTasks;
+    }
+
+    /**
+     * Reports whether saving is blocked to protect incompletely loaded data.
+     *
+     * @return True if the storage file needs repair or its access needs restoring.
+     */
+    public boolean hasLoadErrors() {
+        return hasLoadErrors;
     }
 
     /**
@@ -73,6 +87,9 @@ public class Storage {
      * @return True if the complete task list was saved successfully.
      */
     public boolean save(TaskList taskList) {
+        if (hasLoadErrors) {
+            return false;
+        }
         Path temporaryFile = null;
         try {
             Path destination = filePath.toAbsolutePath();

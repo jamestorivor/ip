@@ -59,8 +59,8 @@ public class Event extends Task {
      */
     @Override
     public String toFileString() {
-        return EVENT_STORAGE_PREFIX + super.toFileString() + STORAGE_FIELD_SEPARATOR + from
-                + STORAGE_FIELD_SEPARATOR + to;
+        return EVENT_STORAGE_PREFIX + super.toFileString() + STORAGE_FIELD_SEPARATOR + from +
+                STORAGE_FIELD_SEPARATOR + to;
     }
 
     /**

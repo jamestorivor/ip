@@ -12,7 +12,9 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.Window;
 
-/** Controls the main JavaFX conversation window. */
+/**
+ * Controls the main JavaFX conversation window.
+ */
 public class MainWindow extends AnchorPane {
     private static final String GREETING_MESSAGE =
             "JAMES THE CHATTY CHATBOT\nHello! I'm James.\nI can do anything for you!";
@@ -25,13 +27,17 @@ public class MainWindow extends AnchorPane {
     @FXML private TextField userInput;
 
     private James james;
-    private final Image JAMES_IMAGE = new Image(this.getClass().getResourceAsStream(JAMES_IMAGE_FILE_PATH));
-    private final Image USER_IMAGE = new Image(this.getClass().getResourceAsStream(USER_IMAGE_FILE_PATH));
+    private final Image jamesImage = new Image(getClass().getResourceAsStream(JAMES_IMAGE_FILE_PATH));
+    private final Image userImage = new Image(getClass().getResourceAsStream(USER_IMAGE_FILE_PATH));
 
-    /** Initializes automatic scrolling for new messages. */
+    /**
+     * Initializes automatic scrolling for new messages.
+     */
     @FXML
     public void initialize() {
-        scrollPane.vvalueProperty().bind(dialogContainer.heightProperty());
+        // Keep the scroll position in its valid range and free for manual scrolling.
+        dialogContainer.heightProperty().addListener((observable, oldHeight, newHeight) ->
+                scrollPane.setVvalue(scrollPane.getVmax()));
         dialogContainer.setFillWidth(true);
         dialogContainer.widthProperty().addListener((observable, oldWidth, newWidth) -> {
             double dialogWidth = Math.max(0, newWidth.doubleValue() - 10);
@@ -43,15 +49,19 @@ public class MainWindow extends AnchorPane {
         });
     }
 
-    /** Injects the James instance */
+    /**
+     * Injects the James instance.
+     */
     public void setJames(James james) {
         this.james = james;
-        dialogContainer.getChildren().add(DialogBox.james(new CommandResponse(
+        dialogContainer.getChildren().add(DialogBox.createJames(new CommandResponse(
                 GREETING_MESSAGE,
-                CommandResponse.Type.NORMAL, false), JAMES_IMAGE));
+                CommandResponse.Type.NORMAL, false), jamesImage));
     }
 
-    /** Processes the current input and appends both sides of the conversation. */
+    /**
+     * Processes the current input and appends both sides of the conversation.
+     */
     @FXML
     private void handleUserInput() {
         String input = userInput.getText().trim().stripTrailing();
@@ -59,8 +69,8 @@ public class MainWindow extends AnchorPane {
             return;
         }
         CommandResponse response = james.getResponse(input);
-        DialogBox userDialog = DialogBox.user(input, USER_IMAGE);
-        DialogBox jamesDialog = DialogBox.james(response, JAMES_IMAGE);
+        DialogBox userDialog = DialogBox.createUser(input, userImage);
+        DialogBox jamesDialog = DialogBox.createJames(response, jamesImage);
         setDialogWidth(userDialog);
         setDialogWidth(jamesDialog);
         dialogContainer.getChildren().addAll(userDialog, jamesDialog);
@@ -71,6 +81,11 @@ public class MainWindow extends AnchorPane {
         }
     }
 
+    /**
+     * Fits a dialog to the conversation width while reserving its outer margin.
+     *
+     * @param dialog Dialog whose preferred width is updated.
+     */
     private void setDialogWidth(Region dialog) {
         dialog.setPrefWidth(Math.max(0, dialogContainer.getWidth() - 10));
     }

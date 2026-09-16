@@ -17,7 +17,7 @@ public class Ui {
      * Constructs a Ui instance and initializes the input scanner.
      */
     public Ui() {
-        this.scanner = new Scanner(System.in);
+        scanner = new Scanner(System.in);
     }
 
     /**
@@ -59,9 +59,9 @@ public class Ui {
      * Displays the welcome message and greeting banner.
      */
     public void greet() {
-        System.out.println(encaseMessage(GREETING_TITLE
-                + GREETING_INTRODUCTION
-                + GREETING_OFFER) + LINE_BREAK);
+        System.out.println(encaseMessage(GREETING_TITLE +
+                GREETING_INTRODUCTION +
+                GREETING_OFFER) + LINE_BREAK);
     }
 
     /**

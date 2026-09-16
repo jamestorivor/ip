@@ -51,7 +51,7 @@ public class Task {
      */
     public Task(String description) {
         this.description = description != null ? description.trim() : "";
-        this.isDone = false;
+        isDone = false;
     }
 
     /**
@@ -63,6 +63,32 @@ public class Task {
         Task copy = new Task(description);
         copy.isDone = isDone;
         return copy;
+    }
+
+    /**
+     * Rejects characters that would corrupt the line-based storage format.
+     *
+     * @param description Task description to validate.
+     * @throws UserInputException If a reserved delimiter or control character occurs.
+     */
+    public static void validateDescription(String description) throws UserInputException {
+        if (description.indexOf('|') >= 0 || description.chars().anyMatch(Character::isISOControl)) {
+            throw new UserInputException("Task descriptions cannot contain | or control characters.");
+        }
+    }
+
+    /**
+     * Compares task details independently of completion status.
+     *
+     * @param other Task to compare with.
+     * @return True if the type, description, and dates match.
+     */
+    public boolean hasSameDetails(Task other) {
+        Task left = copy();
+        Task right = other.copy();
+        left.markNotDone();
+        right.markNotDone();
+        return getClass() == other.getClass() && left.toFileString().equals(right.toFileString());
     }
 
     /**
@@ -141,6 +167,9 @@ public class Task {
         boolean isTaskDone = doneStr.equals(DONE_STORAGE_VALUE);
 
         Task task = parseStoredTask(type, line);
+        if (!(task instanceof ToDo)) {
+            validateDescription(task.getDescription());
+        }
 
         if (isTaskDone) {
             task.markDone();
@@ -237,10 +266,13 @@ public class Task {
         try {
             LocalDate from = LocalDate.parse(fromStr);
             LocalDate to = LocalDate.parse(toStr);
+            if (!from.isBefore(to)) {
+                throw new UserInputException("Stored event must end after its start date.");
+            }
             return new Event(eventDesc, from, to);
         } catch (DateTimeParseException e) {
-            throw new UserInputException(CORRUPTED_EVENT_DATE_MESSAGE_PREFIX + fromStr
-                    + EVENT_END_DATE_LABEL + toStr);
+            throw new UserInputException(CORRUPTED_EVENT_DATE_MESSAGE_PREFIX + fromStr +
+                    EVENT_END_DATE_LABEL + toStr);
         }
     }
 

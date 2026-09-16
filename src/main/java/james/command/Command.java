@@ -14,5 +14,6 @@ public enum Command {
     BYE,
     LIST_BY_DATE,
     FIND,
-    UNDO
+    UNDO,
+    RANDOM_STICKER
 }

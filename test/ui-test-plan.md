@@ -8,6 +8,8 @@
 - Comparison: expected output is compared exactly, including line breaks and spaces.
 - Isolation: each test case starts a new application session in an empty temporary directory.
 - Gradle compiles both the console backend and the JavaFX GUI.
+- Contextual stickers affect only the GUI; all console response text remains unchanged.
+- Graphical sticker checks are recorded in `test/sticker-gui-test-plan.md`.
 
 ## TC-01: Start and exit cleanly
 
@@ -317,7 +319,7 @@ ____________________________________________________________
 ```text
 todo read book
 deadline return book /by 2019-06-06
-event project meeting /from 2019-08-06 /to 2019-08-06
+event project meeting /from 2019-08-06 /to 2019-08-07
 todo join sports club
 mark 1
 mark 4
@@ -349,7 +351,7 @@ Now you have 2 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
 Got it. I've added this task:
-[E][ ] project meeting (from: Aug 06 2019 to: Aug 06 2019)
+[E][ ] project meeting (from: Aug 06 2019 to: Aug 07 2019)
 Now you have 3 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
@@ -374,13 +376,13 @@ ____________________________________________________________
 Here are the tasks in your list:
 1.[T][X] read book
 2.[D][ ] return book (by: Jun 06 2019)
-3.[E][ ] project meeting (from: Aug 06 2019 to: Aug 06 2019)
+3.[E][ ] project meeting (from: Aug 06 2019 to: Aug 07 2019)
 4.[T][X] join sports club
 5.[T][ ] borrow book
 ____________________________________________________________
 ____________________________________________________________
 Noted. I've removed this task:
-[E][ ] project meeting (from: Aug 06 2019 to: Aug 06 2019)
+[E][ ] project meeting (from: Aug 06 2019 to: Aug 07 2019)
 Now you have 4 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
@@ -404,14 +406,14 @@ ____________________________________________________________
 ```text
 todo read book
 deadline return book /by 2019-06-06
-event project meeting /from 2019-08-06 /to 2019-08-06
+event project meeting /from 2019-08-06 /to 2019-08-07
 todo join sports club
 mark 1
 mark 4
 todo borrow book
 list
 deadline return book /by 2019-12-01
-event project meeting /from 2019-08-12 /to 2019-08-12
+event project meeting /from 2019-08-12 /to 2019-08-13
 bye
 ```
 
@@ -436,7 +438,7 @@ Now you have 2 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
 Got it. I've added this task:
-[E][ ] project meeting (from: Aug 06 2019 to: Aug 06 2019)
+[E][ ] project meeting (from: Aug 06 2019 to: Aug 07 2019)
 Now you have 3 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
@@ -461,7 +463,7 @@ ____________________________________________________________
 Here are the tasks in your list:
 1.[T][X] read book
 2.[D][ ] return book (by: Jun 06 2019)
-3.[E][ ] project meeting (from: Aug 06 2019 to: Aug 06 2019)
+3.[E][ ] project meeting (from: Aug 06 2019 to: Aug 07 2019)
 4.[T][X] join sports club
 5.[T][ ] borrow book
 ____________________________________________________________
@@ -472,7 +474,7 @@ Now you have 6 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
 Got it. I've added this task:
-[E][ ] project meeting (from: Aug 12 2019 to: Aug 12 2019)
+[E][ ] project meeting (from: Aug 12 2019 to: Aug 13 2019)
 Now you have 7 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
@@ -820,6 +822,163 @@ ____________________________________________________________
 ____________________________________________________________
 Undid the last change.
 Now you have 0 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Nothing to undo.
+____________________________________________________________
+____________________________________________________________
+Bye. Rest your eyes!
+____________________________________________________________
+```
+
+## TC-15: Reject invalid data and recover
+
+**Aim:** Accept extra whitespace and reject duplicates, equal/reversed dates, impossible dates, repeated parameters, reserved characters, and extra arguments without changing tasks or exiting.
+
+**Inputs:**
+
+```text
+  todo   keep  
+todo keep
+event trip /from 2026-09-16 /to 2026-09-16
+event trip /from 2026-09-17 /to 2026-09-16
+deadline report /by 2026-02-30
+deadline report /by 2026-09-16 /by 2026-09-17
+todo bad | record
+bye extra
+list extra
+list
+bye
+```
+
+**Expected output:**
+
+```text
+____________________________________________________________
+JAMES THE CHATTY CHATBOT
+Hello! I'm James.
+I can do anything for you!
+____________________________________________________________
+
+____________________________________________________________
+Got it. I've added this task:
+[T][ ] keep
+Now you have 1 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+OH NO James Doesnt Know What To Do!!!
+This task already exists in your list.
+____________________________________________________________
+____________________________________________________________
+OH NO James Doesnt Know What To Do!!!
+An event must end after its start date.
+____________________________________________________________
+____________________________________________________________
+OH NO James Doesnt Know What To Do!!!
+An event must end after its start date.
+____________________________________________________________
+____________________________________________________________
+OH NO James Doesnt Know What To Do!!!
+Formatting of the date is incorrect, try: yyyy-mm-dd
+____________________________________________________________
+____________________________________________________________
+OH NO James Doesnt Know What To Do!!!
+Date options must appear once and in order: /by
+____________________________________________________________
+____________________________________________________________
+OH NO James Doesnt Know What To Do!!!
+Task descriptions cannot contain | or control characters.
+____________________________________________________________
+____________________________________________________________
+OH NO James Doesnt Know What To Do!!!
+BYE does not take arguments.
+____________________________________________________________
+____________________________________________________________
+OH NO James Doesnt Know What To Do!!!
+LIST does not take arguments.
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list:
+1.[T][ ] keep
+____________________________________________________________
+____________________________________________________________
+Bye. Rest your eyes!
+____________________________________________________________
+```
+
+## TC-16: Protect corrupted storage
+
+**Aim:** Explain recovery and preserve the original file when saved data is malformed.
+
+**Setup:** Create `data/james.txt` containing `broken record` followed by a newline. Verify its contents remain unchanged afterwards.
+
+**Inputs:**
+
+```text
+todo keep
+undo
+bye
+```
+
+**Expected output:**
+
+```text
+Warning: Skipping invalid saved task entry: broken record
+____________________________________________________________
+JAMES THE CHATTY CHATBOT
+Hello! I'm James.
+I can do anything for you!
+____________________________________________________________
+
+____________________________________________________________
+OH NO James Doesnt Know What To Do!!!
+Saved tasks could not be fully loaded. No changes were made.
+Repair the saved file or restore read access, then restart James.
+____________________________________________________________
+____________________________________________________________
+Nothing to undo.
+____________________________________________________________
+____________________________________________________________
+Bye. Rest your eyes!
+____________________________________________________________
+```
+
+## TC-17: Request stickers without changing tasks
+
+**Aim:** Verify the fixed console fallback, repeated requests, argument rejection, and unchanged empty task list and undo history.
+
+**Inputs:**
+
+```text
+random_sticker
+random_sticker
+random_sticker extra
+list
+undo
+bye
+```
+
+**Expected output:**
+
+```text
+____________________________________________________________
+JAMES THE CHATTY CHATBOT
+Hello! I'm James.
+I can do anything for you!
+____________________________________________________________
+
+____________________________________________________________
+Here's a random sticker!
+____________________________________________________________
+____________________________________________________________
+Here's a random sticker!
+____________________________________________________________
+____________________________________________________________
+OH NO James Doesnt Know What To Do!!!
+RANDOM_STICKER does not take arguments.
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list:
 ____________________________________________________________
 ____________________________________________________________
 Nothing to undo.
