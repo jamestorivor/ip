@@ -54,6 +54,15 @@ public class CommandProcessor {
     }
 
     /**
+     * Returns startup diagnostics for tasks that could not be loaded.
+     *
+     * @return Warning and recovery guidance, or an empty string when loading succeeded.
+     */
+    public String getLoadWarning() {
+        return storage.getLoadWarning();
+    }
+
+    /**
      * Processes one command and returns its displayable result.
      *
      * @param input Raw command input.
@@ -227,6 +236,10 @@ public class CommandProcessor {
                         "Repair the saved file or restore read access, then restart James.",
                         UserInputException.Category.STORAGE);
             }
+            if (storage.wasSaveLocked()) {
+                throw new UserInputException("Another instance is saving tasks. No changes were made; try again.",
+                        UserInputException.Category.STORAGE);
+            }
             throw new UserInputException("Could not save tasks. No changes were made.",
                     UserInputException.Category.STORAGE);
         }
@@ -248,6 +261,10 @@ public class CommandProcessor {
         }
         TaskList previous = undoSnapshots.peek();
         if (!storage.save(previous)) {
+            if (storage.wasSaveLocked()) {
+                throw new UserInputException("Another instance is saving tasks. Undo was not applied; try again.",
+                        UserInputException.Category.STORAGE);
+            }
             throw new UserInputException("Could not save tasks. Undo was not applied; try again.",
                     UserInputException.Category.STORAGE);
         }

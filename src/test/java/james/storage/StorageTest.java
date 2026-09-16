@@ -6,8 +6,11 @@ import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
+import java.nio.channels.FileChannel;
+import java.nio.channels.FileLock;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +31,43 @@ public class StorageTest {
 
     @TempDir
     private Path tempDir;
+
+    @Test
+    public void save_writerLockHeld_preservesFileAndAllowsRetry() throws IOException {
+        Path file = tempDir.resolve("tasks.txt");
+        String original = "T | 0 | keep\n";
+        Files.writeString(file, original);
+        Storage storage = new Storage(file.toString());
+        TaskList tasks = new TaskList(storage.load());
+        tasks.addTask(new ToDo("new task"));
+        try (FileChannel channel = FileChannel.open(tempDir.resolve("tasks.txt.lock"),
+                StandardOpenOption.CREATE, StandardOpenOption.WRITE);
+                FileLock lock = channel.lock()) {
+            assertTrue(lock.isValid());
+            assertFalse(storage.save(tasks));
+            assertTrue(storage.wasSaveLocked());
+            assertEquals(original, Files.readString(file));
+        }
+        assertTrue(storage.save(tasks));
+        assertFalse(storage.wasSaveLocked());
+        assertEquals(original + "T | 0 | new task\n", Files.readString(file));
+    }
+
+    @Test
+    public void load_controlCharacters_preservesLegacyPipesAndBlocksSaving() throws IOException {
+        Path file = tempDir.resolve("tasks.txt");
+        String original = "T | 0 | safe | legacy\nT | 0 | unsafe" + (char) 27 + "[2Jrecord\n";
+        Files.writeString(file, original);
+        Storage storage = new Storage(file.toString());
+        ArrayList<Task> tasks = storage.load();
+        assertEquals(1, tasks.size());
+        assertEquals("safe | legacy", tasks.get(0).getDescription());
+        assertTrue(storage.getLoadWarning().startsWith("Warning: Skipping invalid saved task at line 2.\n"));
+        assertFalse(storage.getLoadWarning().contains(String.valueOf((char) 27)));
+        assertTrue(storage.hasLoadErrors());
+        assertFalse(storage.save(new TaskList(tasks)));
+        assertEquals(original, Files.readString(file));
+    }
 
     /**
      * Tests that load returns an empty ArrayList when the storage file does not exist.
@@ -167,6 +207,22 @@ public class StorageTest {
         assertTrue(storage.load().isEmpty());
         assertFalse(storage.save(new TaskList()));
         assertTrue(Files.isDirectory(tempDir));
+    }
+
+    @Test
+    public void load_corruptedFile_reportsLineNumbersAndClearsWarningsAfterRepair() throws IOException {
+        Path file = tempDir.resolve("warnings.txt");
+        Files.writeString(file, "\nbroken record\nT | 0 | valid\ninvalid\n");
+        Storage storage = new Storage(file.toString());
+        assertEquals(1, storage.load().size());
+        assertEquals("Warning: Skipping invalid saved task at line 2.\n" +
+                "Warning: Skipping invalid saved task at line 4.\n" +
+                "Some saved tasks could not be loaded. Changes are disabled.\n" +
+                "Repair the saved file or restore read access, then restart James.", storage.getLoadWarning());
+        Files.writeString(file, "T | 0 | repaired\n");
+        assertEquals(1, storage.load().size());
+        assertEquals("", storage.getLoadWarning());
+        assertFalse(storage.hasLoadErrors());
     }
 
 }

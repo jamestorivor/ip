@@ -26,6 +26,15 @@ public class James {
     }
 
     /**
+     * Returns startup diagnostics for tasks that could not be loaded.
+     *
+     * @return Warning and recovery guidance, or an empty string when loading succeeded.
+     */
+    public String getLoadWarning() {
+        return commandProcessor.getLoadWarning();
+    }
+
+    /**
      * Processes a command and returns its response for display.
      *
      * @param input Command entered by the user.
@@ -40,6 +49,9 @@ public class James {
      */
     public void run() {
         ui.greet();
+        if (!getLoadWarning().isEmpty()) {
+            ui.showResponse(getLoadWarning());
+        }
         boolean isRunning = true;
         while (isRunning && ui.hasNextCommand()) {
             CommandResponse response = commandProcessor.process(ui.readCommand());

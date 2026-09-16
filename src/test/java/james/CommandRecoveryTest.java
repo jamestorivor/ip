@@ -37,6 +37,29 @@ public class CommandRecoveryTest {
     }
 
     @Test
+    public void process_undoWhileWriterLocked_preservesStateAndHistoryForRetry() throws IOException {
+        Path file = directory.resolve("tasks.txt");
+        CommandProcessor processor = new CommandProcessor(file.toString());
+        processor.process("todo keep");
+        String before = processor.process("list").getMessage();
+        byte[] original = Files.readAllBytes(file);
+        try (FileChannel channel = FileChannel.open(directory.resolve("tasks.txt.lock"),
+                StandardOpenOption.CREATE, StandardOpenOption.WRITE);
+                FileLock lock = channel.lock()) {
+            assertTrue(lock.isValid());
+            CommandResponse response = processor.process("undo");
+            assertEquals(CommandResponse.Type.ERROR, response.getType());
+            assertEquals(Sticker.GOMEN, response.getSticker());
+            assertTrue(response.getMessage().contains("Another instance"));
+            assertEquals(before, processor.process("list").getMessage());
+            assertArrayEquals(original, Files.readAllBytes(file));
+        }
+        assertEquals(Sticker.NAISU, processor.process("undo").getSticker());
+        assertEquals("Here are the tasks in your list:\n", processor.process("list").getMessage());
+        assertEquals("", Files.readString(file));
+    }
+
+    @Test
     public void process_partialLoadErrors_blocksEveryMutationWithoutChangingData() throws IOException {
         Path file = directory.resolve("tasks.txt");
         Files.writeString(file, "T | 1 | completed\nT | 0 | pending\nbroken record\n");
