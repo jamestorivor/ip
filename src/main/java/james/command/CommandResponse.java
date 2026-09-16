@@ -33,8 +33,11 @@ public class CommandResponse {
         this(message, type, isExit, null, DisplayMode.TEXT_ONLY);
     }
 
+    /**
+     * Creates a response without trailing line breaks, preserving its internal text layout.
+     */
     private CommandResponse(String message, Type type, boolean isExit, Sticker sticker, DisplayMode displayMode) {
-        this.message = message;
+        this.message = message.replaceAll("[\\r\\n]+$", "");
         this.type = type;
         this.isExit = isExit;
         this.sticker = sticker;
@@ -42,7 +45,7 @@ public class CommandResponse {
     }
 
     /**
-     * Creates a reply containing a sticker followed by its text.
+     * Creates a reply containing a text followed by its sticker.
      *
      * @param message Response text.
      * @param type Response category.

@@ -7,9 +7,9 @@ import java.util.Scanner;
  */
 public class Ui {
     private static final String LINE_BREAK = "\n";
-    private static final String GREETING_TITLE = "JAMES THE CHATTY CHATBOT\n";
-    private static final String GREETING_INTRODUCTION = "Hello! I'm James.\n";
-    private static final String GREETING_OFFER = "I can do anything for you!\n";
+    private static final String GREETING_TITLE = "James the ぱんどろぼう\n";
+    private static final String GREETING_INTRODUCTION = "Shh! I'm James, your bread thief.\n";
+    private static final String GREETING_OFFER = "I'll guard your tasks. The bread? No promises!\n";
     private static final String DIVIDER = "____________________________________________________________";
     private final Scanner scanner;
 

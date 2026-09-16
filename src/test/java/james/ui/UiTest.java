@@ -73,8 +73,8 @@ public class UiTest {
         Ui ui = new Ui();
         ui.greet();
         String output = outputStreamCaptor.toString();
-        assertTrue(output.contains("JAMES THE CHATTY CHATBOT"));
-        assertTrue(output.contains("Hello! I'm James."));
+        assertTrue(output.contains("James the ぱんどろぼう"));
+        assertTrue(output.contains("Shh! I'm James, your bread thief."));
     }
 
     // ==========================================

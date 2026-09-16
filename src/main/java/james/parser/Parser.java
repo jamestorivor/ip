@@ -64,7 +64,7 @@ public class Parser {
      * @throws UserInputException If the command word is unrecognized.
      */
     public static Command parseCommandType(String commandString) throws UserInputException {
-        String unknownCommandMessage = "James hasn't heard of this command :(";
+        String unknownCommandMessage = "I don't know that recipe! Try list or todo <description>.";
 
         try {
             return Command.valueOf(commandString.toUpperCase(Locale.ROOT));
@@ -87,7 +87,7 @@ public class Parser {
 
         boolean isTaskNumberBelowMinimum = taskNumber < 1;
         boolean isTaskNumberAboveMaximum = taskNumber > taskListSize;
-        String taskNumberDoesntExistMessage = "James says there is no task number " + taskNumber + ".\n" +
+        String taskNumberDoesntExistMessage = "I can't find task number " + taskNumber + ".\n" +
                 "Your list currently has " + taskListSize + " tasks.";
 
         if (isTaskNumberBelowMinimum || isTaskNumberAboveMaximum) {
@@ -105,9 +105,9 @@ public class Parser {
      * @throws UserInputException If the argument is missing or is not a whole number.
      */
     private static int getTaskNumber(String arguments, String command) throws UserInputException {
-        String noTaskNumberMessage = "James asks that you provide a task number.\n" +
+        String noTaskNumberMessage = "Which task shall I fetch? Please provide a task number.\n" +
                 "Try: " + command + " <task number>";
-        String taskNumberNotIntMessage = "James says that the task number must be a whole number.\n" +
+        String taskNumberNotIntMessage = "No half-slices here! The task number must be a whole number.\n" +
                 "Try: " + command + " <task number>";
 
         boolean isTaskNumberMissing = arguments == null || arguments.trim().isEmpty();

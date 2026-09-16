@@ -55,7 +55,7 @@ public class CommandRecoveryTest {
             assertArrayEquals(original, Files.readAllBytes(file));
         }
         assertEquals(Sticker.NAISU, processor.process("undo").getSticker());
-        assertEquals("Here are the tasks in your list:\n", processor.process("list").getMessage());
+        assertEquals("Let's peek in the basket. Your tasks:", processor.process("list").getMessage());
         assertEquals("", Files.readString(file));
     }
 
@@ -70,13 +70,13 @@ public class CommandRecoveryTest {
             CommandResponse response = processor.process(command);
             assertEquals(CommandResponse.Type.ERROR, response.getType(), command);
             assertEquals(Sticker.GOMEN, response.getSticker(), command);
-            assertEquals("OH NO James Doesnt Know What To Do!!!\n" +
+            assertEquals("Gomen! A little flour in the gears.\n" +
                     "Saved tasks could not be fully loaded. No changes were made.\n" +
                     "Repair the saved file or restore read access, then restart James.", response.getMessage());
             assertFalse(response.isExit());
             assertEquals(before, processor.process("list").getMessage(), command);
             assertArrayEquals(original, Files.readAllBytes(file), command);
-            assertEquals("Nothing to undo.", processor.process("undo").getMessage());
+            assertEquals("Not a crumb to retrace. Nothing to undo.", processor.process("undo").getMessage());
         }
     }
 
@@ -90,7 +90,7 @@ public class CommandRecoveryTest {
         CommandProcessor restarted = new CommandProcessor(file.toString());
         assertEquals("", restarted.getLoadWarning());
         assertEquals(CommandResponse.Type.ADD, restarted.process("todo new").getType());
-        assertEquals("Here are the tasks in your list:\n1.[T][ ] repaired\n2.[T][ ] new\n",
+        assertEquals("Let's peek in the basket. Your tasks:\n1.[T][ ] repaired\n2.[T][ ] new",
                 new CommandProcessor(file.toString()).process("list").getMessage());
     }
 

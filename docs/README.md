@@ -1,6 +1,7 @@
-# James User Guide
+# James the ぱんどろぼう User Guide
 
-// Update the title above to match the actual product name
+James is a mischievous bread thief who keeps your tasks in his bread basket.
+He speaks mostly English, with the occasional Japanese cheer or apology.
 
 // Product screenshot goes here
 
@@ -42,4 +43,4 @@ Restored tasks are saved automatically. Undo history clears when James closes;
 redo and selecting an older command directly are not supported.
 
 Example: `todo read book`, `mark 1`, `undo` leaves the task incomplete;
-a second `undo` removes it. When history is empty, James says `Nothing to undo.`
+a second `undo` removes it. When history is empty, James says `Not a crumb to retrace. Nothing to undo.`

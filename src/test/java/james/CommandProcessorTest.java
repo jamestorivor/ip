@@ -31,7 +31,7 @@ public class CommandProcessorTest {
         CommandResponse listResponse = processor.process("list");
 
         assertEquals(CommandResponse.Type.ADD, addResponse.getType());
-        assertEquals("Here are the tasks in your list:\n1.[T][ ] revise Java\n", listResponse.getMessage());
+        assertEquals("Let's peek in the basket. Your tasks:\n1.[T][ ] revise Java", listResponse.getMessage());
     }
 
     /** Verifies that invalid input becomes a styled error response. */
@@ -40,7 +40,7 @@ public class CommandProcessorTest {
         CommandResponse response = new CommandProcessor(getStoragePath()).process("unknown");
 
         assertEquals(CommandResponse.Type.ERROR, response.getType());
-        assertEquals("OH NO James Doesnt Know What To Do!!!\nJames hasn't heard of this command :(",
+        assertEquals("Gomen! A little flour in the gears.\nI don't know that recipe! Try list or todo <description>.",
                 response.getMessage());
         assertFalse(response.isExit());
     }
@@ -63,7 +63,7 @@ public class CommandProcessorTest {
 
         assertTrue(response.isExit());
         assertEquals(CommandResponse.Type.NORMAL, response.getType());
-        assertEquals("Bye. Rest your eyes!\n", response.getMessage());
+        assertEquals("Mata ne! Rest up. I smell fresh bread!", response.getMessage());
     }
 
     @Test
@@ -88,8 +88,8 @@ public class CommandProcessorTest {
         processor.process("undo");
         assertFalse(processor.process("list").getMessage().contains("report"));
         processor.process("undo");
-        assertEquals("Here are the tasks in your list:\n", processor.process("list").getMessage());
-        assertEquals("Nothing to undo.", processor.process("undo").getMessage());
+        assertEquals("Let's peek in the basket. Your tasks:", processor.process("list").getMessage());
+        assertEquals("Not a crumb to retrace. Nothing to undo.", processor.process("undo").getMessage());
     }
 
     @Test
@@ -107,7 +107,7 @@ public class CommandProcessorTest {
         processor.process("undo");
         assertTrue(processor.process("list").getMessage().contains("[ ] read"));
         processor.process("undo");
-        assertEquals("Nothing to undo.", processor.process("undo").getMessage());
+        assertEquals("Not a crumb to retrace. Nothing to undo.", processor.process("undo").getMessage());
     }
 
     @Test
@@ -119,8 +119,8 @@ public class CommandProcessorTest {
         for (int i = 0; i < 20; i++) {
             processor.process("undo");
         }
-        assertEquals("Nothing to undo.", processor.process("undo").getMessage());
-        assertEquals("Here are the tasks in your list:\n1.[T][ ] task 0\n",
+        assertEquals("Not a crumb to retrace. Nothing to undo.", processor.process("undo").getMessage());
+        assertEquals("Let's peek in the basket. Your tasks:\n1.[T][ ] task 0",
                 processor.process("list").getMessage());
         processor.process("todo new task");
         processor.process("undo");
@@ -135,7 +135,7 @@ public class CommandProcessorTest {
         processor.process("undo");
         CommandProcessor restarted = new CommandProcessor(getStoragePath());
         assertTrue(restarted.process("list").getMessage().contains("[ ] read"));
-        assertEquals("Nothing to undo.", restarted.process("undo").getMessage());
+        assertEquals("Not a crumb to retrace. Nothing to undo.", restarted.process("undo").getMessage());
     }
 
     @Test
@@ -153,8 +153,8 @@ public class CommandProcessorTest {
         Files.delete(destination.resolve("blocker"));
         Files.delete(destination);
         processor.process("undo");
-        assertEquals("Here are the tasks in your list:\n", processor.process("list").getMessage());
-        assertEquals("Nothing to undo.", processor.process("undo").getMessage());
+        assertEquals("Let's peek in the basket. Your tasks:", processor.process("list").getMessage());
+        assertEquals("Not a crumb to retrace. Nothing to undo.", processor.process("undo").getMessage());
     }
 
     private String getStoragePath() {
@@ -171,10 +171,10 @@ public class CommandProcessorTest {
         CommandResponse added = processor.process("todo revise Java");
         CommandResponse deleted = processor.process("delete 1");
 
-        assertEquals("Got it. I've added this task:\n[T][ ] revise Java" +
+        assertEquals("Hehe! Tucked this task into my bread basket:\n[T][ ] revise Java" +
                 "\nNow you have 1 tasks in the list.", added.getMessage());
-        assertEquals("Noted. I've removed this task:\n[T][ ] revise Java" +
-                "\nNow you have 0 tasks in the list.\n", deleted.getMessage());
+        assertEquals("Poof! Snatched this task out of the basket:\n[T][ ] revise Java" +
+                "\nNow you have 0 tasks in the list.", deleted.getMessage());
     }
 
     @Test
@@ -185,7 +185,7 @@ public class CommandProcessorTest {
         CommandResponse response = processor.process("mark 1");
 
         assertEquals(CommandResponse.Type.MARK, response.getType());
-        assertEquals("Nice! I've marked this task as done:\n[T][X] buy bread", response.getMessage());
+        assertEquals("Yatta! Task done. Time for a bread break:\n[T][X] buy bread", response.getMessage());
     }
 
     @Test
@@ -197,7 +197,7 @@ public class CommandProcessorTest {
         CommandResponse response = processor.process("unmark 1");
 
         assertEquals(CommandResponse.Type.MARK, response.getType());
-        assertEquals("OK, I've marked this task as not done yet:\n[T][ ] buy bread", response.getMessage());
+        assertEquals("Back in the oven! This task is not done yet:\n[T][ ] buy bread", response.getMessage());
     }
 
     @Test
@@ -210,7 +210,7 @@ public class CommandProcessorTest {
         CommandResponse response = processor.process("find BOOK");
 
         assertEquals(CommandResponse.Type.NORMAL, response.getType());
-        assertEquals("Here are the matching tasks in your list:\n1.[T][ ] read book" +
+        assertEquals("Sniff sniff... here are the matching tasks:\n1.[T][ ] read book" +
                 "\n2.[D][ ] return book (by: Jun 06 2026)", response.getMessage());
     }
 
@@ -221,7 +221,7 @@ public class CommandProcessorTest {
 
         CommandResponse response = processor.process("find magazine");
 
-        assertEquals("Here are the matching tasks in your list:", response.getMessage());
+        assertEquals("Sniff sniff... here are the matching tasks:", response.getMessage());
     }
 
     @Test
@@ -234,9 +234,9 @@ public class CommandProcessorTest {
         CommandResponse response = processor.process("list_by_date 2026-10-15");
 
         assertEquals(CommandResponse.Type.NORMAL, response.getType());
-        assertEquals("Here are the tasks in your list that matches the date 2026-10-15:" +
+        assertEquals("Tasks on the menu for 2026-10-15:" +
                 "\n1.[D][ ] return book (by: Oct 15 2026)" +
-                "\n2.[E][ ] conference (from: Oct 14 2026 to: Oct 16 2026)\n", response.getMessage());
+                "\n2.[E][ ] conference (from: Oct 14 2026 to: Oct 16 2026)", response.getMessage());
     }
 
     @Test
@@ -246,7 +246,7 @@ public class CommandProcessorTest {
 
         CommandResponse response = processor.process("list_by_date 2026-10-16");
 
-        assertEquals("Here are the tasks in your list that matches the date 2026-10-16:\n", response.getMessage());
+        assertEquals("Tasks on the menu for 2026-10-16:", response.getMessage());
     }
     @Test
     public void process_invalidInputs_preservesTasksAndHistory() {
@@ -262,7 +262,7 @@ public class CommandProcessorTest {
             "mark 99999999999999999999", "delete 1 1", "deadline report /until 2026-09-16"
         };
         String[] expectedErrors = {
-            "This task already exists in your list.",
+            "Already in the basket! This task exists in your list.",
             "Task descriptions cannot contain | or control characters.",
             "Task descriptions cannot contain | or control characters.",
             "LIST does not take arguments.", "BYE does not take arguments.",
@@ -271,8 +271,8 @@ public class CommandProcessorTest {
             "An event must end after its start date.", "An event must end after its start date.",
             "Date options must appear once and in order: /from /to",
             "Date options must appear once and in order: /from /to",
-            "James says that the task number must be a whole number.\nTry: mark <task number>",
-            "James says that the task number must be a whole number.\nTry: delete <task number>",
+            "No half-slices here! The task number must be a whole number.\nTry: mark <task number>",
+            "No half-slices here! The task number must be a whole number.\nTry: delete <task number>",
             "A deadline needs a by date.\nTry: deadline <description> /by <date>"
         };
         String originalList = processor.process("list").getMessage();
@@ -280,14 +280,14 @@ public class CommandProcessorTest {
             String input = invalidInputs[i];
             CommandResponse response = processor.process(input);
             assertEquals(CommandResponse.Type.ERROR, response.getType(), input);
-            assertEquals("OH NO James Doesnt Know What To Do!!!\n" + expectedErrors[i], response.getMessage(), input);
+            assertEquals("Gomen! A little flour in the gears.\n" + expectedErrors[i], response.getMessage(), input);
             assertFalse(response.isExit(), input);
             assertEquals(originalList, processor.process("list").getMessage(), input);
         }
-        assertEquals("Here are the tasks in your list:\n1.[T][ ] keep\n",
+        assertEquals("Let's peek in the basket. Your tasks:\n1.[T][ ] keep",
                 processor.process("list").getMessage());
         processor.process("undo");
-        assertEquals("Here are the tasks in your list:\n", processor.process("list").getMessage());
+        assertEquals("Let's peek in the basket. Your tasks:", processor.process("list").getMessage());
     }
 
     @Test
@@ -320,7 +320,7 @@ public class CommandProcessorTest {
         assertTrue(response.getMessage().contains("restart James"));
         assertEquals(Sticker.GOMEN, response.getSticker());
         assertEquals("broken record\n", Files.readString(file));
-        assertEquals("Nothing to undo.", processor.process("undo").getMessage());
+        assertEquals("Not a crumb to retrace. Nothing to undo.", processor.process("undo").getMessage());
     }
 
     @Test
@@ -345,7 +345,7 @@ public class CommandProcessorTest {
             String expectedPath = "/images/" + names[i] + "_pandorobou.png";
             assertEquals(expectedPath, response.getStickerPath());
             assertEquals(CommandResponse.DisplayMode.STICKER_ONLY, response.getDisplayMode());
-            assertEquals("Here's a random sticker!", response.getMessage());
+            assertEquals("Hehe! A little treat from my secret stash!", response.getMessage());
             assertEquals(CommandResponse.Type.NORMAL, response.getType());
             assertFalse(response.isExit());
             try (var stream = getClass().getResourceAsStream(expectedPath)) {
@@ -361,7 +361,7 @@ public class CommandProcessorTest {
         CommandProcessor processor = new CommandProcessor(getStoragePath());
         processor.process("random_sticker");
         assertFalse(Files.exists(Path.of(getStoragePath())));
-        assertEquals("Nothing to undo.", processor.process("undo").getMessage());
+        assertEquals("Not a crumb to retrace. Nothing to undo.", processor.process("undo").getMessage());
         processor.process("todo keep");
         String saved = Files.readString(Path.of(getStoragePath()));
         String tasks = processor.process("list").getMessage();
@@ -369,7 +369,7 @@ public class CommandProcessorTest {
         assertEquals(saved, Files.readString(Path.of(getStoragePath())));
         assertEquals(tasks, processor.process("list").getMessage());
         processor.process("undo");
-        assertEquals("Here are the tasks in your list:\n", processor.process("list").getMessage());
+        assertEquals("Let's peek in the basket. Your tasks:", processor.process("list").getMessage());
     }
 
     @Test
@@ -377,7 +377,7 @@ public class CommandProcessorTest {
         CommandProcessor processor = new CommandProcessor(getStoragePath());
         CommandResponse response = processor.process("random_sticker extra");
         assertEquals(CommandResponse.Type.ERROR, response.getType());
-        assertEquals("OH NO James Doesnt Know What To Do!!!\nRANDOM_STICKER does not take arguments.",
+        assertEquals("Gomen! A little flour in the gears.\nRANDOM_STICKER does not take arguments.",
                 response.getMessage());
         assertEquals(Sticker.NANKORE, response.getSticker());
         assertEquals(CommandResponse.DisplayMode.STICKER_WITH_TEXT, response.getDisplayMode());

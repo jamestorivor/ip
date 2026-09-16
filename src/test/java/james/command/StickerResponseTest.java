@@ -59,7 +59,7 @@ public class StickerResponseTest {
             assertEquals(CommandResponse.Type.ERROR, response.getType(), command);
             assertEquals(CommandResponse.DisplayMode.STICKER_WITH_TEXT, response.getDisplayMode());
         }
-        assertEquals("OH NO James Doesnt Know What To Do!!!\nJames hasn't heard of this command :(",
+        assertEquals("Gomen! A little flour in the gears.\nI don't know that recipe! Try list or todo <description>.",
                 processor.process("unknown").getMessage());
     }
 

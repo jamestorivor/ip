@@ -16,13 +16,13 @@ bye
 
 ```text
 ____________________________________________________________
-JAMES THE CHATTY CHATBOT
-Hello! I'm James.
-I can do anything for you!
+James the ぱんどろぼう
+Shh! I'm James, your bread thief.
+I'll guard your tasks. The bread? No promises!
 ____________________________________________________________
 
 ____________________________________________________________
-Bye. Rest your eyes!
+Mata ne! Rest up. I smell fresh bread!
 ____________________________________________________________
 ```
 
@@ -45,31 +45,31 @@ bye
 
 ```text
 ____________________________________________________________
-JAMES THE CHATTY CHATBOT
-Hello! I'm James.
-I can do anything for you!
+James the ぱんどろぼう
+Shh! I'm James, your bread thief.
+I'll guard your tasks. The bread? No promises!
 ____________________________________________________________
 
 ____________________________________________________________
-Got it. I've added this task:
+Hehe! Tucked this task into my bread basket:
 [T][ ] read book
 Now you have 1 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
-Got it. I've added this task:
+Hehe! Tucked this task into my bread basket:
 [D][ ] return book (by: Jun 06 2019)
 Now you have 2 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
-Here are the matching tasks in your list:
+Sniff sniff... here are the matching tasks:
 1.[T][ ] read book
 2.[D][ ] return book (by: Jun 06 2019)
 ____________________________________________________________
 ____________________________________________________________
-Here are the matching tasks in your list:
+Sniff sniff... here are the matching tasks:
 ____________________________________________________________
 ____________________________________________________________
-Bye. Rest your eyes!
+Mata ne! Rest up. I smell fresh bread!
 ____________________________________________________________
 ```
 
@@ -88,16 +88,16 @@ bye
 
 ```text
 ____________________________________________________________
-JAMES THE CHATTY CHATBOT
-Hello! I'm James.
-I can do anything for you!
+James the ぱんどろぼう
+Shh! I'm James, your bread thief.
+I'll guard your tasks. The bread? No promises!
 ____________________________________________________________
 
 ____________________________________________________________
-Here are the tasks in your list:
+Let's peek in the basket. Your tasks:
 ____________________________________________________________
 ____________________________________________________________
-Bye. Rest your eyes!
+Mata ne! Rest up. I smell fresh bread!
 ____________________________________________________________
 ```
 
@@ -124,54 +124,54 @@ bye
 
 ```text
 ____________________________________________________________
-JAMES THE CHATTY CHATBOT
-Hello! I'm James.
-I can do anything for you!
+James the ぱんどろぼう
+Shh! I'm James, your bread thief.
+I'll guard your tasks. The bread? No promises!
 ____________________________________________________________
 
 ____________________________________________________________
-Got it. I've added this task:
+Hehe! Tucked this task into my bread basket:
 [T][ ] protect task
 Now you have 1 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
-OH NO James Doesnt Know What To Do!!!
-James asks that you provide a task number.
+Gomen! A little flour in the gears.
+Which task shall I fetch? Please provide a task number.
 Try: delete <task number>
 ____________________________________________________________
 ____________________________________________________________
-Here are the tasks in your list:
+Let's peek in the basket. Your tasks:
 1.[T][ ] protect task
 ____________________________________________________________
 ____________________________________________________________
-OH NO James Doesnt Know What To Do!!!
-James says that the task number must be a whole number.
+Gomen! A little flour in the gears.
+No half-slices here! The task number must be a whole number.
 Try: delete <task number>
 ____________________________________________________________
 ____________________________________________________________
-Here are the tasks in your list:
+Let's peek in the basket. Your tasks:
 1.[T][ ] protect task
 ____________________________________________________________
 ____________________________________________________________
-OH NO James Doesnt Know What To Do!!!
-James says there is no task number 0.
+Gomen! A little flour in the gears.
+I can't find task number 0.
 Your list currently has 1 tasks.
 ____________________________________________________________
 ____________________________________________________________
-Here are the tasks in your list:
+Let's peek in the basket. Your tasks:
 1.[T][ ] protect task
 ____________________________________________________________
 ____________________________________________________________
-OH NO James Doesnt Know What To Do!!!
-James says there is no task number 2.
+Gomen! A little flour in the gears.
+I can't find task number 2.
 Your list currently has 1 tasks.
 ____________________________________________________________
 ____________________________________________________________
-Here are the tasks in your list:
+Let's peek in the basket. Your tasks:
 1.[T][ ] protect task
 ____________________________________________________________
 ____________________________________________________________
-Bye. Rest your eyes!
+Mata ne! Rest up. I smell fresh bread!
 ____________________________________________________________
 ```
 
@@ -198,54 +198,54 @@ bye
 
 ```text
 ____________________________________________________________
-JAMES THE CHATTY CHATBOT
-Hello! I'm James.
-I can do anything for you!
+James the ぱんどろぼう
+Shh! I'm James, your bread thief.
+I'll guard your tasks. The bread? No promises!
 ____________________________________________________________
 
 ____________________________________________________________
-Got it. I've added this task:
+Hehe! Tucked this task into my bread basket:
 [T][ ] persistent task
 Now you have 1 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
-OH NO James Doesnt Know What To Do!!!
-James asks that you provide a task number.
+Gomen! A little flour in the gears.
+Which task shall I fetch? Please provide a task number.
 Try: mark <task number>
 ____________________________________________________________
 ____________________________________________________________
-OH NO James Doesnt Know What To Do!!!
-James says that the task number must be a whole number.
+Gomen! A little flour in the gears.
+No half-slices here! The task number must be a whole number.
 Try: unmark <task number>
 ____________________________________________________________
 ____________________________________________________________
-OH NO James Doesnt Know What To Do!!!
-James says there is no task number 0.
+Gomen! A little flour in the gears.
+I can't find task number 0.
 Your list currently has 1 tasks.
 ____________________________________________________________
 ____________________________________________________________
-OH NO James Doesnt Know What To Do!!!
-James says there is no task number 2.
+Gomen! A little flour in the gears.
+I can't find task number 2.
 Your list currently has 1 tasks.
 ____________________________________________________________
 ____________________________________________________________
-Here are the tasks in your list:
+Let's peek in the basket. Your tasks:
 1.[T][ ] persistent task
 ____________________________________________________________
 ____________________________________________________________
-Nice! I've marked this task as done:
+Yatta! Task done. Time for a bread break:
 [T][X] persistent task
 ____________________________________________________________
 ____________________________________________________________
-OK, I've marked this task as not done yet:
+Back in the oven! This task is not done yet:
 [T][ ] persistent task
 ____________________________________________________________
 ____________________________________________________________
-Here are the tasks in your list:
+Let's peek in the basket. Your tasks:
 1.[T][ ] persistent task
 ____________________________________________________________
 ____________________________________________________________
-Bye. Rest your eyes!
+Mata ne! Rest up. I smell fresh bread!
 ____________________________________________________________
 ```
 
@@ -268,36 +268,36 @@ bye
 
 ```text
 ____________________________________________________________
-JAMES THE CHATTY CHATBOT
-Hello! I'm James.
-I can do anything for you!
+James the ぱんどろぼう
+Shh! I'm James, your bread thief.
+I'll guard your tasks. The bread? No promises!
 ____________________________________________________________
 
 ____________________________________________________________
-OH NO James Doesnt Know What To Do!!!
+Gomen! A little flour in the gears.
 A deadline needs a by date.
 Try: deadline <description> /by <date>
 ____________________________________________________________
 ____________________________________________________________
-OH NO James Doesnt Know What To Do!!!
+Gomen! A little flour in the gears.
 An event needs a description followed by /from.
 Try: event <description> /from <start> /to <end>
 ____________________________________________________________
 ____________________________________________________________
-OH NO James Doesnt Know What To Do!!!
+Gomen! A little flour in the gears.
 An event needs a description followed by /from.
 Try: event <description> /from <start> /to <end>
 ____________________________________________________________
 ____________________________________________________________
-OH NO James Doesnt Know What To Do!!!
+Gomen! A little flour in the gears.
 An event needs both a start and end time.
 Try: event <description> /from <start> /to <end>
 ____________________________________________________________
 ____________________________________________________________
-Here are the tasks in your list:
+Let's peek in the basket. Your tasks:
 ____________________________________________________________
 ____________________________________________________________
-Bye. Rest your eyes!
+Mata ne! Rest up. I smell fresh bread!
 ____________________________________________________________
 ```
 
@@ -325,46 +325,46 @@ bye
 
 ```text
 ____________________________________________________________
-JAMES THE CHATTY CHATBOT
-Hello! I'm James.
-I can do anything for you!
+James the ぱんどろぼう
+Shh! I'm James, your bread thief.
+I'll guard your tasks. The bread? No promises!
 ____________________________________________________________
 
 ____________________________________________________________
-Got it. I've added this task:
+Hehe! Tucked this task into my bread basket:
 [T][ ] read book
 Now you have 1 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
-Got it. I've added this task:
+Hehe! Tucked this task into my bread basket:
 [D][ ] return book (by: Jun 06 2019)
 Now you have 2 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
-Got it. I've added this task:
+Hehe! Tucked this task into my bread basket:
 [E][ ] project meeting (from: Aug 06 2019 to: Aug 07 2019)
 Now you have 3 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
-Got it. I've added this task:
+Hehe! Tucked this task into my bread basket:
 [T][ ] join sports club
 Now you have 4 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
-Nice! I've marked this task as done:
+Yatta! Task done. Time for a bread break:
 [T][X] read book
 ____________________________________________________________
 ____________________________________________________________
-Nice! I've marked this task as done:
+Yatta! Task done. Time for a bread break:
 [T][X] join sports club
 ____________________________________________________________
 ____________________________________________________________
-Got it. I've added this task:
+Hehe! Tucked this task into my bread basket:
 [T][ ] borrow book
 Now you have 5 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
-Here are the tasks in your list:
+Let's peek in the basket. Your tasks:
 1.[T][X] read book
 2.[D][ ] return book (by: Jun 06 2019)
 3.[E][ ] project meeting (from: Aug 06 2019 to: Aug 07 2019)
@@ -372,19 +372,19 @@ Here are the tasks in your list:
 5.[T][ ] borrow book
 ____________________________________________________________
 ____________________________________________________________
-Noted. I've removed this task:
+Poof! Snatched this task out of the basket:
 [E][ ] project meeting (from: Aug 06 2019 to: Aug 07 2019)
 Now you have 4 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
-Here are the tasks in your list:
+Let's peek in the basket. Your tasks:
 1.[T][X] read book
 2.[D][ ] return book (by: Jun 06 2019)
 3.[T][X] join sports club
 4.[T][ ] borrow book
 ____________________________________________________________
 ____________________________________________________________
-Bye. Rest your eyes!
+Mata ne! Rest up. I smell fresh bread!
 ____________________________________________________________
 ```
 
@@ -412,46 +412,46 @@ bye
 
 ```text
 ____________________________________________________________
-JAMES THE CHATTY CHATBOT
-Hello! I'm James.
-I can do anything for you!
+James the ぱんどろぼう
+Shh! I'm James, your bread thief.
+I'll guard your tasks. The bread? No promises!
 ____________________________________________________________
 
 ____________________________________________________________
-Got it. I've added this task:
+Hehe! Tucked this task into my bread basket:
 [T][ ] read book
 Now you have 1 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
-Got it. I've added this task:
+Hehe! Tucked this task into my bread basket:
 [D][ ] return book (by: Jun 06 2019)
 Now you have 2 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
-Got it. I've added this task:
+Hehe! Tucked this task into my bread basket:
 [E][ ] project meeting (from: Aug 06 2019 to: Aug 07 2019)
 Now you have 3 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
-Got it. I've added this task:
+Hehe! Tucked this task into my bread basket:
 [T][ ] join sports club
 Now you have 4 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
-Nice! I've marked this task as done:
+Yatta! Task done. Time for a bread break:
 [T][X] read book
 ____________________________________________________________
 ____________________________________________________________
-Nice! I've marked this task as done:
+Yatta! Task done. Time for a bread break:
 [T][X] join sports club
 ____________________________________________________________
 ____________________________________________________________
-Got it. I've added this task:
+Hehe! Tucked this task into my bread basket:
 [T][ ] borrow book
 Now you have 5 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
-Here are the tasks in your list:
+Let's peek in the basket. Your tasks:
 1.[T][X] read book
 2.[D][ ] return book (by: Jun 06 2019)
 3.[E][ ] project meeting (from: Aug 06 2019 to: Aug 07 2019)
@@ -459,17 +459,17 @@ Here are the tasks in your list:
 5.[T][ ] borrow book
 ____________________________________________________________
 ____________________________________________________________
-Got it. I've added this task:
+Hehe! Tucked this task into my bread basket:
 [D][ ] return book (by: Dec 01 2019)
 Now you have 6 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
-Got it. I've added this task:
+Hehe! Tucked this task into my bread basket:
 [E][ ] project meeting (from: Aug 12 2019 to: Aug 13 2019)
 Now you have 7 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
-Bye. Rest your eyes!
+Mata ne! Rest up. I smell fresh bread!
 ____________________________________________________________
 ```
 
@@ -495,49 +495,49 @@ bye
 
 ```text
 ____________________________________________________________
-JAMES THE CHATTY CHATBOT
-Hello! I'm James.
-I can do anything for you!
+James the ぱんどろぼう
+Shh! I'm James, your bread thief.
+I'll guard your tasks. The bread? No promises!
 ____________________________________________________________
 
 ____________________________________________________________
-Got it. I've added this task:
+Hehe! Tucked this task into my bread basket:
 [T][ ] keep this task
 Now you have 1 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
-OH NO James Doesnt Know What To Do!!!
+Gomen! A little flour in the gears.
 A deadline needs a by date.
 Try: deadline <description> /by <date>
 ____________________________________________________________
 ____________________________________________________________
-Here are the tasks in your list:
+Let's peek in the basket. Your tasks:
 1.[T][ ] keep this task
 ____________________________________________________________
 ____________________________________________________________
-OH NO James Doesnt Know What To Do!!!
+Gomen! A little flour in the gears.
 An event needs both a start and end time.
 Try: event <description> /from <start> /to <end>
 ____________________________________________________________
 ____________________________________________________________
-Here are the tasks in your list:
+Let's peek in the basket. Your tasks:
 1.[T][ ] keep this task
 ____________________________________________________________
 ____________________________________________________________
-OH NO James Doesnt Know What To Do!!!
-James says that the task number must be a whole number.
+Gomen! A little flour in the gears.
+No half-slices here! The task number must be a whole number.
 Try: mark <task number>
 ____________________________________________________________
 ____________________________________________________________
-Nice! I've marked this task as done:
+Yatta! Task done. Time for a bread break:
 [T][X] keep this task
 ____________________________________________________________
 ____________________________________________________________
-OK, I've marked this task as not done yet:
+Back in the oven! This task is not done yet:
 [T][ ] keep this task
 ____________________________________________________________
 ____________________________________________________________
-Bye. Rest your eyes!
+Mata ne! Rest up. I smell fresh bread!
 ____________________________________________________________
 ```
 
@@ -561,40 +561,40 @@ bye
 
 ```text
 ____________________________________________________________
-JAMES THE CHATTY CHATBOT
-Hello! I'm James.
-I can do anything for you!
+James the ぱんどろぼう
+Shh! I'm James, your bread thief.
+I'll guard your tasks. The bread? No promises!
 ____________________________________________________________
 
 ____________________________________________________________
-OH NO James Doesnt Know What To Do!!!
+Gomen! A little flour in the gears.
 No command specified
 Try: <command> <arguments:optional>
 ____________________________________________________________
 ____________________________________________________________
-Got it. I've added this task:
+Hehe! Tucked this task into my bread basket:
 [T][ ] retained task
 Now you have 1 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
-OH NO James Doesnt Know What To Do!!!
-James hasn't heard of this command :(
+Gomen! A little flour in the gears.
+I don't know that recipe! Try list or todo <description>.
 ____________________________________________________________
 ____________________________________________________________
-Here are the tasks in your list:
+Let's peek in the basket. Your tasks:
 1.[T][ ] retained task
 ____________________________________________________________
 ____________________________________________________________
-OH NO James Doesnt Know What To Do!!!
+Gomen! A little flour in the gears.
 The description of a todo cannot be empty.
 Try: todo <description>
 ____________________________________________________________
 ____________________________________________________________
-Here are the tasks in your list:
+Let's peek in the basket. Your tasks:
 1.[T][ ] retained task
 ____________________________________________________________
 ____________________________________________________________
-Bye. Rest your eyes!
+Mata ne! Rest up. I smell fresh bread!
 ____________________________________________________________
 ```
 
@@ -615,24 +615,24 @@ bye
 
 ```text
 ____________________________________________________________
-JAMES THE CHATTY CHATBOT
-Hello! I'm James.
-I can do anything for you!
+James the ぱんどろぼう
+Shh! I'm James, your bread thief.
+I'll guard your tasks. The bread? No promises!
 ____________________________________________________________
 
 ____________________________________________________________
-OH NO James Doesnt Know What To Do!!!
+Gomen! A little flour in the gears.
 Formatting of the date is incorrect, try: yyyy-mm-dd
 ____________________________________________________________
 ____________________________________________________________
-OH NO James Doesnt Know What To Do!!!
+Gomen! A little flour in the gears.
 Formatting of the date is incorrect, try: yyyy-mm-dd
 ____________________________________________________________
 ____________________________________________________________
-Here are the tasks in your list:
+Let's peek in the basket. Your tasks:
 ____________________________________________________________
 ____________________________________________________________
-Bye. Rest your eyes!
+Mata ne! Rest up. I smell fresh bread!
 ____________________________________________________________
 ```
 
@@ -657,45 +657,45 @@ bye
 
 ```text
 ____________________________________________________________
-JAMES THE CHATTY CHATBOT
-Hello! I'm James.
-I can do anything for you!
+James the ぱんどろぼう
+Shh! I'm James, your bread thief.
+I'll guard your tasks. The bread? No promises!
 ____________________________________________________________
 
 ____________________________________________________________
-Got it. I've added this task:
+Hehe! Tucked this task into my bread basket:
 [T][ ] read book
 Now you have 1 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
-Got it. I've added this task:
+Hehe! Tucked this task into my bread basket:
 [D][ ] return book (by: Oct 15 2019)
 Now you have 2 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
-Got it. I've added this task:
+Hehe! Tucked this task into my bread basket:
 [D][ ] submit report (by: Oct 20 2019)
 Now you have 3 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
-Got it. I've added this task:
+Hehe! Tucked this task into my bread basket:
 [E][ ] career fair (from: Oct 14 2019 to: Oct 16 2019)
 Now you have 4 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
-Here are the tasks in your list that matches the date 2019-10-15:
+Tasks on the menu for 2019-10-15:
 1.[D][ ] return book (by: Oct 15 2019)
 2.[E][ ] career fair (from: Oct 14 2019 to: Oct 16 2019)
 ____________________________________________________________
 ____________________________________________________________
-Here are the tasks in your list that matches the date 2019-10-20:
+Tasks on the menu for 2019-10-20:
 1.[D][ ] submit report (by: Oct 20 2019)
 ____________________________________________________________
 ____________________________________________________________
-Here are the tasks in your list that matches the date 2019-10-18:
+Tasks on the menu for 2019-10-18:
 ____________________________________________________________
 ____________________________________________________________
-Bye. Rest your eyes!
+Mata ne! Rest up. I smell fresh bread!
 ____________________________________________________________
 ```
 
@@ -716,25 +716,25 @@ bye
 
 ```text
 ____________________________________________________________
-JAMES THE CHATTY CHATBOT
-Hello! I'm James.
-I can do anything for you!
+James the ぱんどろぼう
+Shh! I'm James, your bread thief.
+I'll guard your tasks. The bread? No promises!
 ____________________________________________________________
 
 ____________________________________________________________
-OH NO James Doesnt Know What To Do!!!
+Gomen! A little flour in the gears.
 Please provide a date in the format: yyyy-mm-dd
 ____________________________________________________________
 ____________________________________________________________
-OH NO James Doesnt Know What To Do!!!
+Gomen! A little flour in the gears.
 The date format provided is incorrect! Please use the format: yyyy-mm-dd
 ____________________________________________________________
 ____________________________________________________________
-OH NO James Doesnt Know What To Do!!!
+Gomen! A little flour in the gears.
 The date format provided is incorrect! Please use the format: yyyy-mm-dd
 ____________________________________________________________
 ____________________________________________________________
-Bye. Rest your eyes!
+Mata ne! Rest up. I smell fresh bread!
 ____________________________________________________________
 ```
 
@@ -764,61 +764,61 @@ bye
 
 ```text
 ____________________________________________________________
-JAMES THE CHATTY CHATBOT
-Hello! I'm James.
-I can do anything for you!
+James the ぱんどろぼう
+Shh! I'm James, your bread thief.
+I'll guard your tasks. The bread? No promises!
 ____________________________________________________________
 
 ____________________________________________________________
-Nothing to undo.
+Not a crumb to retrace. Nothing to undo.
 ____________________________________________________________
 ____________________________________________________________
-Got it. I've added this task:
+Hehe! Tucked this task into my bread basket:
 [T][ ] read book
 Now you have 1 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
-Nice! I've marked this task as done:
+Yatta! Task done. Time for a bread break:
 [T][X] read book
 ____________________________________________________________
 ____________________________________________________________
-Nice! I've marked this task as done:
+Yatta! Task done. Time for a bread break:
 [T][X] read book
 ____________________________________________________________
 ____________________________________________________________
-Here are the matching tasks in your list:
+Sniff sniff... here are the matching tasks:
 1.[T][X] read book
 ____________________________________________________________
 ____________________________________________________________
-Undid the last change.
+Tiptoe back! Undid the last change.
 Now you have 1 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
-Here are the tasks in your list:
+Let's peek in the basket. Your tasks:
 1.[T][ ] read book
 ____________________________________________________________
 ____________________________________________________________
-Noted. I've removed this task:
+Poof! Snatched this task out of the basket:
 [T][ ] read book
 Now you have 0 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
-Undid the last change.
+Tiptoe back! Undid the last change.
 Now you have 1 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
-Here are the tasks in your list:
+Let's peek in the basket. Your tasks:
 1.[T][ ] read book
 ____________________________________________________________
 ____________________________________________________________
-Undid the last change.
+Tiptoe back! Undid the last change.
 Now you have 0 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
-Nothing to undo.
+Not a crumb to retrace. Nothing to undo.
 ____________________________________________________________
 ____________________________________________________________
-Bye. Rest your eyes!
+Mata ne! Rest up. I smell fresh bread!
 ____________________________________________________________
 ```
 
@@ -846,54 +846,54 @@ bye
 
 ```text
 ____________________________________________________________
-JAMES THE CHATTY CHATBOT
-Hello! I'm James.
-I can do anything for you!
+James the ぱんどろぼう
+Shh! I'm James, your bread thief.
+I'll guard your tasks. The bread? No promises!
 ____________________________________________________________
 
 ____________________________________________________________
-Got it. I've added this task:
+Hehe! Tucked this task into my bread basket:
 [T][ ] keep
 Now you have 1 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
-OH NO James Doesnt Know What To Do!!!
-This task already exists in your list.
+Gomen! A little flour in the gears.
+Already in the basket! This task exists in your list.
 ____________________________________________________________
 ____________________________________________________________
-OH NO James Doesnt Know What To Do!!!
+Gomen! A little flour in the gears.
 An event must end after its start date.
 ____________________________________________________________
 ____________________________________________________________
-OH NO James Doesnt Know What To Do!!!
+Gomen! A little flour in the gears.
 An event must end after its start date.
 ____________________________________________________________
 ____________________________________________________________
-OH NO James Doesnt Know What To Do!!!
+Gomen! A little flour in the gears.
 Formatting of the date is incorrect, try: yyyy-mm-dd
 ____________________________________________________________
 ____________________________________________________________
-OH NO James Doesnt Know What To Do!!!
+Gomen! A little flour in the gears.
 Date options must appear once and in order: /by
 ____________________________________________________________
 ____________________________________________________________
-OH NO James Doesnt Know What To Do!!!
+Gomen! A little flour in the gears.
 Task descriptions cannot contain | or control characters.
 ____________________________________________________________
 ____________________________________________________________
-OH NO James Doesnt Know What To Do!!!
+Gomen! A little flour in the gears.
 BYE does not take arguments.
 ____________________________________________________________
 ____________________________________________________________
-OH NO James Doesnt Know What To Do!!!
+Gomen! A little flour in the gears.
 LIST does not take arguments.
 ____________________________________________________________
 ____________________________________________________________
-Here are the tasks in your list:
+Let's peek in the basket. Your tasks:
 1.[T][ ] keep
 ____________________________________________________________
 ____________________________________________________________
-Bye. Rest your eyes!
+Mata ne! Rest up. I smell fresh bread!
 ____________________________________________________________
 ```
 
@@ -913,9 +913,9 @@ bye
 
 ```text
 ____________________________________________________________
-JAMES THE CHATTY CHATBOT
-Hello! I'm James.
-I can do anything for you!
+James the ぱんどろぼう
+Shh! I'm James, your bread thief.
+I'll guard your tasks. The bread? No promises!
 ____________________________________________________________
 
 ____________________________________________________________
@@ -924,15 +924,15 @@ Some saved tasks could not be loaded. Changes are disabled.
 Repair the saved file or restore read access, then restart James.
 ____________________________________________________________
 ____________________________________________________________
-OH NO James Doesnt Know What To Do!!!
+Gomen! A little flour in the gears.
 Saved tasks could not be fully loaded. No changes were made.
 Repair the saved file or restore read access, then restart James.
 ____________________________________________________________
 ____________________________________________________________
-Nothing to undo.
+Not a crumb to retrace. Nothing to undo.
 ____________________________________________________________
 ____________________________________________________________
-Bye. Rest your eyes!
+Mata ne! Rest up. I smell fresh bread!
 ____________________________________________________________
 ```
 
@@ -955,29 +955,29 @@ bye
 
 ```text
 ____________________________________________________________
-JAMES THE CHATTY CHATBOT
-Hello! I'm James.
-I can do anything for you!
+James the ぱんどろぼう
+Shh! I'm James, your bread thief.
+I'll guard your tasks. The bread? No promises!
 ____________________________________________________________
 
 ____________________________________________________________
-Here's a random sticker!
+Hehe! A little treat from my secret stash!
 ____________________________________________________________
 ____________________________________________________________
-Here's a random sticker!
+Hehe! A little treat from my secret stash!
 ____________________________________________________________
 ____________________________________________________________
-OH NO James Doesnt Know What To Do!!!
+Gomen! A little flour in the gears.
 RANDOM_STICKER does not take arguments.
 ____________________________________________________________
 ____________________________________________________________
-Here are the tasks in your list:
+Let's peek in the basket. Your tasks:
 ____________________________________________________________
 ____________________________________________________________
-Nothing to undo.
+Not a crumb to retrace. Nothing to undo.
 ____________________________________________________________
 ____________________________________________________________
-Bye. Rest your eyes!
+Mata ne! Rest up. I smell fresh bread!
 ____________________________________________________________
 ```
 
@@ -999,32 +999,32 @@ bye
 
 ```text
 ____________________________________________________________
-JAMES THE CHATTY CHATBOT
-Hello! I'm James.
-I can do anything for you!
+James the ぱんどろぼう
+Shh! I'm James, your bread thief.
+I'll guard your tasks. The bread? No promises!
 ____________________________________________________________
 
 ____________________________________________________________
-Got it. I've added this task:
+Hehe! Tucked this task into my bread basket:
 [D][ ] inspect /tmp (by: Sep 20 2026)
 Now you have 1 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
-Got it. I've added this task:
+Hehe! Tucked this task into my bread basket:
 [E][ ] inspect /tmp/files (from: Sep 20 2026 to: Sep 21 2026)
 Now you have 2 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
-OH NO James Doesnt Know What To Do!!!
+Gomen! A little flour in the gears.
 Date options must appear once and in order: /by
 ____________________________________________________________
 ____________________________________________________________
-Here are the tasks in your list:
+Let's peek in the basket. Your tasks:
 1.[D][ ] inspect /tmp (by: Sep 20 2026)
 2.[E][ ] inspect /tmp/files (from: Sep 20 2026 to: Sep 21 2026)
 ____________________________________________________________
 ____________________________________________________________
-Bye. Rest your eyes!
+Mata ne! Rest up. I smell fresh bread!
 ____________________________________________________________
 ```
 
@@ -1043,9 +1043,9 @@ bye
 
 ```text
 ____________________________________________________________
-JAMES THE CHATTY CHATBOT
-Hello! I'm James.
-I can do anything for you!
+James the ぱんどろぼう
+Shh! I'm James, your bread thief.
+I'll guard your tasks. The bread? No promises!
 ____________________________________________________________
 
 ____________________________________________________________
@@ -1054,11 +1054,11 @@ Some saved tasks could not be loaded. Changes are disabled.
 Repair the saved file or restore read access, then restart James.
 ____________________________________________________________
 ____________________________________________________________
-Here are the tasks in your list:
+Let's peek in the basket. Your tasks:
 1.[T][ ] safe | legacy
 ____________________________________________________________
 ____________________________________________________________
-Bye. Rest your eyes!
+Mata ne! Rest up. I smell fresh bread!
 ____________________________________________________________
 ```
 
@@ -1078,23 +1078,101 @@ bye
 
 ```text
 ____________________________________________________________
-JAMES THE CHATTY CHATBOT
-Hello! I'm James.
-I can do anything for you!
+James the ぱんどろぼう
+Shh! I'm James, your bread thief.
+I'll guard your tasks. The bread? No promises!
 ____________________________________________________________
 
 ____________________________________________________________
-Got it. I've added this task:
+Hehe! Tucked this task into my bread basket:
 [T][ ] TITLE
 Now you have 1 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
-Here are the matching tasks in your list:
+Sniff sniff... here are the matching tasks:
 1.[T][ ] TITLE
 ____________________________________________________________
 ____________________________________________________________
-Bye. Rest your eyes!
+Mata ne! Rest up. I smell fresh bread!
 ____________________________________________________________
 ```
 
-All 20 cases passed.
+## TC-21: Preserve tasks when another writer holds the lock — PASS
+
+**Aim:** Reject a save while another process holds the writer lock, preserve the saved task and undo history, and explain that the user can retry.
+
+**Input:**
+
+```text
+todo new task
+list
+undo
+bye
+```
+
+**Actual output:**
+
+```text
+____________________________________________________________
+James the ぱんどろぼう
+Shh! I'm James, your bread thief.
+I'll guard your tasks. The bread? No promises!
+____________________________________________________________
+
+____________________________________________________________
+Gomen! A little flour in the gears.
+Another instance is saving tasks. No changes were made; try again.
+____________________________________________________________
+____________________________________________________________
+Let's peek in the basket. Your tasks:
+1.[T][ ] keep
+____________________________________________________________
+____________________________________________________________
+Not a crumb to retrace. Nothing to undo.
+____________________________________________________________
+____________________________________________________________
+Mata ne! Rest up. I smell fresh bread!
+____________________________________________________________
+```
+
+## TC-22: Explain a missing deadline option — PASS
+
+**Aim:** Give missing-date guidance for an unrecognized `/until` token, preserve the empty task list, and accept a subsequent valid command.
+
+**Input:**
+
+```text
+deadline report /until 2026-09-16
+list
+deadline report /by 2026-09-16
+bye
+```
+
+**Actual output:**
+
+```text
+____________________________________________________________
+James the ぱんどろぼう
+Shh! I'm James, your bread thief.
+I'll guard your tasks. The bread? No promises!
+____________________________________________________________
+
+____________________________________________________________
+Gomen! A little flour in the gears.
+A deadline needs a by date.
+Try: deadline <description> /by <date>
+____________________________________________________________
+____________________________________________________________
+Let's peek in the basket. Your tasks:
+____________________________________________________________
+____________________________________________________________
+Hehe! Tucked this task into my bread basket:
+[D][ ] report (by: Sep 16 2026)
+Now you have 1 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Mata ne! Rest up. I smell fresh bread!
+____________________________________________________________
+```
+
+All 22 cases passed.

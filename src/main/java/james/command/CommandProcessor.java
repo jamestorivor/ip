@@ -23,7 +23,7 @@ public class CommandProcessor {
     private static final int MAX_UNDO_CHANGES = 20;
 
     private static final String DELETE_COMMAND_STRING = "delete";
-    private static final String MARK_COMPLETE_MESSAGE_PREFIX = "Nice! I've marked this task as done:\n";
+    private static final String MARK_COMPLETE_MESSAGE_PREFIX = "Yatta! Task done. Time for a bread break:\n";
     private static final String TASK_LIST_ENTRY_FORMAT = "\n%d.%s";
     private static final String LINE_BREAK = "\n";
 
@@ -69,7 +69,7 @@ public class CommandProcessor {
      * @return Result containing message, category, and exit state.
      */
     public CommandResponse process(String input) {
-        String exceptionMessage = "OH NO James Doesnt Know What To Do!!!\n";
+        String exceptionMessage = "Gomen! A little flour in the gears.\n";
 
         try {
             String[] parts = Parser.parseCommand(input);
@@ -95,7 +95,7 @@ public class CommandProcessor {
      * Dispatches a parsed command to its handler.
      */
     private CommandResponse executeCommand(Command command, String arguments) throws UserInputException {
-        String unknownCommandMessage = "James hasn't heard of this command :(";
+        String unknownCommandMessage = "I don't know that recipe! Try list or todo <description>.";
 
         return switch (command) {
             case LIST_BY_DATE -> listByDate(arguments);
@@ -119,7 +119,7 @@ public class CommandProcessor {
      */
     private CommandResponse selectRandomSticker() {
         int index = random.nextInt(STICKERS.size());
-        return CommandResponse.createStickerOnly("Here's a random sticker!", STICKERS.get(index));
+        return CommandResponse.createStickerOnly("Hehe! A little treat from my secret stash!", STICKERS.get(index));
     }
 
     /**
@@ -143,7 +143,7 @@ public class CommandProcessor {
      * Deletes a task and records its previous state after saving.
      */
     private CommandResponse delete(String arguments) throws UserInputException {
-        String taskRemovedPrefixMessage = "Noted. I've removed this task:\n";
+        String taskRemovedPrefixMessage = "Poof! Snatched this task out of the basket:\n";
         String allTasksMessage = "\nNow you have %d tasks in the list.\n";
 
         TaskList beforeDelete = taskList.copy();
@@ -175,7 +175,7 @@ public class CommandProcessor {
      * Returns the application exit response.
      */
     private CommandResponse exit() {
-        String exitMessage = "Bye. Rest your eyes!\n";
+        String exitMessage = "Mata ne! Rest up. I smell fresh bread!\n";
 
         return new CommandResponse(exitMessage, CommandResponse.Type.NORMAL, true);
     }
@@ -184,7 +184,7 @@ public class CommandProcessor {
      * Returns the current task list.
      */
     private CommandResponse listTasks() {
-        String listTaskMessage = "Here are the tasks in your list:\n";
+        String listTaskMessage = "Let's peek in the basket. Your tasks:\n";
 
         return createNormalResponse(listTaskMessage + taskList, taskList.getSize() == 0 ? Sticker.GOMEN : Sticker.OTSU);
     }
@@ -194,7 +194,7 @@ public class CommandProcessor {
      */
     private CommandResponse unmark(String arguments) throws UserInputException {
         String unmarkCommandString = "unmark";
-        String unmarkCompleteMessagePrefix = "OK, I've marked this task as not done yet:\n";
+        String unmarkCompleteMessagePrefix = "Back in the oven! This task is not done yet:\n";
 
         Task unmarked = taskList.getTask(Parser.parseTaskNumber(arguments, unmarkCommandString, taskList.getSize()));
         if (unmarked.isDone()) {
@@ -213,14 +213,14 @@ public class CommandProcessor {
         assert task != null : "Parser must return a task";
         for (Task existing : taskList.getTasks()) {
             if (existing.hasSameDetails(task)) {
-                throw new UserInputException("This task already exists in your list.",
+                throw new UserInputException("Already in the basket! This task exists in your list.",
                         UserInputException.Category.DUPLICATE);
             }
         }
         TaskList beforeAdd = taskList.copy();
         taskList.addTask(task);
         saveChange(beforeAdd);
-        return CommandResponse.createWithSticker("Got it. I've added this task:\n" + task +
+        return CommandResponse.createWithSticker("Hehe! Tucked this task into my bread basket:\n" + task +
                 "\nNow you have %d tasks in the list.".formatted(taskList.getSize()),
                 CommandResponse.Type.ADD, Sticker.YATTA);
     }
@@ -257,7 +257,7 @@ public class CommandProcessor {
             throw new UserInputException("Undo does not take arguments.\nTry: undo");
         }
         if (undoSnapshots.isEmpty()) {
-            return createNormalResponse("Nothing to undo.", Sticker.GOMEN);
+            return createNormalResponse("Not a crumb to retrace. Nothing to undo.", Sticker.GOMEN);
         }
         TaskList previous = undoSnapshots.peek();
         if (!storage.save(previous)) {
@@ -270,7 +270,7 @@ public class CommandProcessor {
         }
         taskList = undoSnapshots.pop();
         return createNormalResponse(
-                "Undid the last change.\nNow you have %d tasks in the list.".formatted(taskList.getSize()),
+                "Tiptoe back! Undid the last change.\nNow you have %d tasks in the list.".formatted(taskList.getSize()),
                 Sticker.NAISU);
     }
 
@@ -278,7 +278,7 @@ public class CommandProcessor {
      * Formats tasks occurring on the given date.
      */
     private String formatTasksOnDate(LocalDate date, List<Task> tasks) {
-        String tasksMatchingDateMessage = "Here are the tasks in your list that matches the date %s:".formatted(date);
+        String tasksMatchingDateMessage = "Tasks on the menu for %s:".formatted(date);
 
         StringBuilder message = new StringBuilder(tasksMatchingDateMessage);
         for (int i = 0; i < tasks.size(); i++) {
@@ -291,7 +291,7 @@ public class CommandProcessor {
      * Formats tasks matching the given keyword.
      */
     private String formatMatchingTasks(List<Task> tasks) {
-        String matchingTasksMessage = "Here are the matching tasks in your list:";
+        String matchingTasksMessage = "Sniff sniff... here are the matching tasks:";
 
         StringBuilder message = new StringBuilder(matchingTasksMessage);
         for (int i = 0; i < tasks.size(); i++) {

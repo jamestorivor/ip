@@ -22,8 +22,8 @@ import org.junit.jupiter.api.parallel.ResourceLock;
 @ResourceLock("standardStreams")
 public class JamesTest {
     private static final String DIVIDER = "____________________________________________________________";
-    private static final String GREETING = "JAMES THE CHATTY CHATBOT\nHello! I'm James.\n" +
-            "I can do anything for you!\n";
+    private static final String GREETING = "James the ぱんどろぼう\nShh! I'm James, your bread thief.\n" +
+            "I'll guard your tasks. The bread? No promises!\n";
 
     private final InputStream originalInput = System.in;
     private final PrintStream originalOutput = System.out;
@@ -43,21 +43,23 @@ public class JamesTest {
 
     @Test
     public void run_randomStickerThenEof_printsFallbackAndContinues() {
-        assertEquals(encase(GREETING) + System.lineSeparator() + encase("Here's a random sticker!\n") +
-                encase("Here are the tasks in your list:\n"), runConsole("random_sticker\nlist"));
+        assertEquals(encase(GREETING) + System.lineSeparator() +
+                encase("Hehe! A little treat from my secret stash!\n") +
+                encase("Let's peek in the basket. Your tasks:\n"), runConsole("random_sticker\nlist"));
         assertFalse(Files.exists(directory.resolve("tasks.txt")));
     }
 
     @Test
     public void run_invalidThenValidCommand_recoversAndProcessesRemainingInput() {
         assertEquals(encase(GREETING) + System.lineSeparator() +
-                encase("OH NO James Doesnt Know What To Do!!!\nJames hasn't heard of this command :(\n") +
-                encase("Here are the tasks in your list:\n"), runConsole("unknown\nlist\n"));
+                encase("Gomen! A little flour in the gears.\n" +
+                        "I don't know that recipe! Try list or todo <description>.\n") +
+                encase("Let's peek in the basket. Your tasks:\n"), runConsole("unknown\nlist\n"));
     }
 
     @Test
     public void run_byeBeforeMutation_ignoresCommandsAfterExit() {
-        assertEquals(encase(GREETING) + System.lineSeparator() + encase("Bye. Rest your eyes!\n"),
+        assertEquals(encase(GREETING) + System.lineSeparator() + encase("Mata ne! Rest up. I smell fresh bread!\n"),
                 runConsole("bye\ntodo ignored\n"));
         assertFalse(Files.exists(directory.resolve("tasks.txt")));
     }

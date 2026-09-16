@@ -1,6 +1,7 @@
-# James project template
+# James the ぱんどろぼう
 
-This is a project template for a greenfield Java project named _James_. Given below are instructions on how to use it.
+James the ぱんどろぼう is a playful bread-thief task manager. He guards your tasks,
+celebrates with bread breaks, and speaks mostly English with occasional Japanese phrases.
 
 ## Setting up in Intellij
 
@@ -16,11 +17,11 @@ Prerequisites: JDK 25, update Intellij to the most recent version.
 1. After that, locate the `src/main/java/James.java` file, right-click it, and choose `Run James.main()` (if the code editor is showing compile errors, try restarting the IDE). If the setup is correct, you should see something like the below as the output:
    ```
    ____________________________________________________________
-   JAMES THE CHATTY CHATBOT
-   Hello! I'm James.
-   I can do anything for you!
+   James the ぱんどろぼう
+   Shh! I'm James, your bread thief.
+   I'll guard your tasks. The bread? No promises!
    ____________________________________________________________
-   Bye. Rest your eyes!
+   Mata ne! Rest up. I smell fresh bread!
    ____________________________________________________________
    ```
 
