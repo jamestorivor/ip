@@ -8,12 +8,14 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 
@@ -24,7 +26,8 @@ import javafx.scene.text.TextFlow;
 public class DialogBox extends HBox {
     private static final String DIALOG_BOX_RESOURCE = "/view/DialogBox.fxml";
     private static final String DIALOG_LOAD_ERROR_MESSAGE = "Unable to load dialog box";
-    private static final double STICKER_SIZE_MULTIPLIER = 2;
+    private static final double RANDOM_STICKER_SIZE = 160;
+    private static final double RESPONSE_STICKER_SIZE = 120;
     private static final String REPLY_STYLE_CLASS = "reply-label";
 
     @FXML
@@ -77,16 +80,29 @@ public class DialogBox extends HBox {
     }
 
     /**
-     * Replaces the response text with a sticker twice the profile image dimensions.
+     * Displays a large standalone sticker or a smaller sticker above the existing text.
      */
-    private void showSticker(String resourcePath) {
-        ImageView sticker = new ImageView(new Image(DialogBox.class.getResourceAsStream(resourcePath)));
-        sticker.fitWidthProperty().bind(userImage.fitWidthProperty().multiply(STICKER_SIZE_MULTIPLIER));
-        sticker.fitHeightProperty().bind(userImage.fitHeightProperty().multiply(STICKER_SIZE_MULTIPLIER));
+    private void showSticker(CommandResponse response) {
+        boolean isStickerOnly = response.getDisplayMode() == CommandResponse.DisplayMode.STICKER_ONLY;
+        double size = isStickerOnly ? RANDOM_STICKER_SIZE : RESPONSE_STICKER_SIZE;
+        ImageView sticker = new ImageView(new Image(DialogBox.class.getResourceAsStream(response.getStickerPath())));
+        sticker.setFitWidth(size);
+        sticker.setFitHeight(size);
         sticker.setPreserveRatio(true);
-        sticker.setAccessibleText("Pandorobou sticker");
-        dialog.getChildren().setAll(sticker);
-        dialog.getStyleClass().add("sticker-dialog");
+        sticker.setAccessibleText(response.getSticker().name() + " sticker");
+
+        // A separate container keeps the sticker above the text while allowing the text to wrap.
+        int contentIndex = getChildren().indexOf(dialog);
+        getChildren().remove(dialog);
+        VBox content = new VBox(8, sticker);
+        content.setMinWidth(0);
+        content.setMaxWidth(Double.MAX_VALUE);
+        if (!isStickerOnly) {
+            content.getChildren().add(dialog);
+        }
+        HBox.setMargin(content, new Insets(0, 7, 0, 7));
+        HBox.setHgrow(content, Priority.ALWAYS);
+        getChildren().add(contentIndex, content);
     }
 
     /**
@@ -102,7 +118,7 @@ public class DialogBox extends HBox {
     public static DialogBox createJames(CommandResponse response, Image image) {
         DialogBox db = new DialogBox(response.getMessage(), false, response.getType(), image);
         if (response.getStickerPath() != null) {
-            db.showSticker(response.getStickerPath());
+            db.showSticker(response);
         }
         db.flip();
         return db;

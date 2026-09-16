@@ -18,12 +18,7 @@ import james.task.TaskList;
  * Processes commands independently of the console or graphical interface.
  */
 public class CommandProcessor {
-    private static final List<String> STICKER_PATHS = List.of(
-            "/images/nankore_pandorobou.png",
-            "/images/otsu_pandorobou.png",
-            "/images/naisu_pandorobou.png",
-            "/images/gomen_pandorobou.png",
-            "/images/yatta_pandorobou.png");
+    private static final List<Sticker> STICKERS = List.of(Sticker.values());
 
     private static final int MAX_UNDO_CHANGES = 20;
 
@@ -78,8 +73,12 @@ public class CommandProcessor {
             }
             return executeCommand(command, remainingArguments);
         } catch (UserInputException e) {
-            return new CommandResponse(exceptionMessage + e.getMessage(),
-                    CommandResponse.Type.ERROR, false);
+            Sticker sticker = switch (e.getCategory()) {
+            case INPUT -> Sticker.NANKORE;
+            case DUPLICATE, STORAGE -> Sticker.GOMEN;
+            };
+            return CommandResponse.createWithSticker(exceptionMessage + e.getMessage(),
+                    CommandResponse.Type.ERROR, sticker);
         }
     }
 
@@ -110,9 +109,8 @@ public class CommandProcessor {
      * Selects a sticker uniformly without modifying tasks or undo history.
      */
     private CommandResponse selectRandomSticker() {
-        int index = random.nextInt(STICKER_PATHS.size());
-        return new CommandResponse("Here's a random sticker!", CommandResponse.Type.NORMAL,
-                false, STICKER_PATHS.get(index));
+        int index = random.nextInt(STICKERS.size());
+        return CommandResponse.createStickerOnly("Here's a random sticker!", STICKERS.get(index));
     }
 
     /**
@@ -120,14 +118,16 @@ public class CommandProcessor {
      */
     private CommandResponse listByDate(String arguments) throws UserInputException {
         LocalDate date = Parser.parseDate(arguments);
-        return createNormalResponse(formatTasksOnDate(date));
+        ArrayList<Task> tasks = taskList.getTasksOnDate(date);
+        return createNormalResponse(formatTasksOnDate(date, tasks), tasks.isEmpty() ? Sticker.GOMEN : Sticker.OTSU);
     }
 
     /**
      * Finds tasks matching the supplied keyword.
      */
     private CommandResponse find(String arguments) throws UserInputException {
-        return createNormalResponse(formatMatchingTasks(Parser.parseFindKeyword(arguments)));
+        ArrayList<Task> tasks = taskList.findTasks(Parser.parseFindKeyword(arguments));
+        return createNormalResponse(formatMatchingTasks(tasks), tasks.isEmpty() ? Sticker.GOMEN : Sticker.OTSU);
     }
 
     /**
@@ -141,8 +141,9 @@ public class CommandProcessor {
         Task deleted = taskList.deleteTask(
                 Parser.parseTaskNumber(arguments, DELETE_COMMAND_STRING, taskList.getSize()));
         saveChange(beforeDelete);
-        return new CommandResponse(taskRemovedPrefixMessage + deleted + allTasksMessage.formatted(taskList.getSize()),
-                CommandResponse.Type.DELETE, false);
+        return CommandResponse.createWithSticker(
+                taskRemovedPrefixMessage + deleted + allTasksMessage.formatted(taskList.getSize()),
+                CommandResponse.Type.DELETE, Sticker.NAISU);
     }
 
     /**
@@ -157,8 +158,8 @@ public class CommandProcessor {
             marked.markDone();
             saveChange(beforeMark);
         }
-        return new CommandResponse(MARK_COMPLETE_MESSAGE_PREFIX + marked,
-                CommandResponse.Type.MARK, false);
+        return CommandResponse.createWithSticker(MARK_COMPLETE_MESSAGE_PREFIX + marked,
+                CommandResponse.Type.MARK, Sticker.NAISU);
     }
 
     /**
@@ -176,7 +177,7 @@ public class CommandProcessor {
     private CommandResponse listTasks() {
         String listTaskMessage = "Here are the tasks in your list:\n";
 
-        return createNormalResponse(listTaskMessage + taskList);
+        return createNormalResponse(listTaskMessage + taskList, taskList.getSize() == 0 ? Sticker.GOMEN : Sticker.OTSU);
     }
 
     /**
@@ -192,8 +193,8 @@ public class CommandProcessor {
             unmarked.markNotDone();
             saveChange(beforeUnmark);
         }
-        return new CommandResponse(unmarkCompleteMessagePrefix + unmarked,
-                CommandResponse.Type.MARK, false);
+        return CommandResponse.createWithSticker(unmarkCompleteMessagePrefix + unmarked,
+                CommandResponse.Type.MARK, Sticker.OTSU);
     }
 
     /**
@@ -203,15 +204,16 @@ public class CommandProcessor {
         assert task != null : "Parser must return a task";
         for (Task existing : taskList.getTasks()) {
             if (existing.hasSameDetails(task)) {
-                throw new UserInputException("This task already exists in your list.");
+                throw new UserInputException("This task already exists in your list.",
+                        UserInputException.Category.DUPLICATE);
             }
         }
         TaskList beforeAdd = taskList.copy();
         taskList.addTask(task);
         saveChange(beforeAdd);
-        return new CommandResponse("Got it. I've added this task:\n" + task +
+        return CommandResponse.createWithSticker("Got it. I've added this task:\n" + task +
                 "\nNow you have %d tasks in the list.".formatted(taskList.getSize()),
-                CommandResponse.Type.ADD, false);
+                CommandResponse.Type.ADD, Sticker.YATTA);
     }
 
     /**
@@ -222,9 +224,11 @@ public class CommandProcessor {
             taskList = previous;
             if (storage.hasLoadErrors()) {
                 throw new UserInputException("Saved tasks could not be fully loaded. No changes were made.\n" +
-                        "Repair the saved file or restore read access, then restart James.");
+                        "Repair the saved file or restore read access, then restart James.",
+                        UserInputException.Category.STORAGE);
             }
-            throw new UserInputException("Could not save tasks. No changes were made.");
+            throw new UserInputException("Could not save tasks. No changes were made.",
+                    UserInputException.Category.STORAGE);
         }
         undoSnapshots.push(previous);
         if (undoSnapshots.size() > MAX_UNDO_CHANGES) {
@@ -240,24 +244,25 @@ public class CommandProcessor {
             throw new UserInputException("Undo does not take arguments.\nTry: undo");
         }
         if (undoSnapshots.isEmpty()) {
-            return createNormalResponse("Nothing to undo.");
+            return createNormalResponse("Nothing to undo.", Sticker.GOMEN);
         }
         TaskList previous = undoSnapshots.peek();
         if (!storage.save(previous)) {
-            throw new UserInputException("Could not save tasks. Undo was not applied; try again.");
+            throw new UserInputException("Could not save tasks. Undo was not applied; try again.",
+                    UserInputException.Category.STORAGE);
         }
         taskList = undoSnapshots.pop();
         return createNormalResponse(
-                "Undid the last change.\nNow you have %d tasks in the list.".formatted(taskList.getSize()));
+                "Undid the last change.\nNow you have %d tasks in the list.".formatted(taskList.getSize()),
+                Sticker.NAISU);
     }
 
     /**
      * Formats tasks occurring on the given date.
      */
-    private String formatTasksOnDate(LocalDate date) {
+    private String formatTasksOnDate(LocalDate date, List<Task> tasks) {
         String tasksMatchingDateMessage = "Here are the tasks in your list that matches the date %s:".formatted(date);
 
-        ArrayList<Task> tasks = taskList.getTasksOnDate(date);
         StringBuilder message = new StringBuilder(tasksMatchingDateMessage);
         for (int i = 0; i < tasks.size(); i++) {
             message.append(TASK_LIST_ENTRY_FORMAT.formatted(i + 1, tasks.get(i)));
@@ -268,10 +273,9 @@ public class CommandProcessor {
     /**
      * Formats tasks matching the given keyword.
      */
-    private String formatMatchingTasks(String keyword) {
+    private String formatMatchingTasks(List<Task> tasks) {
         String matchingTasksMessage = "Here are the matching tasks in your list:";
 
-        ArrayList<Task> tasks = taskList.findTasks(keyword);
         StringBuilder message = new StringBuilder(matchingTasksMessage);
         for (int i = 0; i < tasks.size(); i++) {
             message.append(TASK_LIST_ENTRY_FORMAT.formatted(i + 1, tasks.get(i)));
@@ -282,7 +286,7 @@ public class CommandProcessor {
     /**
      * Wraps a message in a normal response.
      */
-    private CommandResponse createNormalResponse(String message) {
-        return new CommandResponse(message, CommandResponse.Type.NORMAL, false);
+    private CommandResponse createNormalResponse(String message, Sticker sticker) {
+        return CommandResponse.createWithSticker(message, CommandResponse.Type.NORMAL, sticker);
     }
 }

@@ -3,7 +3,6 @@ package james;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
@@ -16,6 +15,7 @@ import org.junit.jupiter.api.io.TempDir;
 
 import james.command.CommandProcessor;
 import james.command.CommandResponse;
+import james.command.Sticker;
 
 /** Tests command processing across the shared application backend. */
 public class CommandProcessorTest {
@@ -300,6 +300,7 @@ public class CommandProcessorTest {
         CommandResponse response = processor.process("todo keep");
         assertEquals(CommandResponse.Type.ERROR, response.getType());
         assertTrue(response.getMessage().contains("restart James"));
+        assertEquals(Sticker.GOMEN, response.getSticker());
         assertEquals("broken record\n", Files.readString(file));
         assertEquals("Nothing to undo.", processor.process("undo").getMessage());
     }
@@ -325,6 +326,7 @@ public class CommandProcessorTest {
             CommandResponse response = processor.process("  RANDOM_STICKER  ");
             String expectedPath = "/images/" + names[i] + "_pandorobou.png";
             assertEquals(expectedPath, response.getStickerPath());
+            assertEquals(CommandResponse.DisplayMode.STICKER_ONLY, response.getDisplayMode());
             assertEquals("Here's a random sticker!", response.getMessage());
             assertEquals(CommandResponse.Type.NORMAL, response.getType());
             assertFalse(response.isExit());
@@ -353,14 +355,14 @@ public class CommandProcessorTest {
     }
 
     @Test
-    public void process_randomStickerExtraArguments_returnsTextError() {
+    public void process_randomStickerExtraArguments_returnsConfusedStickerAndError() {
         CommandProcessor processor = new CommandProcessor(getStoragePath());
         CommandResponse response = processor.process("random_sticker extra");
         assertEquals(CommandResponse.Type.ERROR, response.getType());
         assertEquals("OH NO James Doesnt Know What To Do!!!\nRANDOM_STICKER does not take arguments.",
                 response.getMessage());
-        assertNull(response.getStickerPath());
-        assertNull(processor.process("list").getStickerPath());
+        assertEquals(Sticker.NANKORE, response.getSticker());
+        assertEquals(CommandResponse.DisplayMode.STICKER_WITH_TEXT, response.getDisplayMode());
     }
 
 }

@@ -8,6 +8,8 @@
 - Comparison: expected output is compared exactly, including line breaks and spaces.
 - Isolation: each test case starts a new application session in an empty temporary directory.
 - Gradle compiles both the console backend and the JavaFX GUI.
+- Contextual stickers affect only the GUI; all console response text remains unchanged.
+- Graphical sticker checks are recorded in `test/sticker-gui-test-plan.md`.
 
 ## TC-01: Start and exit cleanly
 
