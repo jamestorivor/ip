@@ -1074,3 +1074,40 @@ ____________________________________________________________
 Bye. Rest your eyes!
 ____________________________________________________________
 ```
+
+## TC-20: Search independently of the OS language
+
+**Aim:** Verify English case-insensitive search under a Turkish default locale, including the letter I.
+
+**Setup:** Use the launch command `java -Duser.language=tr -Duser.country=TR -cp build/classes/java/main james.James` in a fresh temporary directory.
+
+**Inputs:**
+
+```text
+todo TITLE
+find title
+bye
+```
+
+**Expected output:**
+
+```text
+____________________________________________________________
+JAMES THE CHATTY CHATBOT
+Hello! I'm James.
+I can do anything for you!
+____________________________________________________________
+
+____________________________________________________________
+Got it. I've added this task:
+[T][ ] TITLE
+Now you have 1 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Here are the matching tasks in your list:
+1.[T][ ] TITLE
+____________________________________________________________
+____________________________________________________________
+Bye. Rest your eyes!
+____________________________________________________________
+```

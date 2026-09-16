@@ -2,6 +2,7 @@ package james.task;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Locale;
 
 /**
  * Encapsulates the in-memory list of tasks and provides operations to
@@ -145,9 +146,9 @@ public class TaskList {
      */
     public ArrayList<Task> findTasks(String keyword) {
         ArrayList<Task> matchingTasks = new ArrayList<>();
-        String normalizedKeyword = keyword.toLowerCase();
+        String normalizedKeyword = keyword.toLowerCase(Locale.ROOT);
         for (Task task : tasks) {
-            if (task.getDescription().toLowerCase().contains(normalizedKeyword)) {
+            if (task.getDescription().toLowerCase(Locale.ROOT).contains(normalizedKeyword)) {
                 matchingTasks.add(task);
             }
         }
