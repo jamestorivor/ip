@@ -14,6 +14,7 @@ Run with Java 25. Use temporary task storage for the test session.
 | Unavailable action | Duplicate task, empty undo history, failed storage write | Gomen above the existing response. |
 | Text-only responses | Start and `bye` | Greeting and goodbye have no sticker; exit behavior remains unchanged. |
 | Layout | Long task description and repeated replies; resize window | Text wraps below the sticker, with no overlap; conversation scrolls to the latest reply. |
+| Composer alignment | Resize from 500 × 600 to 417 × 220; submit `todo read` using Send and another task using Enter | Button and input have equal top/bottom bounds, an 8 px gap, and remain fully inside the window; each submission adds exactly one task and displays Yatta plus confirmation. |
 | Image integrity | Render all five stickers in both display modes | Every PNG loads, preserves its aspect ratio, and uses the correct fit dimensions. |
 
 All contextual stickers use a 120 × 120 fit area; their text remains visible underneath.
@@ -36,3 +37,17 @@ Checkstyle passed for main and test sources.
 
 Preview images: `build/reports/stickers/chat.png` and
 `build/reports/stickers/narrow-chat.png` (generated local artifacts).
+
+## Composer regression verification
+
+Verified the shared input row at 500 × 600 and 417 × 220 window sizes.
+The input and Send button share top and bottom bounds, have an 8 px gap, and
+remain inside the window. Submitting distinct todos using Send and Enter
+creates and persists exactly two tasks, each with a Yatta confirmation.
+All 164 unit tests, 17 console cases, and both Checkstyle tasks pass.
+The runnable JAR was rebuilt. Local previews: `build/reports/composer/normal.png`
+and `build/reports/composer/small.png`.
+
+The current user data file separately blocks saving because of four duplicate
+records and one event with equal start/end dates. The original file remains
+unchanged pending the user's recovery choice.
